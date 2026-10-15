@@ -1,0 +1,16 @@
+name: Melhoria
+description: Algo que já existe e pode ficar melhor
+labels: ["tipo:melhoria"]
+body:
+  - type: textarea
+    id: hoje
+    attributes: { label: Como é hoje }
+    validations: { required: true }
+  - type: textarea
+    id: proposta
+    attributes: { label: Como deve ficar }
+    validations: { required: true }
+  - type: textarea
+    id: aceite
+    attributes: { label: Critérios de aceite, value: "- [ ] " }
+    validations: { required: true }
