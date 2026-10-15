@@ -1,10 +1,14 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "xicaflor",
-	"main": ".open-next/worker.js",
+	"main": "worker.ts",
 	"compatibility_date": "2026-10-15",
 	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
 	"assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
 	"services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "xicaflor" }],
-	"observability": { "enabled": true }
+	"observability": { "enabled": true },
+	"vars": {
+		"SUPABASE_URL": "https://ughhiqxuzhesmahhqyld.supabase.co",
+		"SUPABASE_PUBLISHABLE_KEY": "sb_publishable_khyE8vI8XYDEdT0fMuVGCg_rdIGtm83"
+	}
 }
