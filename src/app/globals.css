@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-/* Tokens provisórios — a identidade definitiva vem no DESIGN.md (issue #6). */
 :root {
 	--background: #fffdf6;
 	--foreground: #2b1d1f;
