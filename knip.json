@@ -1,4 +1,5 @@
 {
 	"$schema": "https://unpkg.com/knip@latest/schema.json",
-	"entry": ["open-next.config.ts"]
+	"entry": ["open-next.config.ts"],
+	"ignore": ["src/lib/database.types.ts"]
 }

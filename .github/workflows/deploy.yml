@@ -8,7 +8,24 @@ concurrency:
   group: deploy-production
 
 jobs:
+  database:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD_PROD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_ID_PROD }}
+      - run: pnpm exec supabase db push
+
   deploy:
+    needs: database
     runs-on: ubuntu-latest
     environment: production
     steps:

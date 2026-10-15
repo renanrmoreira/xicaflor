@@ -18,7 +18,11 @@
 		"preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
 		"deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
 		"upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
-		"cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+		"cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+		"db:start": "supabase start",
+		"db:reset": "supabase db reset",
+		"db:migration": "supabase migration new",
+		"db:types": "supabase gen types typescript --local > src/lib/database.types.ts && biome format --write src/lib/database.types.ts"
 	},
 	"dependencies": {
 		"@opennextjs/cloudflare": "1.20.12",
@@ -38,6 +42,7 @@
 		"dependency-cruiser": "^18.6.0",
 		"knip": "^6.41.0",
 		"lefthook": "^2.2.2",
+		"supabase": "^2.121.0",
 		"tailwindcss": "^4",
 		"typescript": "^5",
 		"vitest": "^5.0.4",
