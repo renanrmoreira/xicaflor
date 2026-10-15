@@ -59,6 +59,7 @@ Papéis: **Renan = PO** (decide e aprova). **Agente coordenador** = abre issues,
 - A service role key do Supabase é usada **só** em `src/server/supabase.ts`.
 - Server Components por padrão. `'use client'` apenas no menor componente que precisa de interatividade.
 - Dinheiro sempre em **centavos inteiros**. Formatação só na borda (`lib/dinheiro.ts`).
+- **Comentários: o mínimo possível.** Só quando o código não explica sozinho o *porquê* (regra de negócio não óbvia, workaround, limite conhecido). Nada de comentário que repete o código, JSDoc decorativo ou cabeçalho de arquivo.
 - Nomes: o domínio fica em português (`pedido`, `variante`, `calcularFrete`). Termos técnicos genéricos ficam em inglês (`useMediaQuery`, `Button`).
 
 ## 4. Segurança (inegociável)
