@@ -11,7 +11,7 @@
 - Loja física em casa com venda direta. Hoje a divulgação é feita pelo Instagram [@xicaflor_](https://instagram.com/xicaflor_) e o contato pelo WhatsApp `wa.me/5591988008817`.
 - **Produtos:**
   - **Moda feminina:** vestidos, blusas, calças, peças formais etc. Categorias finais **[a confirmar]** com a proprietária.
-  - **Beleza:** maquiagem, skincare e perfumaria das marcas O.Lab e Rinode (grafia **[a confirmar]**).
+  - **Beleza (vitrine de afiliada):** maquiagem, skincare e perfumaria das marcas O.Lab e Rinode. A proprietária é **afiliada** e não pode vender esses produtos diretamente: o site só exibe a vitrine e leva a cliente para a loja virtual de afiliada dela, que tem todos os produtos.
 - **Público:** compra principalmente pelo celular, a maioria em Belém e muitas clientes fixas. O objetivo secundário é alcançar clientes fora da cidade.
 - **Escala:** no máximo cerca de 100 usuários simultâneos. Baixo volume. Custo zero no início.
 - **Entrega:** a proprietária entrega de carro em Belém. Fora de Belém, o frete é combinado. Os Correios entram só na fase 5.
@@ -30,6 +30,7 @@
 | E-mail transacional | **Resend** como SMTP do Supabase e para notificações | O SMTP embutido do Supabase tem limite de poucos e-mails por hora e serve só para teste. |
 | Frete | Belém continental = **grátis**. Mosqueiro e Outeiro **não** entram no grátis (a combinar). Outras zonas por faixa de CEP, editáveis no admin. Fora das zonas = **"frete a combinar"**. Retirada na loja = grátis. | Simples. O Melhor Envio fica para a fase 5. |
 | Carrinho | `localStorage`, sem tabela no banco | Ninguém precisa de carrinho entre dispositivos agora. |
+| Beleza | **Vitrine**: produto sem preço, variante, estoque ou carrinho. Botão "Comprar na loja" abre o link da loja de afiliada (`categorias.link_vitrine` da raiz Beleza). | É venda por comissão de afiliada; a compra acontece no site da marca. Preço não aparece porque a marca altera sem aviso. |
 | Dinheiro | Inteiro em **centavos** (`integer`), nunca `float` | Evita erro de arredondamento. |
 | Observabilidade | **Sentry** (erros, traces e alertas; o SDK já é baseado em OpenTelemetry), Cloudflare Workers Logs e Cloudflare Web Analytics | Datadog e New Relic são pagos e duplicam o Sentry nesta escala. Como o Sentry usa OTel, dá para trocar depois. |
 | Qualidade | Biome, Commitlint + lefthook, Knip, dependency-cruiser (contrato de arquitetura) e Stryker (só em `server/`) | Detalhes no §8. |
@@ -94,7 +95,8 @@ Convenção: nomes de domínio em português, `snake_case`, `id uuid default gen
 
 ```sql
 -- Catálogo
-categorias (id, nome, slug unique, parent_id → categorias null, ordem int, ativo bool)
+categorias (id, nome, slug unique, parent_id → categorias null, ordem int, ativo bool,
+            link_vitrine text null)   -- preenchido só na raiz "Beleza": link da loja de afiliada
   -- raízes: "Moda" e "Beleza"; filhas: Vestidos, Blusas, …, Maquiagem, Skincare, Perfumaria
 produtos (id, nome, slug unique, descricao text, marca text null, categoria_id → categorias,
           ativo bool default true, destaque bool default false, criado_em)
@@ -103,7 +105,7 @@ variantes (id, produto_id → produtos on delete cascade, cor text null, tamanho
            preco_centavos int check (preco_centavos > 0),
            estoque int check (estoque >= 0),   -- o banco garante que nunca fica negativo
            ativo bool, unique (produto_id, cor, tamanho))
-  -- produto de beleza = 1 variante com cor/tamanho nulos
+  -- produto cuja categoria raiz tem link_vitrine = vitrine: sem variantes, nunca entra no carrinho
 
 -- Clientes
 perfis (id → auth.users primary key, nome, telefone,
@@ -293,12 +295,12 @@ Cada item abaixo vira **uma issue no GitHub** (seguindo o AGENTS.md) e **um PR**
 ### Fase 1: Catálogo
 7. **[feature]** Schema do catálogo + RLS + seed de categorias.
    *Aceite:* testes de integração provam que um anônimo lê o catálogo e não consegue escrever.
-8. **[feature]** Login de admin, middleware `/admin`, `is_admin()`.
+8. **[feature]** Login de admin, middleware `/admin`, `is_admin()`. Na raiz Beleza, campo para editar o link da loja de afiliada.
    *Aceite:* um cliente comum recebe 404 ou redirecionamento em `/admin`.
 9. **[feature]** Admin: CRUD de categorias (com subcategorias e ordem).
-10. **[feature]** Admin: CRUD de produto com variantes (cor/tamanho/preço/estoque), ativar e desativar.
+10. **[feature]** Admin: CRUD de produto com variantes (cor/tamanho/preço/estoque), ativar e desativar. Produto de vitrine (Beleza) é só foto, nome e descrição.
 11. **[feature]** Admin: fotos pela câmera com compressão em 2 tamanhos, barra de progresso, reordenar e excluir.
-12. **[feature]** Loja: home (destaques e novidades), listagem por categoria, página de produto (galeria, seletor de variante, esgotado), skeletons, metadados e OG.
+12. **[feature]** Loja: home (destaques e novidades), listagem por categoria, página de produto (galeria, seletor de variante, esgotado), skeletons, metadados e OG. Produto de vitrine mostra o botão "Comprar na loja" (nova aba, `rel="sponsored noopener"`) no lugar do seletor e do preço.
 13. **[feature]** Busca por nome (`ilike`) com resultado instantâneo.
 
 ### Fase 2: Compra
