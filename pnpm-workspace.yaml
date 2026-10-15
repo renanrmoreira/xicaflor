@@ -2,3 +2,5 @@ allowBuilds:
   sharp: false
   unrs-resolver: false
   lefthook: true
+  esbuild: true
+  workerd: true
