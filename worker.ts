@@ -4,9 +4,10 @@ import handler from "./.open-next/worker.js";
 import { sentryOptions } from "./src/lib/sentry";
 
 export default withSentry(
-	(env: { SENTRY_ENVIRONMENT?: string }) => ({
+	(env: { SENTRY_ENVIRONMENT?: string; SENTRY_RELEASE?: string }) => ({
 		...sentryOptions,
 		environment: env.SENTRY_ENVIRONMENT ?? "production",
+		release: env.SENTRY_RELEASE,
 	}),
 	handler,
 );

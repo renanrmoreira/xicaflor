@@ -49,9 +49,12 @@ jobs:
       - run: pnpm exec wrangler deployments list > /dev/null 2>&1 || pnpm exec opennextjs-cloudflare deploy
       - id: upload
         run: |
-          pnpm exec opennextjs-cloudflare upload -- --preview-alias pr-${{ github.event.pull_request.number }} --var SUPABASE_URL:https://crkeniidfajkqlnpacep.supabase.co --var SUPABASE_PUBLISHABLE_KEY:sb_publishable_s2VFJbusmfVQvcHJy5L7Kw_ZRpLHPxv --var SENTRY_ENVIRONMENT:preview 2>&1 | tee upload.log
+          pnpm exec opennextjs-cloudflare upload -- --preview-alias pr-${{ github.event.pull_request.number }} --var SUPABASE_URL:https://crkeniidfajkqlnpacep.supabase.co --var SUPABASE_PUBLISHABLE_KEY:sb_publishable_s2VFJbusmfVQvcHJy5L7Kw_ZRpLHPxv --var SENTRY_ENVIRONMENT:preview --var SENTRY_RELEASE:${{ github.event.pull_request.head.sha }} --outdir dist 2>&1 | tee upload.log
           echo "url=$(grep -oE 'https://pr-[^ ]+workers\.dev' upload.log | head -1)" >> "$GITHUB_OUTPUT"
           echo "size=$(grep -oE 'Total Upload: .*' upload.log | head -1)" >> "$GITHUB_OUTPUT"
+      - run: pnpm exec sentry-cli sourcemaps upload --org renan-m-software-house --project xicaflor --release ${{ github.event.pull_request.head.sha }} dist
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       - env:
           GH_TOKEN: ${{ github.token }}
         run: |
