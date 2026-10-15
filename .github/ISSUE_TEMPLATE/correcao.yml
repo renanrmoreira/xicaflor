@@ -1,0 +1,20 @@
+name: Correção
+description: Algo está quebrado
+labels: ["tipo:correcao"]
+body:
+  - type: textarea
+    id: atual
+    attributes: { label: Comportamento atual }
+    validations: { required: true }
+  - type: textarea
+    id: esperado
+    attributes: { label: Comportamento esperado }
+    validations: { required: true }
+  - type: textarea
+    id: reproduzir
+    attributes: { label: Como reproduzir, placeholder: "1. Abrir...\n2. Clicar..." }
+    validations: { required: true }
+  - type: textarea
+    id: aceite
+    attributes: { label: Critérios de aceite, value: "- [ ] " }
+    validations: { required: true }
