@@ -1,12 +1,6 @@
-import { expect, type Page, test } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { entrar } from "./entrar";
 import { ADMIN, CLIENTE } from "./usuarios";
-
-async function entrar(page: Page, usuario: { email: string; senha: string }) {
-	await page.goto("/admin/entrar");
-	await page.getByLabel("E-mail").fill(usuario.email);
-	await page.getByLabel("Senha").fill(usuario.senha);
-	await page.getByRole("button", { name: "Entrar" }).click();
-}
 
 test("visitante sem login é levado para a tela de entrar", async ({ page }) => {
 	await page.goto("/admin");
