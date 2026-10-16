@@ -28,14 +28,42 @@ export function Cabecalho({ raizes }: { raizes: RaizLoja[] }) {
 						</Link>
 					))}
 				</nav>
-				<a
-					href={linkWhatsapp("Olá! Vim pelo site da Xica Flor.")}
-					target="_blank"
-					rel="noopener"
-					className="botao min-h-11 px-3 text-small underline-offset-4 hover:underline"
-				>
-					Fale conosco
-				</a>
+				<div className="-mr-3 flex items-center">
+					<Link
+						href="/busca"
+						aria-label="Buscar peças"
+						className="botao min-h-11 px-3"
+					>
+						<svg
+							width="22"
+							height="22"
+							viewBox="0 0 24 24"
+							fill="none"
+							aria-hidden
+						>
+							<circle
+								cx="10.5"
+								cy="10.5"
+								r="6.5"
+								stroke="currentColor"
+								strokeWidth="2"
+							/>
+							<path
+								d="M15.5 15.5 21 21"
+								stroke="currentColor"
+								strokeWidth="2"
+							/>
+						</svg>
+					</Link>
+					<a
+						href={linkWhatsapp("Olá! Vim pelo site da Xica Flor.")}
+						target="_blank"
+						rel="noopener"
+						className="botao min-h-11 px-3 text-small underline-offset-4 hover:underline"
+					>
+						Fale conosco
+					</a>
+				</div>
 			</div>
 			{moda && moda.filhas.length > 0 && (
 				<nav

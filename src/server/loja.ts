@@ -1,6 +1,12 @@
 import "server-only";
 import { cache } from "react";
-import type { Cartao, Foto, ProdutoLoja, RaizLoja } from "@/lib/loja";
+import {
+	type Cartao,
+	type Foto,
+	type ProdutoLoja,
+	padraoIlike,
+	type RaizLoja,
+} from "@/lib/loja";
 import { ordenarVariantes } from "@/lib/tamanhos";
 import { supabasePublico } from "./supabase";
 
@@ -59,7 +65,12 @@ const CAMPOS_CARTAO =
 	"id, nome, slug, marca, categoria_id, criado_em, variantes(id, cor, tamanho, preco_centavos, estoque), produto_fotos(path_grande, path_miniatura, alt, ordem)";
 
 export async function produtosDaLoja(
-	filtro: { categorias?: string[]; destaque?: boolean; limite?: number } = {},
+	filtro: {
+		categorias?: string[];
+		destaque?: boolean;
+		limite?: number;
+		busca?: string;
+	} = {},
 ): Promise<Cartao[]> {
 	if (!process.env.SUPABASE_URL) return [];
 	let consulta = supabasePublico()
@@ -69,6 +80,8 @@ export async function produtosDaLoja(
 	if (filtro.categorias)
 		consulta = consulta.in("categoria_id", filtro.categorias);
 	if (filtro.destaque) consulta = consulta.eq("destaque", true);
+	if (filtro.busca)
+		consulta = consulta.ilike("nome", padraoIlike(filtro.busca));
 	if (filtro.limite) consulta = consulta.limit(filtro.limite);
 	const [raizes, { data, error }] = await Promise.all([
 		categoriasDaLoja(),
