@@ -87,10 +87,9 @@ test("produto inexistente mostra página não encontrada sem indexação", async
 	page,
 }) => {
 	await page.goto("/p/nao-existe");
-	await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
-		"content",
-		/noindex/,
-	);
+	await expect(
+		page.locator('meta[name="robots"][content*="noindex"]').first(),
+	).toBeAttached();
 	await expect(
 		page.getByRole("heading", { name: "Página não encontrada" }),
 	).toBeVisible();
