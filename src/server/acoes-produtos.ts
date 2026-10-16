@@ -17,7 +17,7 @@ export async function salvarProduto(
 	if (!produto.success) return { erro: produto.error.issues[0].message };
 	const { variantes, ...dados } = produto.data;
 	const supabase = await supabaseServidor();
-	const { error } = await supabase.rpc("salvar_produto", {
+	const { data: id, error } = await supabase.rpc("salvar_produto", {
 		dados: {
 			...dados,
 			slug: slug(dados.nome),
@@ -36,7 +36,7 @@ export async function salvarProduto(
 		return { erro: "Não foi possível salvar. Tente de novo." };
 	}
 	revalidatePath("/admin/produtos");
-	redirect("/admin/produtos");
+	redirect(dados.id ? "/admin/produtos" : `/admin/produtos/${id}#fotos`);
 }
 
 export async function alternarProduto(id: string, ativo: boolean) {

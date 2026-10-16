@@ -13,6 +13,7 @@ type Produto = {
 	id: string;
 	nome: string;
 	ativo: boolean;
+	capa: string | null;
 	categorias: { nome: string } | null;
 	variantes: Variante[];
 };
@@ -35,13 +36,28 @@ export function ListaProdutos({ produtos, ajustar, alternar }: Props) {
 			{produtos.map((p) => (
 				<li key={p.id} className="entra flex flex-col gap-3 py-4">
 					<div className="flex flex-wrap items-baseline justify-between gap-x-3">
-						<div className="min-w-0">
-							<p
-								className={`font-semibold ${p.ativo ? "" : "text-suave line-through"}`}
-							>
-								{p.nome}
-							</p>
-							<p className="text-small text-suave">{p.categorias?.nome}</p>
+						<div className="flex min-w-0 items-center gap-3">
+							{p.capa ? (
+								// biome-ignore lint/performance/noImgElement: miniatura já comprimida no envio, sem otimizador
+								<img
+									src={p.capa}
+									alt=""
+									width={48}
+									height={60}
+									loading="lazy"
+									className="aspect-4/5 w-12 object-cover"
+								/>
+							) : (
+								<span aria-hidden className="aspect-4/5 w-12 bg-linha" />
+							)}
+							<div className="min-w-0">
+								<p
+									className={`font-semibold ${p.ativo ? "" : "text-suave line-through"}`}
+								>
+									{p.nome}
+								</p>
+								<p className="text-small text-suave">{p.categorias?.nome}</p>
+							</div>
 						</div>
 						<div className="-mr-2.5 flex">
 							<Link

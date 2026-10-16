@@ -33,14 +33,18 @@ export async function produtosDoAdmin() {
 	const { data, error } = await supabase
 		.from("produtos")
 		.select(
-			"id, nome, ativo, categorias(nome), variantes(id, cor, tamanho, estoque, preco_centavos, ativo)",
+			"id, nome, ativo, categorias(nome), variantes(id, cor, tamanho, estoque, preco_centavos, ativo), produto_fotos(path_miniatura, ordem)",
 		)
 		.order("criado_em", { ascending: false });
 	if (error) throw error;
-	return data.map((p) => ({
-		...p,
-		variantes: p.variantes.filter((v) => v.ativo),
-	}));
+	return data.map(({ produto_fotos, ...p }) => {
+		const capa = produto_fotos.toSorted((a, b) => a.ordem - b.ordem)[0];
+		return {
+			...p,
+			capa: capa ? urlDaFoto(capa.path_miniatura) : null,
+			variantes: p.variantes.filter((v) => v.ativo),
+		};
+	});
 }
 
 export async function produtoParaEdicao(id: string) {
@@ -53,4 +57,23 @@ export async function produtoParaEdicao(id: string) {
 		.eq("id", id)
 		.maybeSingle();
 	return data && { ...data, variantes: data.variantes.filter((v) => v.ativo) };
+}
+
+function urlDaFoto(path: string) {
+	return `${process.env.SUPABASE_URL}/storage/v1/object/public/produtos/${path}`;
+}
+
+export async function fotosDoProduto(produtoId: string) {
+	const supabase = await supabaseServidor();
+	const { data, error } = await supabase
+		.from("produto_fotos")
+		.select("id, alt, path_miniatura")
+		.eq("produto_id", produtoId)
+		.order("ordem");
+	if (error) throw error;
+	return data.map((f) => ({
+		id: f.id,
+		alt: f.alt,
+		url: urlDaFoto(f.path_miniatura),
+	}));
 }
