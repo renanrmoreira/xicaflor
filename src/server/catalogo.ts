@@ -1,4 +1,5 @@
 import "server-only";
+import { ordenarVariantes } from "@/lib/tamanhos";
 import { supabaseServidor } from "./supabase";
 
 export type Categoria = {
@@ -42,7 +43,7 @@ export async function produtosDoAdmin() {
 		return {
 			...p,
 			capa: capa ? urlDaFoto(capa.path_miniatura) : null,
-			variantes: p.variantes.filter((v) => v.ativo),
+			variantes: ordenarVariantes(p.variantes.filter((v) => v.ativo)),
 		};
 	});
 }
@@ -56,7 +57,12 @@ export async function produtoParaEdicao(id: string) {
 		)
 		.eq("id", id)
 		.maybeSingle();
-	return data && { ...data, variantes: data.variantes.filter((v) => v.ativo) };
+	return (
+		data && {
+			...data,
+			variantes: ordenarVariantes(data.variantes.filter((v) => v.ativo)),
+		}
+	);
 }
 
 function urlDaFoto(path: string) {
