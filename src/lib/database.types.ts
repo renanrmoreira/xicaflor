@@ -34,13 +34,221 @@ export type Database = {
 	};
 	public: {
 		Tables: {
-			[_ in never]: never;
+			categorias: {
+				Row: {
+					ativo: boolean;
+					criado_em: string;
+					id: string;
+					link_vitrine: string | null;
+					nome: string;
+					ordem: number;
+					parent_id: string | null;
+					slug: string;
+				};
+				ComputedFields: never;
+				Insert: {
+					ativo?: boolean;
+					criado_em?: string;
+					id?: string;
+					link_vitrine?: string | null;
+					nome: string;
+					ordem?: number;
+					parent_id?: string | null;
+					slug: string;
+				};
+				Update: {
+					ativo?: boolean;
+					criado_em?: string;
+					id?: string;
+					link_vitrine?: string | null;
+					nome?: string;
+					ordem?: number;
+					parent_id?: string | null;
+					slug?: string;
+				};
+				Relationships: [
+					{
+						foreignKeyName: "categorias_parent_id_fkey";
+						columns: ["parent_id"];
+						isOneToOne: false;
+						referencedRelation: "categorias";
+						referencedColumns: ["id"];
+					},
+				];
+			};
+			perfis: {
+				Row: {
+					bairro: string | null;
+					cep: string | null;
+					cidade: string | null;
+					complemento: string | null;
+					criado_em: string;
+					id: string;
+					logradouro: string | null;
+					nome: string | null;
+					numero: string | null;
+					papel: string;
+					telefone: string | null;
+					uf: string | null;
+				};
+				ComputedFields: never;
+				Insert: {
+					bairro?: string | null;
+					cep?: string | null;
+					cidade?: string | null;
+					complemento?: string | null;
+					criado_em?: string;
+					id: string;
+					logradouro?: string | null;
+					nome?: string | null;
+					numero?: string | null;
+					papel?: string;
+					telefone?: string | null;
+					uf?: string | null;
+				};
+				Update: {
+					bairro?: string | null;
+					cep?: string | null;
+					cidade?: string | null;
+					complemento?: string | null;
+					criado_em?: string;
+					id?: string;
+					logradouro?: string | null;
+					nome?: string | null;
+					numero?: string | null;
+					papel?: string;
+					telefone?: string | null;
+					uf?: string | null;
+				};
+				Relationships: [];
+			};
+			produto_fotos: {
+				Row: {
+					alt: string;
+					id: string;
+					ordem: number;
+					path_grande: string;
+					path_miniatura: string;
+					produto_id: string;
+				};
+				ComputedFields: never;
+				Insert: {
+					alt?: string;
+					id?: string;
+					ordem?: number;
+					path_grande: string;
+					path_miniatura: string;
+					produto_id: string;
+				};
+				Update: {
+					alt?: string;
+					id?: string;
+					ordem?: number;
+					path_grande?: string;
+					path_miniatura?: string;
+					produto_id?: string;
+				};
+				Relationships: [
+					{
+						foreignKeyName: "produto_fotos_produto_id_fkey";
+						columns: ["produto_id"];
+						isOneToOne: false;
+						referencedRelation: "produtos";
+						referencedColumns: ["id"];
+					},
+				];
+			};
+			produtos: {
+				Row: {
+					ativo: boolean;
+					categoria_id: string;
+					criado_em: string;
+					descricao: string;
+					destaque: boolean;
+					id: string;
+					marca: string | null;
+					nome: string;
+					slug: string;
+				};
+				ComputedFields: never;
+				Insert: {
+					ativo?: boolean;
+					categoria_id: string;
+					criado_em?: string;
+					descricao?: string;
+					destaque?: boolean;
+					id?: string;
+					marca?: string | null;
+					nome: string;
+					slug: string;
+				};
+				Update: {
+					ativo?: boolean;
+					categoria_id?: string;
+					criado_em?: string;
+					descricao?: string;
+					destaque?: boolean;
+					id?: string;
+					marca?: string | null;
+					nome?: string;
+					slug?: string;
+				};
+				Relationships: [
+					{
+						foreignKeyName: "produtos_categoria_id_fkey";
+						columns: ["categoria_id"];
+						isOneToOne: false;
+						referencedRelation: "categorias";
+						referencedColumns: ["id"];
+					},
+				];
+			};
+			variantes: {
+				Row: {
+					ativo: boolean;
+					cor: string | null;
+					estoque: number;
+					id: string;
+					preco_centavos: number;
+					produto_id: string;
+					tamanho: string | null;
+				};
+				ComputedFields: never;
+				Insert: {
+					ativo?: boolean;
+					cor?: string | null;
+					estoque?: number;
+					id?: string;
+					preco_centavos: number;
+					produto_id: string;
+					tamanho?: string | null;
+				};
+				Update: {
+					ativo?: boolean;
+					cor?: string | null;
+					estoque?: number;
+					id?: string;
+					preco_centavos?: number;
+					produto_id?: string;
+					tamanho?: string | null;
+				};
+				Relationships: [
+					{
+						foreignKeyName: "variantes_produto_id_fkey";
+						columns: ["produto_id"];
+						isOneToOne: false;
+						referencedRelation: "produtos";
+						referencedColumns: ["id"];
+					},
+				];
+			};
 		};
 		Views: {
 			[_ in never]: never;
 		};
 		Functions: {
 			health: { Args: Record<PropertyKey, never>; Returns: boolean };
+			is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
 		};
 		Enums: {
 			[_ in never]: never;
