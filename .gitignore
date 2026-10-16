@@ -57,3 +57,6 @@ DESIGN.md
 
 /dist
 /.taste-skill
+
+/test-results
+/playwright-report
