@@ -29,6 +29,23 @@ export default async function Layout({ children }: LayoutProps<"/admin">) {
 					</form>
 				</div>
 			</header>
+			<nav
+				aria-label="Admin"
+				className="flex gap-6 border-b border-linha px-(--margem) text-small font-semibold"
+			>
+				{[
+					["/admin", "Painel"],
+					["/admin/categorias", "Categorias"],
+				].map(([href, rotulo]) => (
+					<Link
+						key={href}
+						href={href}
+						className="py-3 underline-offset-8 hover:underline"
+					>
+						{rotulo}
+					</Link>
+				))}
+			</nav>
 			<main className="flex-1 px-(--margem) py-8">{children}</main>
 		</div>
 	);
