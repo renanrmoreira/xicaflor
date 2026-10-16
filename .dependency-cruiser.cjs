@@ -19,10 +19,10 @@ module.exports = {
 			to: { path: "^src/(app|components|server)/" },
 		},
 		{
-			name: "service-role-so-em-server-supabase",
+			name: "service-role-so-no-server",
 			severity: "error",
-			from: { path: "^src/", pathNot: "^src/server/supabase.ts$" },
-			to: { path: "^src/server/supabase.ts$" },
+			from: { pathNot: "^src/server/" },
+			to: { path: "^src/server/supabase-admin.ts$" },
 		},
 		{ name: "sem-ciclos", severity: "error", from: {}, to: { circular: true } },
 	],
