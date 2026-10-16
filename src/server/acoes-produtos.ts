@@ -35,7 +35,7 @@ export async function salvarProduto(
 		log("error", "salvar produto", { erro: error.message });
 		return { erro: "Não foi possível salvar. Tente de novo." };
 	}
-	revalidatePath("/admin/produtos");
+	revalidatePath("/", "layout");
 	redirect(dados.id ? "/admin/produtos" : `/admin/produtos/${id}#fotos`);
 }
 
@@ -47,7 +47,7 @@ export async function alternarProduto(id: string, ativo: boolean) {
 		.update({ ativo })
 		.eq("id", z.uuid().parse(id));
 	if (error) log("error", "alternar produto", { erro: error.message });
-	revalidatePath("/admin/produtos");
+	revalidatePath("/", "layout");
 }
 
 export async function ajustarEstoque(varianteId: string, delta: 1 | -1) {
@@ -59,5 +59,5 @@ export async function ajustarEstoque(varianteId: string, delta: 1 | -1) {
 	});
 	if (error && error.code !== "23514")
 		log("error", "ajustar estoque", { erro: error.message });
-	revalidatePath("/admin/produtos");
+	revalidatePath("/", "layout");
 }

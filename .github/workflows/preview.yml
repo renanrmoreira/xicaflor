@@ -45,6 +45,9 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec opennextjs-cloudflare build
+        env:
+          SUPABASE_URL: https://crkeniidfajkqlnpacep.supabase.co
+          SUPABASE_PUBLISHABLE_KEY: sb_publishable_s2VFJbusmfVQvcHJy5L7Kw_ZRpLHPxv
       # Versões de preview exigem que o Worker já exista; no primeiro PR ele é criado aqui.
       - run: pnpm exec wrangler deployments list > /dev/null 2>&1 || pnpm exec opennextjs-cloudflare deploy
       - id: upload

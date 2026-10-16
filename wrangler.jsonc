@@ -7,6 +7,13 @@
 	"assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
 	"services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "xicaflor" }],
 	"observability": { "enabled": true },
+	"kv_namespaces": [
+		{
+			"binding": "NEXT_INC_CACHE_KV",
+			"id": "394b1466499e48dd8f9a35685f4bb2c7"
+		},
+		{ "binding": "NEXT_TAG_CACHE_KV", "id": "1bfc8790b4cc430b933ada5da8381f45" }
+	],
 	"vars": {
 		"SUPABASE_URL": "https://ughhiqxuzhesmahhqyld.supabase.co",
 		"SUPABASE_PUBLISHABLE_KEY": "sb_publishable_khyE8vI8XYDEdT0fMuVGCg_rdIGtm83"

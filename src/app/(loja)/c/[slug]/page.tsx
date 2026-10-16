@@ -4,6 +4,12 @@ import { notFound } from "next/navigation";
 import { GradeProdutos } from "@/components/loja/cartao-produto";
 import { categoriaPorSlug, produtosDaLoja } from "@/server/loja";
 
+export const revalidate = 3600;
+
+export function generateStaticParams() {
+	return [];
+}
+
 export async function generateMetadata({
 	params,
 }: PageProps<"/c/[slug]">): Promise<Metadata> {
@@ -34,9 +40,7 @@ export default async function Page({ params }: PageProps<"/c/[slug]">) {
 						{raiz.nome}
 					</Link>
 				)}
-				<h1 className="display entra text-[clamp(3.5rem,14vw,9rem)]">
-					{atual.nome}
-				</h1>
+				<h1 className="display text-[clamp(3.5rem,14vw,9rem)]">{atual.nome}</h1>
 				{raiz.vitrine && (
 					<p className="max-w-[52ch] text-suave">
 						Vitrine da loja parceira: escolha o produto e finalize a compra no

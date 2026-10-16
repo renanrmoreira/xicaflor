@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { ADMIN, CLIENTE } from "./usuarios";
+import { ADMIN, CLIENTE } from "./usuarios.ts";
 
 export default async function preparar() {
 	const supabase = createClient(
