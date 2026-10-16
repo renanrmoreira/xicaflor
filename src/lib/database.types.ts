@@ -44,6 +44,7 @@ export type Database = {
 					ordem: number;
 					parent_id: string | null;
 					slug: string;
+					vitrine: boolean;
 				};
 				ComputedFields: never;
 				Insert: {
@@ -55,6 +56,7 @@ export type Database = {
 					ordem?: number;
 					parent_id?: string | null;
 					slug: string;
+					vitrine?: boolean;
 				};
 				Update: {
 					ativo?: boolean;
@@ -65,6 +67,7 @@ export type Database = {
 					ordem?: number;
 					parent_id?: string | null;
 					slug?: string;
+					vitrine?: boolean;
 				};
 				Relationships: [
 					{
@@ -247,8 +250,14 @@ export type Database = {
 			[_ in never]: never;
 		};
 		Functions: {
+			ajustar_estoque: {
+				Args: { delta: number; variante: string };
+				Returns: number;
+			};
+			categoria_vitrine: { Args: { categoria: string }; Returns: boolean };
 			health: { Args: Record<PropertyKey, never>; Returns: boolean };
 			is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
+			salvar_produto: { Args: { dados: Json }; Returns: string };
 		};
 		Enums: {
 			[_ in never]: never;

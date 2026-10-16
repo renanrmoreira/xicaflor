@@ -21,4 +21,15 @@ export default async function preparar() {
 		.update({ papel: "admin" })
 		.eq("id", admin?.id ?? "");
 	if (error) throw error;
+	const { data: moda } = await supabase
+		.from("categorias")
+		.select("id")
+		.eq("slug", "moda")
+		.single();
+	await supabase
+		.from("categorias")
+		.upsert(
+			{ nome: "Vestidos E2E", slug: "vestidos-e2e", parent_id: moda?.id },
+			{ onConflict: "slug" },
+		);
 }
