@@ -43,3 +43,18 @@ export type RaizLoja = CategoriaLoja & {
 	link_vitrine: string | null;
 	filhas: CategoriaLoja[];
 };
+
+export function termoDeBusca(
+	texto: string | string[] | undefined,
+): string | null {
+	const termo =
+		(Array.isArray(texto) ? texto[0] : texto)
+			?.trim()
+			.replace(/\s+/g, " ")
+			.slice(0, 60) ?? "";
+	return termo.length >= 2 ? termo : null;
+}
+
+export function padraoIlike(termo: string): string {
+	return `%${termo.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+}
