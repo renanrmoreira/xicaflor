@@ -41,7 +41,7 @@ function precos(variantes: VarianteBruta[]) {
 }
 
 export const categoriasDaLoja = cache(async (): Promise<RaizLoja[]> => {
-	const { data, error } = await supabasePublico()
+	const { data, error } = await (await supabasePublico())
 		.from("categorias")
 		.select("id, nome, slug, parent_id, vitrine, link_vitrine, ordem")
 		.order("ordem")
@@ -61,7 +61,7 @@ export async function produtosDaLoja(
 	filtro: { categorias?: string[]; destaque?: boolean; limite?: number } = {},
 ): Promise<Cartao[]> {
 	const raizes = await categoriasDaLoja();
-	let consulta = supabasePublico()
+	let consulta = (await supabasePublico())
 		.from("produtos")
 		.select(CAMPOS_CARTAO)
 		.order("criado_em", { ascending: false });
@@ -109,7 +109,7 @@ export async function categoriaPorSlug(slug: string) {
 
 export const produtoPorSlug = cache(
 	async (slug: string): Promise<ProdutoLoja | null> => {
-		const { data, error } = await supabasePublico()
+		const { data, error } = await (await supabasePublico())
 			.from("produtos")
 			.select(`${CAMPOS_CARTAO}, descricao`)
 			.eq("slug", slug)
