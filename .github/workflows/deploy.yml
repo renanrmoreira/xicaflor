@@ -41,6 +41,8 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SUPABASE_URL: https://ughhiqxuzhesmahhqyld.supabase.co
+          SUPABASE_PUBLISHABLE_KEY: sb_publishable_khyE8vI8XYDEdT0fMuVGCg_rdIGtm83
       - run: pnpm exec sentry-cli sourcemaps upload --org renan-m-software-house --project xicaflor --release ${{ github.sha }} dist
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}

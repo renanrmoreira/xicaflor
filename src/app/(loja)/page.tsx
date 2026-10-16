@@ -25,6 +25,8 @@ function Monumento({ texto }: { texto: string }) {
 	);
 }
 
+export const revalidate = 3600;
+
 export default async function Home() {
 	const [raizes, destaques, novidades] = await Promise.all([
 		categoriasDaLoja(),

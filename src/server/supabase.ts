@@ -2,7 +2,6 @@ import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
-import { connection } from "next/server";
 import type { Database } from "@/lib/database.types";
 
 export async function supabaseServidor() {
@@ -26,8 +25,7 @@ export async function supabaseServidor() {
 	);
 }
 
-export async function supabasePublico() {
-	await connection();
+export function supabasePublico() {
 	return createClient<Database>(
 		process.env.SUPABASE_URL ?? "",
 		process.env.SUPABASE_PUBLISHABLE_KEY ?? "",

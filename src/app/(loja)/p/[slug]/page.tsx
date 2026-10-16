@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Compra } from "@/components/loja/compra";
 import { Galeria } from "@/components/loja/galeria";
-import { linkWhatsapp } from "@/lib/loja";
+import { linkWhatsapp, SITE } from "@/lib/loja";
 import { produtoPorSlug } from "@/server/loja";
+
+export const revalidate = 3600;
+
+export function generateStaticParams() {
+	return [];
+}
 
 export async function generateMetadata({
 	params,
@@ -34,8 +39,7 @@ export async function generateMetadata({
 export default async function Page({ params }: PageProps<"/p/[slug]">) {
 	const produto = await produtoPorSlug((await params).slug);
 	if (!produto) notFound();
-	const host = (await headers()).get("host");
-	const url = `https://${host}/p/${produto.slug}`;
+	const url = `${SITE}/p/${produto.slug}`;
 
 	return (
 		<article className="grid gap-8 md:grid-cols-[3fr_2fr] md:gap-12 md:px-(--margem) md:pt-8">

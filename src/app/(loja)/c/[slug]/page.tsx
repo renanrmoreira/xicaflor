@@ -4,6 +4,12 @@ import { notFound } from "next/navigation";
 import { GradeProdutos } from "@/components/loja/cartao-produto";
 import { categoriaPorSlug, produtosDaLoja } from "@/server/loja";
 
+export const revalidate = 3600;
+
+export function generateStaticParams() {
+	return [];
+}
+
 export async function generateMetadata({
 	params,
 }: PageProps<"/c/[slug]">): Promise<Metadata> {

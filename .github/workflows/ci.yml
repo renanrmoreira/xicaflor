@@ -78,6 +78,8 @@ jobs:
             -e 's/^PUBLISHABLE_KEY=/SUPABASE_PUBLISHABLE_KEY=/p' \
             -e 's/^SECRET_KEY=/SUPABASE_SECRET_KEY=/p' | tr -d '"' >> "$GITHUB_ENV"
       - run: pnpm exec playwright install --with-deps chromium
+      - name: Semear o banco antes do build (a loja é pré-renderizada)
+        run: node e2e/semear.ts
       - run: pnpm build
       - run: pnpm test:e2e
       - if: failure()

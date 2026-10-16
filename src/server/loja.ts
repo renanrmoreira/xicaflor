@@ -41,7 +41,8 @@ function precos(variantes: VarianteBruta[]) {
 }
 
 export const categoriasDaLoja = cache(async (): Promise<RaizLoja[]> => {
-	const { data, error } = await (await supabasePublico())
+	if (!process.env.SUPABASE_URL) return [];
+	const { data, error } = await supabasePublico()
 		.from("categorias")
 		.select("id, nome, slug, parent_id, vitrine, link_vitrine, ordem")
 		.order("ordem")
@@ -60,7 +61,8 @@ const CAMPOS_CARTAO =
 export async function produtosDaLoja(
 	filtro: { categorias?: string[]; destaque?: boolean; limite?: number } = {},
 ): Promise<Cartao[]> {
-	let consulta = (await supabasePublico())
+	if (!process.env.SUPABASE_URL) return [];
+	let consulta = supabasePublico()
 		.from("produtos")
 		.select(CAMPOS_CARTAO)
 		.order("criado_em", { ascending: false });
@@ -111,7 +113,7 @@ export async function categoriaPorSlug(slug: string) {
 
 export const produtoPorSlug = cache(
 	async (slug: string): Promise<ProdutoLoja | null> => {
-		const { data, error } = await (await supabasePublico())
+		const { data, error } = await supabasePublico()
 			.from("produtos")
 			.select(`${CAMPOS_CARTAO}, descricao`)
 			.eq("slug", slug)

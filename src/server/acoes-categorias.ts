@@ -27,7 +27,7 @@ function falha(
 }
 
 function pronto(): Resultado {
-	revalidatePath("/admin/categorias");
+	revalidatePath("/", "layout");
 	return { ok: true };
 }
 
@@ -78,7 +78,7 @@ export async function alternarCategoria(id: string, ativo: boolean) {
 		.update({ ativo })
 		.eq("id", idValido.parse(id));
 	if (error) log("error", "alternar categoria", { erro: error.message });
-	revalidatePath("/admin/categorias");
+	revalidatePath("/", "layout");
 }
 
 // ponytail: troca de ordem em dois updates sem transação; basta para dois admins, migrar para função SQL se houver concorrência
@@ -107,7 +107,7 @@ export async function moverCategoria(id: string, direcao: -1 | 1) {
 			supabase.from("categorias").update({ ordem }).eq("id", cid),
 		),
 	);
-	revalidatePath("/admin/categorias");
+	revalidatePath("/", "layout");
 }
 
 const linkValido = z.union([

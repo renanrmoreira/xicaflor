@@ -1,4 +1,6 @@
 import { expect, test } from "@playwright/test";
+import { entrar } from "./entrar";
+import { ADMIN } from "./usuarios";
 
 test("home mostra o nome monumento, destaques e novidades", async ({
 	page,
@@ -93,4 +95,36 @@ test("produto inexistente mostra página não encontrada sem indexação", async
 	await expect(
 		page.getByRole("heading", { name: "Página não encontrada" }),
 	).toBeVisible();
+});
+
+test("mudança de estoque no admin aparece na loja na hora", async ({
+	page,
+}) => {
+	await page.goto("/p/vestido-loja-e2e");
+	await expect(page.getByRole("radio", { name: "P" })).toBeDisabled();
+
+	await entrar(page, ADMIN);
+	await expect(page.getByRole("heading", { name: "Painel" })).toBeVisible();
+	await page.goto("/admin/produtos");
+	const item = page
+		.getByRole("listitem")
+		.filter({ hasText: "Vestido Loja E2E" })
+		.first();
+	await item
+		.getByRole("button", { name: "Aumentar estoque de Azul · P" })
+		.click();
+	await expect(
+		item.getByLabel("Estoque de Azul · P", { exact: true }),
+	).toHaveText("1");
+
+	await page.goto("/p/vestido-loja-e2e");
+	await expect(page.getByRole("radio", { name: "P" })).toBeEnabled();
+
+	await page.goto("/admin/produtos");
+	await item
+		.getByRole("button", { name: "Diminuir estoque de Azul · P" })
+		.click();
+	await expect(
+		item.getByLabel("Estoque de Azul · P", { exact: true }),
+	).toHaveText("0");
 });

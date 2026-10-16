@@ -49,7 +49,7 @@ export async function registrarFoto(
 		ordem: count ?? 0,
 	});
 	if (error) throw error;
-	revalidatePath(`/admin/produtos/${id}`);
+	revalidatePath("/", "layout");
 }
 
 // ponytail: troca de ordem em updates sem transação; basta para dois admins
@@ -77,7 +77,7 @@ export async function moverFoto(fotoId: string, direcao: -1 | 1) {
 			supabase.from("produto_fotos").update({ ordem }).eq("id", id),
 		),
 	);
-	revalidatePath(`/admin/produtos/${foto.produto_id}`);
+	revalidatePath("/", "layout");
 }
 
 export async function excluirFoto(fotoId: string) {
@@ -95,5 +95,5 @@ export async function excluirFoto(fotoId: string) {
 		.remove([foto.path_grande, foto.path_miniatura]);
 	if (error)
 		log("warn", "arquivos de foto não removidos", { erro: error.message });
-	revalidatePath(`/admin/produtos/${foto.produto_id}`);
+	revalidatePath("/", "layout");
 }
