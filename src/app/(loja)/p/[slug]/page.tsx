@@ -45,7 +45,7 @@ export default async function Page({ params }: PageProps<"/p/[slug]">) {
 		<article className="grid gap-8 md:grid-cols-[3fr_2fr] md:gap-12 md:px-(--margem) md:pt-8">
 			<Galeria fotos={produto.fotos} nome={produto.nome} />
 			<div className="flex flex-col gap-6 px-(--margem) md:sticky md:top-24 md:self-start md:px-0">
-				<div className="entra flex flex-col gap-2">
+				<div className="flex flex-col gap-2">
 					<Link
 						href={`/c/${produto.categoria.slug}`}
 						className="text-small text-suave underline-offset-4 hover:underline"
