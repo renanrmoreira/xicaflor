@@ -28,7 +28,11 @@ test("admin cria peça com variantes, ajusta estoque, edita e oculta", async ({
 	await page.getByLabel("Preço (R$)").first().fill("189,90");
 	await page.getByRole("button", { name: "Salvar produto" }).click();
 
-	await expect(page).toHaveURL(/\/admin\/produtos$/);
+	await expect(page).toHaveURL(/\/admin\/produtos\/[0-9a-f-]{36}#fotos$/);
+	await page
+		.getByRole("navigation", { name: "Admin" })
+		.getByRole("link", { name: "Produtos" })
+		.click();
 	const item = page.getByRole("listitem").filter({ hasText: nome });
 	await expect(item.getByLabel("Estoque de M", { exact: true })).toHaveText(
 		"2",
@@ -67,8 +71,6 @@ test("produto de Beleza é vitrine, sem variantes", async ({ page }, info) => {
 	await expect(page.getByLabel("Preço (R$)")).toHaveCount(0);
 	await page.getByLabel("Marca (opcional)").fill("O.Lab");
 	await page.getByRole("button", { name: "Salvar produto" }).click();
-	await expect(page).toHaveURL(/\/admin\/produtos$/);
-	await expect(
-		page.getByRole("listitem").filter({ hasText: nome }),
-	).toBeVisible();
+	await expect(page).toHaveURL(/\/admin\/produtos\/[0-9a-f-]{36}#fotos$/);
+	await expect(page.getByLabel("Nome")).toHaveValue(nome);
 });
