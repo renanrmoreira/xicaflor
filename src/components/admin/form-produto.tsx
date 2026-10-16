@@ -1,15 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { Botao } from "@/components/ui/botao";
 import { Campo } from "@/components/ui/campo";
+import { gruposDeCategoria } from "@/lib/categorias";
 import type { ProdutoEntrada } from "@/lib/produto";
 
 type Raiz = {
 	id: string;
 	nome: string;
 	vitrine: boolean;
-	filhas: { id: string; nome: string }[];
+	filhas: { id: string; nome: string; ativo: boolean }[];
 };
 type Linha = {
 	chave: number;
@@ -46,6 +48,8 @@ export function FormProduto({ categorias, inicial, acao }: Props) {
 			: [novaLinha()],
 	);
 	const [erro, setErro] = useState("");
+	const grupos = gruposDeCategoria(categorias, inicial?.categoria_id ?? "");
+	const vazias = grupos.filter((g) => !g.opcoes.length);
 	const [pendente, iniciar] = useTransition();
 	const vitrine = categorias.some(
 		(r) => r.vitrine && r.filhas.some((f) => f.id === categoria),
@@ -98,19 +102,34 @@ export function FormProduto({ categorias, inicial, acao }: Props) {
 					className="min-h-12 border border-linha bg-papel px-3"
 				>
 					<option value="">Escolha…</option>
-					{categorias.map((r) => (
-						<optgroup
-							key={r.id}
-							label={r.vitrine ? `${r.nome} (vitrine)` : r.nome}
-						>
-							{r.filhas.map((f) => (
-								<option key={f.id} value={f.id}>
-									{f.nome}
-								</option>
-							))}
-						</optgroup>
-					))}
+					{grupos.map((g) =>
+						g.opcoes.length ? (
+							<optgroup key={g.id} label={g.rotulo}>
+								{g.opcoes.map((f) => (
+									<option key={f.id} value={f.id}>
+										{f.nome}
+									</option>
+								))}
+							</optgroup>
+						) : (
+							<option key={g.id} disabled>
+								{g.nome}: crie subcategorias primeiro
+							</option>
+						),
+					)}
 				</select>
+				{vazias.length > 0 && (
+					<p className="text-small text-suave">
+						A peça entra numa subcategoria (Vestidos, Blusas…).{" "}
+						{vazias.map((g) => g.nome).join(" e ")} ainda não tem nenhuma.{" "}
+						<Link
+							href="/admin/categorias"
+							className="font-semibold text-vermelho underline underline-offset-4"
+						>
+							Criar em Categorias
+						</Link>
+					</p>
+				)}
 			</div>
 			<div className="flex flex-col gap-1.5">
 				<label htmlFor="descricao" className="text-small font-semibold">
