@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Big_Shoulders, Public_Sans } from "next/font/google";
 import { Avisos } from "@/components/ui/avisos";
 import { ProgressoNavegacao } from "@/components/ui/progresso-navegacao";
+import { SITE } from "@/lib/loja";
 import "./globals.css";
 
 const display = Big_Shoulders({
@@ -16,6 +17,7 @@ const texto = Public_Sans({
 });
 
 export const metadata: Metadata = {
+	metadataBase: new URL(SITE),
 	title: "Xica Flor — Moda Feminina",
 	description:
 		"Seja você o seu próprio padrão de beleza! Moda feminina e beleza em Belém/PA.",
