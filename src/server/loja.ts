@@ -60,7 +60,6 @@ const CAMPOS_CARTAO =
 export async function produtosDaLoja(
 	filtro: { categorias?: string[]; destaque?: boolean; limite?: number } = {},
 ): Promise<Cartao[]> {
-	const raizes = await categoriasDaLoja();
 	let consulta = (await supabasePublico())
 		.from("produtos")
 		.select(CAMPOS_CARTAO)
@@ -69,7 +68,10 @@ export async function produtosDaLoja(
 		consulta = consulta.in("categoria_id", filtro.categorias);
 	if (filtro.destaque) consulta = consulta.eq("destaque", true);
 	if (filtro.limite) consulta = consulta.limit(filtro.limite);
-	const { data, error } = await consulta;
+	const [raizes, { data, error }] = await Promise.all([
+		categoriasDaLoja(),
+		consulta,
+	]);
 	if (error) throw error;
 	const vitrine = new Set(
 		raizes

@@ -231,8 +231,7 @@ body {
 
 @keyframes surgir {
 	from {
-		opacity: 0;
-		translate: 0 0.35em;
+		translate: 0 0.6em;
 		filter: blur(6px);
 	}
 }

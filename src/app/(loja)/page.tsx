@@ -38,12 +38,12 @@ export default async function Home() {
 		<>
 			<section className="flex min-h-[78svh] flex-col justify-between overflow-hidden bg-amarelo px-(--margem) pt-8">
 				<div className="flex items-start justify-between gap-6">
-					<p className="entra max-w-[22ch] text-lead leading-tight text-bordo">
+					<p className="max-w-[22ch] text-lead leading-tight text-bordo">
 						{SLOGAN}
 					</p>
 					<Link
 						href="#novidades"
-						className="botao entra shrink-0 bg-vermelho text-papel hover:bg-bordo"
+						className="botao shrink-0 bg-vermelho text-papel hover:bg-bordo"
 					>
 						Ver novidades
 					</Link>
