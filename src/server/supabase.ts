@@ -35,6 +35,16 @@ export function supabasePublico() {
 	);
 }
 
+export function supabaseServico() {
+	return createClient<Database>(
+		process.env.SUPABASE_URL ?? "",
+		process.env.SUPABASE_SECRET_KEY ?? "",
+		{
+			auth: { persistSession: false, autoRefreshToken: false },
+		},
+	);
+}
+
 export function urlDaFoto(path: string) {
 	return `${process.env.SUPABASE_URL}/storage/v1/object/public/produtos/${path}`;
 }
