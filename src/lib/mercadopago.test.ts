@@ -1,5 +1,6 @@
-import { expect, it } from "vitest";
-import { montarPreferencia } from "./mercadopago";
+import { createHmac } from "node:crypto";
+import { describe, expect, it } from "vitest";
+import { assinaturaValida, montarPreferencia } from "./mercadopago";
 
 const pedido = {
 	id: "ped-1",
@@ -49,4 +50,32 @@ it("não cobra frete quando é grátis ou a combinar", () => {
 	expect(
 		montarPreferencia({ ...pedido, frete_centavos: 0 }, "https://x").items,
 	).toHaveLength(1);
+});
+
+describe("assinaturaValida", () => {
+	const segredo = "segredo";
+	const assinar = (manifesto: string) =>
+		createHmac("sha256", segredo).update(manifesto).digest("hex");
+	const v1 = assinar("id:abc123;request-id:req-1;ts:1700;");
+
+	it("aceita a assinatura do manifesto do Mercado Pago", async () => {
+		expect(
+			await assinaturaValida(`ts=1700,v1=${v1}`, "req-1", "ABC123", segredo),
+		).toBe(true);
+	});
+
+	it("recusa assinatura de outro pagamento, ausente ou malformada", async () => {
+		expect(
+			await assinaturaValida(`ts=1700,v1=${v1}`, "req-1", "999", segredo),
+		).toBe(false);
+		expect(await assinaturaValida(null, "req-1", "abc123", segredo)).toBe(
+			false,
+		);
+		expect(
+			await assinaturaValida("ts=1700,v1=zz", "req-1", "abc123", segredo),
+		).toBe(false);
+		expect(
+			await assinaturaValida(`ts=1700,v1=${v1}`, null, "abc123", segredo),
+		).toBe(false);
+	});
 });

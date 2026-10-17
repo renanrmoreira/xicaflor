@@ -401,6 +401,10 @@ export type Database = {
 				Returns: number;
 			};
 			categoria_vitrine: { Args: { categoria: string }; Returns: boolean };
+			confirmar_pagamento: {
+				Args: { pagamento: string; pedido: string; valor_centavos: number };
+				Returns: string;
+			};
 			criar_pedido: {
 				Args: { endereco?: Json; itens: Json; modalidade: string };
 				Returns: {

@@ -1,7 +1,31 @@
-import { expect, type Page, test } from "@playwright/test";
+import { createHmac } from "node:crypto";
+import {
+	type APIRequestContext,
+	expect,
+	type Page,
+	test,
+} from "@playwright/test";
 import { MP_E2E } from "../playwright.config";
 import { entrarCliente } from "./entrar";
 import { CLIENTE } from "./usuarios";
+
+function notificar(
+	request: APIRequestContext,
+	id: string,
+	segredo = MP_E2E.segredo,
+) {
+	const ts = String(Date.now());
+	const v1 = createHmac("sha256", segredo)
+		.update(`id:${id};request-id:req-${id};ts:${ts};`)
+		.digest("hex");
+	return request.post(`/api/webhooks/mercadopago?data.id=${id}&type=payment`, {
+		headers: {
+			"x-signature": `ts=${ts},v1=${v1}`,
+			"x-request-id": `req-${id}`,
+		},
+		data: { type: "payment", data: { id } },
+	});
+}
 
 async function colocarNaSacola(page: Page) {
 	await page.goto("/p/blusa-checkout-e2e");
@@ -73,6 +97,27 @@ test("checkout cria pedido, reserva a peça e envia a preferência ao Mercado Pa
 	expect(preferencia.notification_url).toBe(
 		"http://localhost:3123/api/webhooks/mercadopago",
 	);
+
+	const pagamentoId = String(Date.now());
+	await request.post(`${MP_E2E.api}/__pagamento`, {
+		data: {
+			id: pagamentoId,
+			status: "approved",
+			external_reference: pedidoId,
+			transaction_amount: 99.9,
+		},
+	});
+	expect((await notificar(request, pagamentoId, "outro")).status()).toBe(401);
+	const aprovado = await notificar(request, pagamentoId);
+	expect(await aprovado.json()).toEqual({ resultado: "pago" });
+	expect(await (await notificar(request, pagamentoId)).json()).toEqual({
+		resultado: "repetido",
+	});
+	await page.reload();
+	await expect(page.getByRole("heading", { name: "Pago" })).toBeVisible();
+	await expect(
+		page.getByRole("link", { name: "Pagar com Mercado Pago" }),
+	).toHaveCount(0);
 });
 
 test("se o Mercado Pago falhar, o pedido fica criado e segue pelo WhatsApp", async ({
