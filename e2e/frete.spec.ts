@@ -21,14 +21,9 @@ test("frete na sacola: Belém grátis, Mosqueiro e fora a combinar, CEP inválid
 	const sacola = await abrirSacolaComPeca(page);
 	await calcular(page, "66060-000");
 	await expect(sacola.getByText("Entrega grátis (Belém)")).toBeVisible();
-	await expect(
-		sacola.getByRole("link", { name: "Finalizar pelo WhatsApp" }),
-	).toBeVisible();
 
 	await sacola.getByLabel("CEP").fill("66910010");
-	await expect(
-		sacola.getByRole("button", { name: "Calcule o frete ou escolha retirada" }),
-	).toBeDisabled();
+	await expect(sacola.getByText("Entrega grátis (Belém)")).toHaveCount(0);
 	await calcular(page, "66910010");
 	await expect(
 		sacola.getByText("Frete a combinar pelo WhatsApp (Mosqueiro)"),

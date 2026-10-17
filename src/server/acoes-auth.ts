@@ -18,7 +18,7 @@ const cadastro = z.object({
 		.max(72),
 });
 
-const destinos = ["/admin", "/conta"] as const;
+const destinos = ["/admin", "/conta", "/checkout"] as const;
 
 export async function entrar(
 	destino: (typeof destinos)[number],

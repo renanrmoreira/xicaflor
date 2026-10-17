@@ -9,16 +9,18 @@ export const metadata: Metadata = {
 	robots: { index: false },
 };
 
-export default async function Page() {
+export default async function Page({ searchParams }: PageProps<"/entrar">) {
+	const destino =
+		(await searchParams).volta === "/checkout" ? "/checkout" : "/conta";
 	const {
 		data: { user },
 	} = await (await supabaseServidor()).auth.getUser();
-	if (user) redirect("/conta");
+	if (user) redirect(destino);
 	return (
 		<div className="grid gap-12 px-(--margem) pt-10 md:grid-cols-2 md:gap-16">
 			<section className="flex flex-col gap-6">
 				<h1 className="display text-head">Entrar</h1>
-				<FormEntrar acao={entrar.bind(null, "/conta")} />
+				<FormEntrar acao={entrar.bind(null, destino)} />
 			</section>
 			<section className="flex flex-col gap-6 border-t border-linha pt-10 md:border-t-0 md:border-l md:pt-0 md:pl-16">
 				<h2 className="display text-head">Criar conta</h2>

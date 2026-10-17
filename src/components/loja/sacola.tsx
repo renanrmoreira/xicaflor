@@ -14,7 +14,6 @@ import { Esqueleto } from "@/components/ui/esqueleto";
 import { Gaveta } from "@/components/ui/gaveta";
 import { formatarReais } from "@/lib/dinheiro";
 import type { Frete } from "@/lib/frete";
-import { linkWhatsapp, SITE } from "@/lib/loja";
 import {
 	adicionar,
 	alterar,
@@ -23,7 +22,6 @@ import {
 	type ItemSacola,
 	LIMITE_POR_ITEM,
 	lerSacola,
-	mensagemPedido,
 	type VarianteConferida,
 } from "@/lib/sacola";
 import { type CalcularFrete, Entrega } from "./entrega";
@@ -35,12 +33,14 @@ type Contexto = {
 	itens: ItemSacola[];
 	adicionar: (varianteId: string) => void;
 	abrir: () => void;
+	limpar: () => void;
 };
 
 const SacolaContexto = createContext<Contexto>({
 	itens: [],
 	adicionar: () => {},
 	abrir: () => {},
+	limpar: () => {},
 });
 
 export const useSacola = () => useContext(SacolaContexto);
@@ -71,13 +71,15 @@ export function Sacola({
 	useEffect(() => {
 		const carregar = () => setItens(ler());
 		carregar();
-		carregada.current = true;
 		window.addEventListener("storage", carregar);
 		return () => window.removeEventListener("storage", carregar);
 	}, []);
 
 	useEffect(() => {
-		if (!carregada.current) return;
+		if (!carregada.current) {
+			carregada.current = true;
+			return;
+		}
 		try {
 			localStorage.setItem(CHAVE, JSON.stringify(itens));
 		} catch {
@@ -89,6 +91,7 @@ export function Sacola({
 		itens,
 		adicionar: (id) => setItens((atuais) => adicionar(atuais, id)),
 		abrir: () => setAberta(true),
+		limpar: () => setItens([]),
 	};
 
 	return (
@@ -105,6 +108,7 @@ export function Sacola({
 						conferir={conferir}
 						calcularFrete={calcularFrete}
 						atualizar={setItens}
+						aoFinalizar={() => setAberta(false)}
 					/>
 				)}
 			</Gaveta>
@@ -117,11 +121,13 @@ function ConteudoSacola({
 	conferir,
 	calcularFrete,
 	atualizar,
+	aoFinalizar,
 }: {
 	itens: ItemSacola[];
 	conferir: Conferir;
 	calcularFrete: CalcularFrete;
 	atualizar: (mudar: Mudanca) => void;
+	aoFinalizar: () => void;
 }) {
 	const [conferidas, setConferidas] = useState<VarianteConferida[] | null>(
 		null,
@@ -285,21 +291,13 @@ function ConteudoSacola({
 							{formatarReais(total)}
 						</span>
 					</div>
-					{frete ? (
-						<a
-							href={linkWhatsapp(mensagemPedido(linhas, frete, total, SITE))}
-							target="_blank"
-							rel="noopener"
-							className={classeBotao()}
-						>
-							Finalizar pelo WhatsApp
-						</a>
-					) : (
-						<Botao disabled>Calcule o frete ou escolha retirada</Botao>
-					)}
-					<p className="text-small text-suave">
-						O pagamento online chega em breve.
-					</p>
+					<Link
+						href="/checkout"
+						onClick={aoFinalizar}
+						className={classeBotao()}
+					>
+						Finalizar compra
+					</Link>
 				</>
 			)}
 		</div>

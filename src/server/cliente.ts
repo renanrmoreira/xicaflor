@@ -2,12 +2,12 @@ import "server-only";
 import { redirect } from "next/navigation";
 import { supabaseServidor } from "./supabase";
 
-export async function exigirCliente() {
+export async function exigirCliente(volta?: "/checkout") {
 	const supabase = await supabaseServidor();
 	const {
 		data: { user },
 	} = await supabase.auth.getUser();
-	if (!user) redirect("/entrar");
+	if (!user) redirect(volta ? `/entrar?volta=${volta}` : "/entrar");
 	const { data: perfil, error } = await supabase
 		.from("perfis")
 		.select(

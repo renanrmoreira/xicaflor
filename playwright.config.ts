@@ -3,6 +3,11 @@ import { defineConfig, devices } from "@playwright/test";
 
 if (existsSync(".env.local")) process.loadEnvFile(".env.local");
 
+export const MP_E2E = {
+	api: "http://localhost:3999",
+	segredo: "segredo-webhook-e2e",
+};
+
 export default defineConfig({
 	testDir: "e2e",
 	globalSetup: "./e2e/preparar.ts",
@@ -15,10 +20,23 @@ export default defineConfig({
 		{ name: "celular", use: { ...devices["Pixel 7"] } },
 		{ name: "desktop", use: { ...devices["Desktop Chrome"] } },
 	],
-	webServer: {
-		command: process.env.CI ? "pnpm start -p 3123" : "pnpm dev -p 3123",
-		url: "http://localhost:3123",
-		reuseExistingServer: !process.env.CI,
-		timeout: 120_000,
-	},
+	webServer: [
+		{
+			command: "node e2e/mp-falso.ts",
+			url: MP_E2E.api,
+			reuseExistingServer: !process.env.CI,
+		},
+		{
+			command: process.env.CI ? "pnpm start -p 3123" : "pnpm dev -p 3123",
+			url: "http://localhost:3123",
+			reuseExistingServer: !process.env.CI,
+			timeout: 120_000,
+			env: {
+				MP_API_URL: MP_E2E.api,
+				MP_ACCESS_TOKEN: "token-e2e",
+				MP_WEBHOOK_SECRET: MP_E2E.segredo,
+				SITE_URL: "http://localhost:3123",
+			},
+		},
+	],
 });
