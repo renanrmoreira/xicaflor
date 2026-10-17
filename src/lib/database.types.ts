@@ -423,6 +423,10 @@ export type Database = {
 			};
 			health: { Args: Record<PropertyKey, never>; Returns: boolean };
 			is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
+			mudar_status_pedido: {
+				Args: { novo_status: string; pedido: string };
+				Returns: undefined;
+			};
 			salvar_produto: { Args: { dados: Json }; Returns: string };
 		};
 		Enums: {

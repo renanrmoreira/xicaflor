@@ -20,7 +20,8 @@ create table public.pedidos (
 	pago_em timestamptz,
 	criado_em timestamptz not null default now(),
 	atualizado_em timestamptz not null default now(),
-	check (modalidade = 'retirada' or endereco is not null)
+	check (modalidade = 'retirada' or endereco is not null),
+	check (pg_column_size(endereco) < 2000)
 );
 
 create table public.itens_pedido (
@@ -42,12 +43,9 @@ alter table public.pedidos enable row level security;
 alter table public.itens_pedido enable row level security;
 revoke all on public.pedidos, public.itens_pedido from anon, authenticated;
 grant select on public.pedidos, public.itens_pedido to authenticated;
-grant update (status) on public.pedidos to authenticated;
 
 create policy "pedidos próprios ou admin" on public.pedidos
 	for select to authenticated using (cliente_id = (select auth.uid()) or (select public.is_admin()));
-create policy "admin muda status" on public.pedidos
-	for update to authenticated using ((select public.is_admin())) with check ((select public.is_admin()));
 create policy "itens de pedidos visíveis" on public.itens_pedido
 	for select to authenticated using (exists (select 1 from public.pedidos p where p.id = pedido_id));
 
@@ -58,13 +56,10 @@ stable
 set search_path = ''
 as $$
 	select z.preco_centavos, z.preco_centavos is null
-	from (select 1) as sempre
-	left join lateral (
-		select preco_centavos from public.zonas_frete
-		where ativo and cep between cep_inicio and cep_fim
-		order by cep_fim::bigint - cep_inicio::bigint
-		limit 1
-	) z on true
+	from public.zonas_frete z
+	where z.ativo and cep between z.cep_inicio and z.cep_fim
+	order by z.cep_fim::bigint - z.cep_inicio::bigint
+	limit 1
 $$;
 
 create function public.criar_pedido(itens jsonb, modalidade text, endereco jsonb default null)
@@ -76,6 +71,7 @@ as $$
 declare
 	cliente uuid := auth.uid();
 	pedido public.pedidos;
+	agrupados jsonb;
 	v record;
 	subtotal int := 0;
 	frete_preco int := 0;
@@ -85,21 +81,37 @@ begin
 	if cliente is null then
 		raise exception 'login necessário' using errcode = '42501';
 	end if;
-	if jsonb_typeof(itens) <> 'array' or jsonb_array_length(itens) not between 1 and 50 then
+	if modalidade is null or modalidade not in ('entrega', 'retirada') then
+		raise exception 'modalidade inválida' using errcode = '22023';
+	end if;
+	if jsonb_typeof(itens) is distinct from 'array' or jsonb_array_length(itens) not between 1 and 50 then
 		raise exception 'sacola vazia ou grande demais' using errcode = '22023';
 	end if;
-	if modalidade = 'entrega' and length(cep) <> 8 then
-		raise exception 'CEP inválido' using errcode = '22023';
+	if exists (
+		select 1 from jsonb_to_recordset(itens) as x(variante_id uuid, quantidade int)
+		where x.variante_id is null or x.quantidade is null or x.quantidade not between 1 and 10
+	) then
+		raise exception 'item inválido' using errcode = '22023';
+	end if;
+	if modalidade = 'entrega' and (
+		length(cep) <> 8
+		or coalesce(trim(endereco ->> 'logradouro'), '') = ''
+		or coalesce(trim(endereco ->> 'numero'), '') = ''
+		or coalesce(trim(endereco ->> 'cidade'), '') = ''
+	) then
+		raise exception 'endereço incompleto' using errcode = '22023';
 	end if;
 
-	drop table if exists pedido_itens;
-	create temp table pedido_itens on commit drop as
-	select x.variante_id, sum(x.quantidade)::int as quantidade
-	from jsonb_to_recordset(itens) as x(variante_id uuid, quantidade int)
-	group by x.variante_id;
+	select jsonb_agg(jsonb_build_object('variante_id', x.variante_id, 'quantidade', x.total) order by x.variante_id)
+	into agrupados
+	from (
+		select y.variante_id, sum(y.quantidade)::int as total
+		from jsonb_to_recordset(itens) as y(variante_id uuid, quantidade int)
+		group by y.variante_id
+	) x;
 
 	if exists (
-		select 1 from pedido_itens i
+		select 1 from jsonb_to_recordset(agrupados) as i(variante_id uuid, quantidade int)
 		where not exists (
 			select 1 from public.variantes va join public.produtos p on p.id = va.produto_id
 			where va.id = i.variante_id and va.ativo and p.ativo
@@ -111,30 +123,36 @@ begin
 	-- Trava as variantes sempre na mesma ordem (por id) para dois pedidos simultâneos não se travarem mutuamente.
 	for v in
 		select va.id, va.preco_centavos, va.estoque, p.nome, i.quantidade
-		from pedido_itens i
+		from jsonb_to_recordset(agrupados) as i(variante_id uuid, quantidade int)
 		join public.variantes va on va.id = i.variante_id
 		join public.produtos p on p.id = va.produto_id
-		order by i.variante_id
+		order by va.id
 		for update of va
 	loop
-		if v.quantidade not between 1 and 10 or v.estoque < v.quantidade then
+		if v.quantidade > 10 or v.estoque < v.quantidade then
 			raise exception 'estoque insuficiente: %', v.nome using errcode = 'P0001', detail = v.id::text;
 		end if;
 		subtotal := subtotal + v.preco_centavos * v.quantidade;
 	end loop;
 
 	if modalidade = 'entrega' then
-		select coalesce(f.preco_centavos, 0), f.a_combinar into frete_preco, frete_a_combinar
-		from public.frete_do_cep(cep) f;
+		select f.preco_centavos, f.a_combinar into frete_preco, frete_a_combinar from public.frete_do_cep(cep) f;
+		if not found then
+			frete_a_combinar := true;
+		end if;
+		endereco := endereco || jsonb_build_object('cep', cep);
 	end if;
 
 	insert into public.pedidos (cliente_id, modalidade, subtotal_centavos, frete_centavos, frete_a_combinar, endereco)
-	values (cliente, modalidade, subtotal, frete_preco, frete_a_combinar, case when modalidade = 'entrega' then endereco end)
+	values (
+		cliente, modalidade, subtotal, coalesce(frete_preco, 0), frete_a_combinar,
+		case when modalidade = 'entrega' then endereco end
+	)
 	returning * into pedido;
 
 	with baixa as (
 		update public.variantes va set estoque = va.estoque - i.quantidade
-		from pedido_itens i
+		from jsonb_to_recordset(agrupados) as i(variante_id uuid, quantidade int)
 		where va.id = i.variante_id
 		returning va.id, va.preco_centavos, va.cor, va.tamanho, va.produto_id, i.quantidade
 	)
@@ -153,14 +171,53 @@ security definer
 set search_path = ''
 as $$
 begin
+	if novo_status not in ('expirado', 'cancelado') then
+		raise exception 'status inválido para devolução' using errcode = '22023';
+	end if;
 	update public.pedidos set status = novo_status, atualizado_em = now()
-	where id = pedido and status = 'aguardando_pagamento';
+	where id = pedido
+		and status in ('aguardando_pagamento', 'pago', 'separando', 'pronto_para_retirada')
+		and (novo_status = 'cancelado' or status = 'aguardando_pagamento');
 	if not found then
 		return;
 	end if;
+	perform 1 from public.variantes va
+	join public.itens_pedido i on i.variante_id = va.id
+	where i.pedido_id = pedido
+	order by va.id
+	for update of va;
 	update public.variantes va set estoque = va.estoque + i.quantidade
 	from public.itens_pedido i
 	where i.pedido_id = pedido and i.variante_id = va.id;
+end;
+$$;
+
+create function public.mudar_status_pedido(pedido uuid, novo_status text)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+	atual text;
+begin
+	if not public.is_admin() then
+		raise exception 'apenas admin' using errcode = '42501';
+	end if;
+	if novo_status = 'cancelado' then
+		perform public.devolver_estoque(pedido, 'cancelado');
+		return;
+	end if;
+	select status into atual from public.pedidos where id = pedido for update;
+	if not (
+		(atual = 'pago' and novo_status in ('separando', 'pronto_para_retirada'))
+		or (atual = 'separando' and novo_status in ('saiu_para_entrega', 'pronto_para_retirada'))
+		or (atual = 'saiu_para_entrega' and novo_status = 'entregue')
+		or (atual = 'pronto_para_retirada' and novo_status = 'retirado')
+	) then
+		raise exception 'transição inválida: % para %', atual, novo_status using errcode = '22023';
+	end if;
+	update public.pedidos set status = novo_status, atualizado_em = now() where id = pedido;
 end;
 $$;
 
@@ -189,6 +246,8 @@ $$;
 revoke execute on function public.criar_pedido(jsonb, text, jsonb) from public, anon;
 grant execute on function public.criar_pedido(jsonb, text, jsonb) to authenticated;
 revoke execute on function public.devolver_estoque(uuid, text), public.expirar_pedidos() from public, anon, authenticated;
+revoke execute on function public.mudar_status_pedido(uuid, text) from public, anon;
+grant execute on function public.mudar_status_pedido(uuid, text) to authenticated;
 grant execute on function public.frete_do_cep(text) to anon, authenticated;
 
 create extension if not exists pg_cron;
