@@ -79,6 +79,121 @@ export type Database = {
 					},
 				];
 			};
+			itens_pedido: {
+				Row: {
+					cor: string | null;
+					id: string;
+					nome_produto: string;
+					pedido_id: string;
+					preco_unitario_centavos: number;
+					quantidade: number;
+					tamanho: string | null;
+					variante_id: string;
+				};
+				ComputedFields: never;
+				Insert: {
+					cor?: string | null;
+					id?: string;
+					nome_produto: string;
+					pedido_id: string;
+					preco_unitario_centavos: number;
+					quantidade: number;
+					tamanho?: string | null;
+					variante_id: string;
+				};
+				Update: {
+					cor?: string | null;
+					id?: string;
+					nome_produto?: string;
+					pedido_id?: string;
+					preco_unitario_centavos?: number;
+					quantidade?: number;
+					tamanho?: string | null;
+					variante_id?: string;
+				};
+				Relationships: [
+					{
+						foreignKeyName: "itens_pedido_pedido_id_fkey";
+						columns: ["pedido_id"];
+						isOneToOne: false;
+						referencedRelation: "pedidos";
+						referencedColumns: ["id"];
+					},
+					{
+						foreignKeyName: "itens_pedido_variante_id_fkey";
+						columns: ["variante_id"];
+						isOneToOne: false;
+						referencedRelation: "variantes";
+						referencedColumns: ["id"];
+					},
+				];
+			};
+			pedidos: {
+				Row: {
+					atualizado_em: string;
+					cliente_id: string;
+					criado_em: string;
+					endereco: Json | null;
+					frete_a_combinar: boolean;
+					frete_centavos: number;
+					id: string;
+					modalidade: string;
+					mp_payment_id: string | null;
+					mp_preference_id: string | null;
+					numero: number;
+					pago_em: string | null;
+					reserva_expira_em: string;
+					status: string;
+					subtotal_centavos: number;
+					total_centavos: number | null;
+				};
+				ComputedFields: never;
+				Insert: {
+					atualizado_em?: string;
+					cliente_id: string;
+					criado_em?: string;
+					endereco?: Json | null;
+					frete_a_combinar?: boolean;
+					frete_centavos?: number;
+					id?: string;
+					modalidade: string;
+					mp_payment_id?: string | null;
+					mp_preference_id?: string | null;
+					numero?: never;
+					pago_em?: string | null;
+					reserva_expira_em?: string;
+					status?: string;
+					subtotal_centavos: number;
+					total_centavos?: never;
+				};
+				Update: {
+					atualizado_em?: string;
+					cliente_id?: string;
+					criado_em?: string;
+					endereco?: Json | null;
+					frete_a_combinar?: boolean;
+					frete_centavos?: number;
+					id?: string;
+					modalidade?: string;
+					mp_payment_id?: string | null;
+					mp_preference_id?: string | null;
+					numero?: never;
+					pago_em?: string | null;
+					reserva_expira_em?: string;
+					status?: string;
+					subtotal_centavos?: number;
+					total_centavos?: never;
+				};
+				Relationships: [
+					{
+						foreignKeyName: "pedidos_cliente_id_fkey";
+						columns: ["cliente_id"];
+						isOneToOne: false;
+						referencedRelation: "perfis";
+						referencedColumns: ["id"];
+					},
+				];
+			};
 			perfis: {
 				Row: {
 					bairro: string | null;
@@ -286,6 +401,26 @@ export type Database = {
 				Returns: number;
 			};
 			categoria_vitrine: { Args: { categoria: string }; Returns: boolean };
+			criar_pedido: {
+				Args: { endereco?: Json; itens: Json; modalidade: string };
+				Returns: {
+					id: string;
+					numero: number;
+					reserva_expira_em: string;
+				}[];
+			};
+			devolver_estoque: {
+				Args: { novo_status: string; pedido: string };
+				Returns: undefined;
+			};
+			expirar_pedidos: { Args: Record<PropertyKey, never>; Returns: number };
+			frete_do_cep: {
+				Args: { cep: string };
+				Returns: {
+					a_combinar: boolean;
+					preco_centavos: number;
+				}[];
+			};
 			health: { Args: Record<PropertyKey, never>; Returns: boolean };
 			is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
 			salvar_produto: { Args: { dados: Json }; Returns: string };
