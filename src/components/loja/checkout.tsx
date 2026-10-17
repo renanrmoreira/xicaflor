@@ -68,7 +68,9 @@ export function Checkout({
 
 	useEffect(() => {
 		if (endereco.cep)
-			calcularFrete(endereco.cep).then(setFrete, () => setFrete(null));
+			calcularFrete(endereco.cep).then(setFrete, () =>
+				setErro("Não deu para calcular o frete. Recarregue a página."),
+			);
 	}, [endereco.cep, calcularFrete]);
 
 	if (!conferidas)
@@ -203,7 +205,11 @@ export function Checkout({
 				</div>
 				<div className="flex justify-between gap-4 text-small">
 					<span>
-						{entregaFrete ? descreverFrete(entregaFrete) : "Frete: calculando…"}
+						{entregaFrete
+							? descreverFrete(entregaFrete)
+							: endereco.cep
+								? "Frete: calculando…"
+								: "Frete: informe o endereço"}
 					</span>
 				</div>
 				{entregaFrete?.tipo === "a_combinar" && (

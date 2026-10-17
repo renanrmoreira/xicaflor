@@ -1,3 +1,5 @@
+import { detalheVariante } from "@/lib/sacola";
+
 type ItemPedido = {
 	variante_id: string;
 	nome_produto: string;
@@ -15,12 +17,14 @@ type PedidoParaPagar = {
 	itens: ItemPedido[];
 };
 
-const reais = (centavos: number) => Math.round(centavos) / 100;
+const reais = (centavos: number) => centavos / 100;
 
 export function montarPreferencia(pedido: PedidoParaPagar, site: string) {
 	const itens = pedido.itens.map((i) => ({
 		id: i.variante_id,
-		title: [i.nome_produto, i.cor, i.tamanho].filter(Boolean).join(" · "),
+		title: [i.nome_produto, detalheVariante(i, " · ")]
+			.filter(Boolean)
+			.join(" · "),
 		quantity: i.quantidade,
 		unit_price: reais(i.preco_unitario_centavos),
 		currency_id: "BRL",

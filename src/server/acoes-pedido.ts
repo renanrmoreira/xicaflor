@@ -67,10 +67,11 @@ export async function finalizarCompra(
 		const preferencia = await criarPreferencia(
 			montarPreferencia(completo, process.env.SITE_URL ?? SITE),
 		);
-		await supabase.rpc("registrar_preferencia", {
+		const { error } = await supabase.rpc("registrar_preferencia", {
 			pedido: criado.id,
 			preferencia: preferencia.id,
 		});
+		if (error) throw error;
 		return { pagar: preferencia.init_point };
 	} catch (erro) {
 		Sentry.captureException(erro);
