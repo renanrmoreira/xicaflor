@@ -37,6 +37,7 @@ export default async function Layout({ children }: LayoutProps<"/admin">) {
 					["/admin", "Painel"],
 					["/admin/produtos", "Produtos"],
 					["/admin/categorias", "Categorias"],
+					["/admin/frete", "Frete"],
 				].map(([href, rotulo]) => (
 					<Link
 						key={href}

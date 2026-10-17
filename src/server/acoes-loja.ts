@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { calcularFrete, type Frete, limparCep } from "@/lib/frete";
 import type { VarianteConferida } from "@/lib/sacola";
 import { supabasePublico, urlDaFoto } from "./supabase";
 
@@ -36,4 +37,14 @@ export async function conferirSacola(
 			},
 		];
 	});
+}
+
+export async function freteParaCep(texto: string): Promise<Frete | null> {
+	const cep = limparCep(texto);
+	if (!cep) return null;
+	const { data, error } = await supabasePublico()
+		.from("zonas_frete")
+		.select("nome, cep_inicio, cep_fim, preco_centavos");
+	if (error) throw error;
+	return calcularFrete(cep, data);
 }

@@ -13,6 +13,7 @@ import { Botao, classeBotao } from "@/components/ui/botao";
 import { Esqueleto } from "@/components/ui/esqueleto";
 import { Gaveta } from "@/components/ui/gaveta";
 import { formatarReais } from "@/lib/dinheiro";
+import type { Frete } from "@/lib/frete";
 import { linkWhatsapp, SITE } from "@/lib/loja";
 import {
 	adicionar,
@@ -25,6 +26,7 @@ import {
 	mensagemPedido,
 	type VarianteConferida,
 } from "@/lib/sacola";
+import { type CalcularFrete, Entrega } from "./entrega";
 
 const CHAVE = "xf:sacola";
 
@@ -55,9 +57,11 @@ type Conferir = (ids: string[]) => Promise<VarianteConferida[]>;
 
 export function Sacola({
 	conferir,
+	calcularFrete,
 	children,
 }: {
 	conferir: Conferir;
+	calcularFrete: CalcularFrete;
 	children: ReactNode;
 }) {
 	const [itens, setItens] = useState<ItemSacola[]>([]);
@@ -99,6 +103,7 @@ export function Sacola({
 					<ConteudoSacola
 						itens={itens}
 						conferir={conferir}
+						calcularFrete={calcularFrete}
 						atualizar={setItens}
 					/>
 				)}
@@ -110,10 +115,12 @@ export function Sacola({
 function ConteudoSacola({
 	itens,
 	conferir,
+	calcularFrete,
 	atualizar,
 }: {
 	itens: ItemSacola[];
 	conferir: Conferir;
+	calcularFrete: CalcularFrete;
 	atualizar: (mudar: Mudanca) => void;
 }) {
 	const [conferidas, setConferidas] = useState<VarianteConferida[] | null>(
@@ -122,6 +129,7 @@ function ConteudoSacola({
 	const [avisos, setAvisos] = useState<string[]>([]);
 	const [falhou, setFalhou] = useState(false);
 	const [tentativa, setTentativa] = useState(0);
+	const [frete, setFrete] = useState<Frete | null>(null);
 	const ultimos = useRef(itens);
 	ultimos.current = itens;
 
@@ -178,7 +186,8 @@ function ConteudoSacola({
 			</div>
 		);
 
-	const { linhas, total } = conciliar(itens, conferidas);
+	const { linhas, total: produtos } = conciliar(itens, conferidas);
+	const total = produtos + (frete?.tipo === "entrega" ? frete.preco : 0);
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -269,20 +278,25 @@ function ConteudoSacola({
 							);
 						})}
 					</ul>
+					<Entrega frete={frete} aoMudar={setFrete} calcular={calcularFrete} />
 					<div className="flex items-baseline justify-between border-t border-linha pt-4">
 						<span>Total</span>
 						<span className="text-lead font-semibold">
 							{formatarReais(total)}
 						</span>
 					</div>
-					<a
-						href={linkWhatsapp(mensagemPedido(linhas, total, SITE))}
-						target="_blank"
-						rel="noopener"
-						className={classeBotao()}
-					>
-						Finalizar pelo WhatsApp
-					</a>
+					{frete ? (
+						<a
+							href={linkWhatsapp(mensagemPedido(linhas, frete, total, SITE))}
+							target="_blank"
+							rel="noopener"
+							className={classeBotao()}
+						>
+							Finalizar pelo WhatsApp
+						</a>
+					) : (
+						<Botao disabled>Calcule o frete ou escolha retirada</Botao>
+					)}
 					<p className="text-small text-suave">
 						Frete grátis em Belém. O pagamento online chega em breve.
 					</p>
