@@ -44,7 +44,8 @@ export async function freteParaCep(texto: string): Promise<Frete | null> {
 	if (!cep) return null;
 	const { data, error } = await supabasePublico()
 		.from("zonas_frete")
-		.select("nome, cep_inicio, cep_fim, preco_centavos");
+		.select("nome, cep_inicio, cep_fim, preco_centavos")
+		.eq("ativo", true);
 	if (error) throw error;
 	return calcularFrete(cep, data);
 }

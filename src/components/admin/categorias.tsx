@@ -4,8 +4,8 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { useAviso } from "@/components/ui/avisos";
 import { BotaoEnviar } from "@/components/ui/botao-enviar";
 import { Campo } from "@/components/ui/campo";
+import type { Resultado } from "@/lib/resultado";
 
-type Resultado = { erro?: string; ok?: boolean } | undefined;
 type AcaoForm = (estado: Resultado, dados: FormData) => Promise<Resultado>;
 
 type Categoria = {

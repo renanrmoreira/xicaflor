@@ -145,7 +145,6 @@ export function Compra({ variantes }: Props) {
 					Adicionar à sacola
 				</Botao>
 			)}
-			<p className="text-small text-suave">Frete grátis em Belém.</p>
 		</div>
 	);
 }

@@ -298,7 +298,7 @@ function ConteudoSacola({
 						<Botao disabled>Calcule o frete ou escolha retirada</Botao>
 					)}
 					<p className="text-small text-suave">
-						Frete grátis em Belém. O pagamento online chega em breve.
+						O pagamento online chega em breve.
 					</p>
 				</>
 			)}
