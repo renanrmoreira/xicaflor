@@ -1,4 +1,4 @@
-import { detalheVariante } from "@/lib/sacola";
+import { detalheVariante } from "./sacola";
 
 type ItemPedido = {
 	variante_id: string;
