@@ -318,7 +318,7 @@ export function BotaoSacola() {
 					? `Sacola, ${quantidade} ${quantidade === 1 ? "peça" : "peças"}`
 					: "Sacola vazia"
 			}
-			className="botao relative min-h-11 px-3"
+			className="botao relative min-h-11 px-2.5"
 		>
 			<svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
 				<path d="M5 8h14l-1 13H6L5 8Z" stroke="currentColor" strokeWidth="2" />

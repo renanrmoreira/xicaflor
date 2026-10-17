@@ -19,7 +19,7 @@ export default async function Layout({ children }: LayoutProps<"/admin">) {
 				</Link>
 				<div className="flex items-center gap-3 text-small text-bordo">
 					<span className="hidden sm:inline">{admin.nome}</span>
-					<form action={sair}>
+					<form action={sair.bind(null, "/admin/entrar")}>
 						<button
 							type="submit"
 							className="botao min-h-11 px-3 font-semibold underline-offset-4 hover:underline"

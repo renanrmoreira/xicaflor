@@ -29,11 +29,11 @@ export function Cabecalho({ raizes }: { raizes: RaizLoja[] }) {
 						</Link>
 					))}
 				</nav>
-				<div className="-mr-3 flex items-center">
+				<div className="-mr-2 flex items-center">
 					<Link
 						href="/busca"
 						aria-label="Buscar peças"
-						className="botao min-h-11 px-3"
+						className="botao min-h-11 px-2.5"
 					>
 						<svg
 							width="22"
@@ -51,6 +51,32 @@ export function Cabecalho({ raizes }: { raizes: RaizLoja[] }) {
 							/>
 							<path
 								d="M15.5 15.5 21 21"
+								stroke="currentColor"
+								strokeWidth="2"
+							/>
+						</svg>
+					</Link>
+					<Link
+						href="/conta"
+						aria-label="Minha conta"
+						className="botao min-h-11 px-2.5"
+					>
+						<svg
+							width="22"
+							height="22"
+							viewBox="0 0 24 24"
+							fill="none"
+							aria-hidden
+						>
+							<circle
+								cx="12"
+								cy="8"
+								r="4"
+								stroke="currentColor"
+								strokeWidth="2"
+							/>
+							<path
+								d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"
 								stroke="currentColor"
 								strokeWidth="2"
 							/>

@@ -5,4 +5,6 @@ export function proxy(request: NextRequest) {
 	return renovarSessao(request);
 }
 
-export const config = { matcher: ["/admin/:path*"] };
+export const config = {
+	matcher: ["/admin/:path*", "/conta/:path*", "/entrar"],
+};
