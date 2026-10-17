@@ -72,9 +72,15 @@ describe("sacola", () => {
 
 it("monta a mensagem do pedido com detalhe, subtotal e link", () => {
 	const linha = { ...variante("a", 3, 18990), cor: "Azul", quantidade: 2 };
-	const texto = mensagemPedido([linha], 37980, "https://loja.test");
+	const texto = mensagemPedido(
+		[linha],
+		{ tipo: "retirada" },
+		37980,
+		"https://loja.test",
+	);
 	expect(texto).toContain("• 2x Peça a (Azul, M): R$ 379,80");
 	expect(texto).toContain("https://loja.test/p/a");
-	expect(texto).toContain("Total: R$ 379,80");
+	expect(texto).toContain("Retirada na loja: grátis");
+	expect(texto).toMatch(/Total: R\$\s379,80$/);
 	expect(detalheVariante({ cor: null, tamanho: "G" }, " · ")).toBe("G");
 });

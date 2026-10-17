@@ -1,0 +1,45 @@
+import { formatarReais } from "./dinheiro";
+
+export type Zona = {
+	nome: string;
+	cep_inicio: string;
+	cep_fim: string;
+	preco_centavos: number | null;
+};
+
+export type Frete =
+	| { tipo: "retirada" }
+	| { tipo: "entrega"; zona: string; preco: number }
+	| { tipo: "a_combinar"; zona: string | null };
+
+export function limparCep(texto: string): string | null {
+	const digitos = texto.replace(/\D/g, "");
+	return digitos.length === 8 ? digitos : null;
+}
+
+export function formatarCep(cep: string): string {
+	return `${cep.slice(0, 5)}-${cep.slice(5)}`;
+}
+
+export function calcularFrete(cep: string, zonas: Zona[]): Frete {
+	const zona = zonas
+		.filter((z) => z.cep_inicio <= cep && cep <= z.cep_fim)
+		.toSorted(
+			(a, b) =>
+				Number(a.cep_fim) -
+				Number(a.cep_inicio) -
+				(Number(b.cep_fim) - Number(b.cep_inicio)),
+		)[0];
+	if (!zona || zona.preco_centavos === null)
+		return { tipo: "a_combinar", zona: zona?.nome ?? null };
+	return { tipo: "entrega", zona: zona.nome, preco: zona.preco_centavos };
+}
+
+export function descreverFrete(frete: Frete): string {
+	if (frete.tipo === "retirada") return "Retirada na loja: grátis";
+	if (frete.tipo === "a_combinar")
+		return `Frete a combinar pelo WhatsApp${frete.zona ? ` (${frete.zona})` : ""}`;
+	return frete.preco === 0
+		? `Entrega grátis (${frete.zona})`
+		: `Entrega (${frete.zona}): ${formatarReais(frete.preco)}`;
+}

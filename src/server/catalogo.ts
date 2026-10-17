@@ -79,3 +79,13 @@ export async function fotosDoProduto(produtoId: string) {
 		url: urlDaFoto(f.path_miniatura),
 	}));
 }
+
+export async function zonasDeFrete() {
+	const supabase = await supabaseServidor();
+	const { data, error } = await supabase
+		.from("zonas_frete")
+		.select("id, nome, cep_inicio, cep_fim, preco_centavos, ativo")
+		.order("cep_inicio");
+	if (error) throw error;
+	return data;
+}

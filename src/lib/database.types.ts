@@ -245,6 +245,37 @@ export type Database = {
 					},
 				];
 			};
+			zonas_frete: {
+				Row: {
+					ativo: boolean;
+					cep_fim: string;
+					cep_inicio: string;
+					criado_em: string;
+					id: string;
+					nome: string;
+					preco_centavos: number | null;
+				};
+				ComputedFields: never;
+				Insert: {
+					ativo?: boolean;
+					cep_fim: string;
+					cep_inicio: string;
+					criado_em?: string;
+					id?: string;
+					nome: string;
+					preco_centavos?: number | null;
+				};
+				Update: {
+					ativo?: boolean;
+					cep_fim?: string;
+					cep_inicio?: string;
+					criado_em?: string;
+					id?: string;
+					nome?: string;
+					preco_centavos?: number | null;
+				};
+				Relationships: [];
+			};
 		};
 		Views: {
 			[_ in never]: never;
