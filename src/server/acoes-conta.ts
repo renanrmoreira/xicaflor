@@ -5,34 +5,36 @@ import { z } from "zod";
 import { limparCep } from "@/lib/frete";
 import { log } from "@/lib/log";
 import type { EstadoConta } from "@/lib/resultado";
+import { nome, telefone, valoresDoForm } from "@/lib/validacao";
 import { exigirCliente } from "./cliente";
 import { supabaseServidor } from "./supabase";
 
-const texto = (max: number) => z.string().trim().max(max);
+const opcional = (max: number) =>
+	z
+		.string()
+		.trim()
+		.max(max)
+		.transform((t) => t || null);
 
 const perfil = z.object({
-	nome: z.string().trim().min(2, "Informe seu nome.").max(80),
-	telefone: z
-		.string()
-		.transform((t) => t.replace(/\D/g, ""))
-		.refine(
-			(t) => t === "" || (t.length >= 10 && t.length <= 13),
-			"WhatsApp com DDD, só números.",
-		),
+	nome,
+	telefone: telefone.transform((t) => t || null),
 	cep: z
 		.string()
 		.transform((t) => (t.trim() ? limparCep(t) : ""))
-		.refine((c): c is string => c !== null, "CEP com 8 números."),
-	logradouro: texto(120),
-	numero: texto(20),
-	complemento: texto(80),
-	bairro: texto(80),
-	cidade: texto(80),
+		.refine((c): c is string => c !== null, "CEP com 8 números.")
+		.transform((c) => c || null),
+	logradouro: opcional(120),
+	numero: opcional(20),
+	complemento: opcional(80),
+	bairro: opcional(80),
+	cidade: opcional(80),
 	uf: z
 		.string()
 		.trim()
 		.toUpperCase()
-		.refine((u) => u === "" || /^[A-Z]{2}$/.test(u), "UF com 2 letras."),
+		.refine((u) => u === "" || /^[A-Z]{2}$/.test(u), "UF com 2 letras.")
+		.transform((u) => u || null),
 });
 
 export async function salvarPerfil(
@@ -40,19 +42,14 @@ export async function salvarPerfil(
 	dados: FormData,
 ): Promise<EstadoConta> {
 	const { id } = await exigirCliente();
-	const valores = Object.fromEntries(
-		[...dados].map(([k, v]) => [k, String(v)]),
-	);
+	const valores = valoresDoForm(dados, perfil.keyof().options);
 	const entrada = perfil.safeParse(valores);
 	if (!entrada.success)
 		return { erro: entrada.error.issues[0].message, valores };
-	const vazioViraNulo = Object.fromEntries(
-		Object.entries(entrada.data).map(([k, v]) => [k, v || null]),
-	);
 	const supabase = await supabaseServidor();
 	const { error } = await supabase
 		.from("perfis")
-		.update({ ...vazioViraNulo, nome: entrada.data.nome })
+		.update(entrada.data)
 		.eq("id", id);
 	if (error) {
 		log("error", "salvar perfil", { erro: error.message });

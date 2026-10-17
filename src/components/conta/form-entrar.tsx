@@ -3,11 +3,9 @@
 import { useActionState } from "react";
 import { Botao } from "@/components/ui/botao";
 import { Campo } from "@/components/ui/campo";
-import type { EstadoConta } from "@/lib/resultado";
+import type { AcaoConta } from "@/lib/resultado";
 
-type Acao = (estado: EstadoConta, dados: FormData) => Promise<EstadoConta>;
-
-export function FormEntrar({ acao }: { acao: Acao }) {
+export function FormEntrar({ acao }: { acao: AcaoConta }) {
 	const [estado, enviar, pendente] = useActionState(acao, undefined);
 	return (
 		<form action={enviar} className="flex flex-col gap-4">
@@ -38,7 +36,7 @@ export function FormEntrar({ acao }: { acao: Acao }) {
 	);
 }
 
-export function FormCadastro({ acao }: { acao: Acao }) {
+export function FormCadastro({ acao }: { acao: AcaoConta }) {
 	const [estado, enviar, pendente] = useActionState(acao, undefined);
 	const v = estado?.valores;
 	if (estado?.ok)

@@ -5,7 +5,7 @@ import { useAviso } from "@/components/ui/avisos";
 import { Botao } from "@/components/ui/botao";
 import { Campo } from "@/components/ui/campo";
 import { formatarCep, limparCep } from "@/lib/frete";
-import type { EstadoConta } from "@/lib/resultado";
+import type { AcaoConta } from "@/lib/resultado";
 
 const CAMPOS = [
 	"nome",
@@ -22,7 +22,7 @@ type Campos = Record<(typeof CAMPOS)[number], string>;
 
 type Props = {
 	inicial: Partial<Record<(typeof CAMPOS)[number], string | null>>;
-	acao: (estado: EstadoConta, dados: FormData) => Promise<EstadoConta>;
+	acao: AcaoConta;
 };
 
 export function FormPerfil({ inicial, acao }: Props) {
@@ -60,7 +60,6 @@ export function FormPerfil({ inicial, acao }: Props) {
 					uf: r.uf || atual.uf,
 				}));
 		} catch {
-			// Sem ViaCEP o endereço é digitado à mão; nada a fazer.
 		} finally {
 			setBuscandoCep(false);
 		}
