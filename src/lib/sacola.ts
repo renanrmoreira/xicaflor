@@ -1,6 +1,3 @@
-import { formatarReais } from "./dinheiro";
-import { descreverFrete, type Frete } from "./frete";
-
 export type ItemSacola = { varianteId: string; quantidade: number };
 
 export type VarianteConferida = {
@@ -94,23 +91,4 @@ export function detalheVariante(
 	separador = ", ",
 ) {
 	return [v.cor, v.tamanho].filter(Boolean).join(separador);
-}
-
-type LinhaPedido = VarianteConferida & { quantidade: number };
-
-export function mensagemPedido(
-	linhas: LinhaPedido[],
-	frete: Frete,
-	total: number,
-	site: string,
-) {
-	return [
-		"Olá! Quero fazer este pedido:",
-		...linhas.map((l) => {
-			const detalhe = detalheVariante(l);
-			return `• ${l.quantidade}x ${l.nome}${detalhe ? ` (${detalhe})` : ""}: ${formatarReais(l.preco * l.quantidade)}\n  ${site}/p/${l.slug}`;
-		}),
-		descreverFrete(frete),
-		`Total: ${formatarReais(total)}`,
-	].join("\n");
 }

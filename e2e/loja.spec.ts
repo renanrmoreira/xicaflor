@@ -66,15 +66,8 @@ test("produto ordena tamanhos, bloqueia esgotado e adiciona à sacola", async ({
 		sacola.getByRole("link", { name: "Vestido Loja E2E" }),
 	).toBeVisible();
 	await expect(
-		sacola.getByRole("button", { name: "Calcule o frete ou escolha retirada" }),
-	).toBeDisabled();
-	await sacola.getByLabel("Retirar na loja (grátis)").check();
-	const pedido = sacola.getByRole("link", { name: "Finalizar pelo WhatsApp" });
-	await expect(pedido).toHaveAttribute("href", /wa\.me\/5591988008817/);
-	const texto = decodeURIComponent((await pedido.getAttribute("href")) ?? "");
-	expect(texto).toMatch(/1x Vestido Loja E2E \(Azul, M\): R\$\s189,90/);
-	expect(texto).toContain("/p/vestido-loja-e2e");
-	expect(texto).toContain("Retirada na loja: grátis");
+		sacola.getByRole("link", { name: "Finalizar compra" }),
+	).toHaveAttribute("href", "/checkout");
 	await sacola.getByRole("button", { name: "Remover" }).click();
 });
 

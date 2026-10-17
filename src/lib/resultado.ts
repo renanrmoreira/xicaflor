@@ -8,3 +8,8 @@ export type AcaoConta = (
 	estado: EstadoConta,
 	dados: FormData,
 ) => Promise<EstadoConta>;
+
+export type ResultadoCompra =
+	| { erro: string }
+	| { pagar: string }
+	| { pedido: string };

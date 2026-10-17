@@ -3,10 +3,8 @@ import {
 	adicionar,
 	alterar,
 	conciliar,
-	detalheVariante,
 	LIMITE_POR_ITEM,
 	lerSacola,
-	mensagemPedido,
 	type VarianteConferida,
 } from "./sacola";
 
@@ -68,19 +66,4 @@ describe("sacola", () => {
 			),
 		).toEqual([{ varianteId: "a", quantidade: 2 }]);
 	});
-});
-
-it("monta a mensagem do pedido com detalhe, subtotal e link", () => {
-	const linha = { ...variante("a", 3, 18990), cor: "Azul", quantidade: 2 };
-	const texto = mensagemPedido(
-		[linha],
-		{ tipo: "retirada" },
-		37980,
-		"https://loja.test",
-	);
-	expect(texto).toContain("• 2x Peça a (Azul, M): R$ 379,80");
-	expect(texto).toContain("https://loja.test/p/a");
-	expect(texto).toContain("Retirada na loja: grátis");
-	expect(texto).toMatch(/Total: R\$\s379,80$/);
-	expect(detalheVariante({ cor: null, tamanho: "G" }, " · ")).toBe("G");
 });

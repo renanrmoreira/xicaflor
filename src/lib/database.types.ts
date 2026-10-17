@@ -427,6 +427,10 @@ export type Database = {
 				Args: { novo_status: string; pedido: string };
 				Returns: undefined;
 			};
+			registrar_preferencia: {
+				Args: { pedido: string; preferencia: string };
+				Returns: undefined;
+			};
 			salvar_produto: { Args: { dados: Json }; Returns: string };
 		};
 		Enums: {
