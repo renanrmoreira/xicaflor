@@ -8,10 +8,7 @@ import {
 	type RaizLoja,
 } from "@/lib/loja";
 import { ordenarVariantes } from "@/lib/tamanhos";
-import { supabasePublico } from "./supabase";
-
-const url = (path: string) =>
-	`${process.env.SUPABASE_URL}/storage/v1/object/public/produtos/${path}`;
+import { supabasePublico, urlDaFoto } from "./supabase";
 
 type FotoBruta = {
 	path_grande: string;
@@ -31,8 +28,8 @@ function fotos(lista: FotoBruta[]): Foto[] {
 	return lista
 		.toSorted((a, b) => a.ordem - b.ordem)
 		.map((f) => ({
-			grande: url(f.path_grande),
-			miniatura: url(f.path_miniatura),
+			grande: urlDaFoto(f.path_grande),
+			miniatura: urlDaFoto(f.path_miniatura),
 			alt: f.alt,
 		}));
 }

@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useSacola } from "@/components/loja/sacola";
+import { Botao } from "@/components/ui/botao";
 import { formatarReais } from "@/lib/dinheiro";
-import { linkWhatsapp, type VarianteLoja } from "@/lib/loja";
+import type { VarianteLoja } from "@/lib/loja";
 
-type Props = { nome: string; url: string; variantes: VarianteLoja[] };
+type Props = { variantes: VarianteLoja[] };
 
 function Opcoes({
 	rotulo,
@@ -50,7 +52,8 @@ function Opcoes({
 	);
 }
 
-export function Compra({ nome, url, variantes }: Props) {
+export function Compra({ variantes }: Props) {
+	const { adicionar, abrir } = useSacola();
 	const cores = [
 		...new Set(variantes.map((v) => v.cor).filter((c): c is string => !!c)),
 	];
@@ -82,10 +85,6 @@ export function Compra({ nome, url, variantes }: Props) {
 			: tamanhos.length && !tamanho
 				? "Escolha o tamanho"
 				: null;
-	const detalhe = [escolhida?.cor, escolhida?.tamanho]
-		.filter(Boolean)
-		.join(", ");
-	const mensagem = `Olá! Quero comprar: ${nome}${detalhe ? ` (${detalhe})` : ""}, ${formatarReais(preco)}.`;
 
 	return (
 		<div className="flex flex-col gap-6">
@@ -137,19 +136,16 @@ export function Compra({ nome, url, variantes }: Props) {
 					{falta ?? "Esgotado"}
 				</button>
 			) : (
-				<a
-					href={linkWhatsapp(`${mensagem} ${url}`)}
-					target="_blank"
-					rel="noopener"
-					className="botao entra bg-vermelho text-papel hover:bg-bordo"
+				<Botao
+					onClick={() => {
+						adicionar(escolhida.id);
+						abrir();
+					}}
 				>
-					Comprar pelo WhatsApp
-				</a>
+					Adicionar à sacola
+				</Botao>
 			)}
-			<p className="text-small text-suave">
-				Frete grátis em Belém. O pagamento online chega em breve; por enquanto a
-				compra é finalizada pelo WhatsApp.
-			</p>
+			<p className="text-small text-suave">Frete grátis em Belém.</p>
 		</div>
 	);
 }

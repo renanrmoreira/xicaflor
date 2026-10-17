@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Compra } from "@/components/loja/compra";
 import { Galeria } from "@/components/loja/galeria";
-import { linkWhatsapp, SITE } from "@/lib/loja";
+import { classeBotao } from "@/components/ui/botao";
+import { linkWhatsapp } from "@/lib/loja";
 import { produtoPorSlug } from "@/server/loja";
 
 export const revalidate = 3600;
@@ -39,7 +40,6 @@ export async function generateMetadata({
 export default async function Page({ params }: PageProps<"/p/[slug]">) {
 	const produto = await produtoPorSlug((await params).slug);
 	if (!produto) notFound();
-	const url = `${SITE}/p/${produto.slug}`;
 
 	return (
 		<article className="grid gap-8 md:grid-cols-[3fr_2fr] md:gap-12 md:px-(--margem) md:pt-8">
@@ -67,7 +67,7 @@ export default async function Page({ params }: PageProps<"/p/[slug]">) {
 								href={produto.linkVitrine}
 								target="_blank"
 								rel="sponsored noopener"
-								className="botao bg-vermelho text-papel hover:bg-bordo"
+								className={classeBotao()}
 							>
 								Comprar na loja
 							</a>
@@ -76,7 +76,7 @@ export default async function Page({ params }: PageProps<"/p/[slug]">) {
 								href={linkWhatsapp(`Olá! Tenho interesse em ${produto.nome}.`)}
 								target="_blank"
 								rel="noopener"
-								className="botao bg-vermelho text-papel hover:bg-bordo"
+								className={classeBotao()}
 							>
 								Pedir pelo WhatsApp
 							</a>
@@ -87,7 +87,7 @@ export default async function Page({ params }: PageProps<"/p/[slug]">) {
 						</p>
 					</div>
 				) : produto.variantes.length ? (
-					<Compra nome={produto.nome} url={url} variantes={produto.variantes} />
+					<Compra variantes={produto.variantes} />
 				) : (
 					<p className="text-suave">Indisponível no momento.</p>
 				)}

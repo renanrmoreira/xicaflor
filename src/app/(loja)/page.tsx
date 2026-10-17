@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { GradeProdutos } from "@/components/loja/cartao-produto";
+import { classeBotao } from "@/components/ui/botao";
 import { SLOGAN } from "@/lib/loja";
 import { categoriasDaLoja, produtosDaLoja } from "@/server/loja";
 
@@ -43,10 +44,7 @@ export default async function Home() {
 					<p className="max-w-[22ch] text-lead leading-tight text-bordo">
 						{SLOGAN}
 					</p>
-					<Link
-						href="#novidades"
-						className="botao shrink-0 bg-vermelho text-papel hover:bg-bordo"
-					>
+					<Link href="#novidades" className={`${classeBotao()} shrink-0`}>
 						Ver novidades
 					</Link>
 				</div>

@@ -7,8 +7,13 @@ const variantes = {
 	fantasma: "text-tinta underline-offset-4 hover:underline",
 };
 
+export type Variante = keyof typeof variantes;
+
+export const classeBotao = (variante: Variante = "primario") =>
+	`botao ${variantes[variante]}`;
+
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
-	variante?: keyof typeof variantes;
+	variante?: Variante;
 	pendente?: boolean;
 	rotuloPendente?: string;
 };
@@ -24,7 +29,7 @@ export function Botao({
 }: Props) {
 	return (
 		<button
-			className={`botao ${variantes[variante]} ${className}`}
+			className={`${classeBotao(variante)} ${className}`}
 			disabled={disabled || pendente}
 			aria-busy={pendente || undefined}
 			{...props}

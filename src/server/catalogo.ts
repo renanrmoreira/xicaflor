@@ -1,6 +1,6 @@
 import "server-only";
 import { ordenarVariantes } from "@/lib/tamanhos";
-import { supabaseServidor } from "./supabase";
+import { supabaseServidor, urlDaFoto } from "./supabase";
 
 export type Categoria = {
 	id: string;
@@ -63,10 +63,6 @@ export async function produtoParaEdicao(id: string) {
 			variantes: ordenarVariantes(data.variantes.filter((v) => v.ativo)),
 		}
 	);
-}
-
-function urlDaFoto(path: string) {
-	return `${process.env.SUPABASE_URL}/storage/v1/object/public/produtos/${path}`;
 }
 
 export async function fotosDoProduto(produtoId: string) {

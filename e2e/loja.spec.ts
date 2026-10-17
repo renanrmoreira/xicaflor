@@ -31,7 +31,7 @@ test("categoria lista as peças e filtra por subcategoria", async ({ page }) => 
 	).toBeVisible();
 });
 
-test("produto ordena tamanhos, bloqueia esgotado e monta o pedido pelo WhatsApp", async ({
+test("produto ordena tamanhos, bloqueia esgotado e adiciona à sacola", async ({
 	page,
 }) => {
 	await page.goto("/p/vestido-loja-e2e");
@@ -60,11 +60,17 @@ test("produto ordena tamanhos, bloqueia esgotado e monta o pedido pelo WhatsApp"
 
 	await page.getByText("M", { exact: true }).click();
 	await expect(page.getByText("Últimas 2 peças")).toBeVisible();
-	const pedido = page.getByRole("link", { name: "Comprar pelo WhatsApp" });
+	await page.getByRole("button", { name: "Adicionar à sacola" }).click();
+	const sacola = page.getByRole("dialog", { name: "Sua sacola" });
+	await expect(
+		sacola.getByRole("link", { name: "Vestido Loja E2E" }),
+	).toBeVisible();
+	const pedido = sacola.getByRole("link", { name: "Finalizar pelo WhatsApp" });
 	await expect(pedido).toHaveAttribute("href", /wa\.me\/5591988008817/);
 	const texto = decodeURIComponent((await pedido.getAttribute("href")) ?? "");
-	expect(texto).toContain("Vestido Loja E2E (Azul, M)");
+	expect(texto).toMatch(/1x Vestido Loja E2E \(Azul, M\): R\$\s189,90/);
 	expect(texto).toContain("/p/vestido-loja-e2e");
+	await sacola.getByRole("button", { name: "Remover" }).click();
 });
 
 test("produto de vitrine não tem preço e leva para a loja parceira", async ({

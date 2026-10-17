@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { classeBotao } from "@/components/ui/botao";
 
 export default function NaoEncontrada() {
 	return (
@@ -6,10 +7,7 @@ export default function NaoEncontrada() {
 			<div className="entra flex max-w-md flex-col gap-4">
 				<h1 className="display text-head">Página não encontrada</h1>
 				<p>O endereço pode ter mudado ou a peça saiu do catálogo.</p>
-				<Link
-					href="/"
-					className="botao self-start bg-vermelho text-papel hover:bg-bordo"
-				>
+				<Link href="/" className={`${classeBotao()} self-start`}>
 					Ir para a loja
 				</Link>
 			</div>
