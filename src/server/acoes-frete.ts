@@ -5,10 +5,9 @@ import { z } from "zod";
 import { centavosDeTexto } from "@/lib/dinheiro";
 import { limparCep } from "@/lib/frete";
 import { log } from "@/lib/log";
+import type { Resultado } from "@/lib/resultado";
 import { exigirAdmin } from "./auth";
 import { supabaseServidor } from "./supabase";
-
-export type Resultado = { erro?: string; ok?: boolean } | undefined;
 
 const cep = z
 	.string()
@@ -23,10 +22,17 @@ const zonaValida = z
 		preco_centavos: z
 			.string()
 			.trim()
-			.transform((t) => (t ? (centavosDeTexto(t) ?? -1) : null))
-			.refine(
-				(c) => c === null || c >= 0,
-				"Preço inválido. Use 15,00, ou deixe vazio para frete a combinar.",
+			.pipe(
+				z.union([
+					z.literal("").transform(() => null),
+					z
+						.string()
+						.transform(centavosDeTexto)
+						.refine(
+							(c): c is number => c !== null,
+							"Preço inválido. Use 15,00, ou deixe vazio para frete a combinar.",
+						),
+				]),
 			),
 	})
 	.refine((z) => z.cep_inicio <= z.cep_fim, {

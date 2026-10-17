@@ -5,17 +5,10 @@ import { useAviso } from "@/components/ui/avisos";
 import { BotaoEnviar } from "@/components/ui/botao-enviar";
 import { Campo } from "@/components/ui/campo";
 import { textoDeCentavos } from "@/lib/dinheiro";
-import { formatarCep } from "@/lib/frete";
+import { formatarCep, type Zona } from "@/lib/frete";
+import type { Resultado } from "@/lib/resultado";
 
-type Zona = {
-	id: string;
-	nome: string;
-	cep_inicio: string;
-	cep_fim: string;
-	preco_centavos: number | null;
-	ativo: boolean;
-};
-type Resultado = { erro?: string; ok?: boolean } | undefined;
+type ZonaAdmin = Zona & { id: string; ativo: boolean };
 type Acoes = {
 	salvar: (
 		id: string | null,
@@ -25,7 +18,7 @@ type Acoes = {
 	alternar: (id: string, ativo: boolean) => Promise<void>;
 };
 
-function FormZona({ zona, acoes }: { zona?: Zona; acoes: Acoes }) {
+function FormZona({ zona, acoes }: { zona?: ZonaAdmin; acoes: Acoes }) {
 	const [estado, enviar] = useActionState(
 		acoes.salvar.bind(null, zona?.id ?? null),
 		undefined,
@@ -95,7 +88,13 @@ function FormZona({ zona, acoes }: { zona?: Zona; acoes: Acoes }) {
 	);
 }
 
-export function ZonasFrete({ zonas, acoes }: { zonas: Zona[]; acoes: Acoes }) {
+export function ZonasFrete({
+	zonas,
+	acoes,
+}: {
+	zonas: ZonaAdmin[];
+	acoes: Acoes;
+}) {
 	return (
 		<div className="flex max-w-3xl flex-col gap-10">
 			<p className="text-suave">

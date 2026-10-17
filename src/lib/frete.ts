@@ -21,15 +21,12 @@ export function formatarCep(cep: string): string {
 	return `${cep.slice(0, 5)}-${cep.slice(5)}`;
 }
 
+const faixa = (z: Zona) => Number(z.cep_fim) - Number(z.cep_inicio);
+
 export function calcularFrete(cep: string, zonas: Zona[]): Frete {
 	const zona = zonas
 		.filter((z) => z.cep_inicio <= cep && cep <= z.cep_fim)
-		.toSorted(
-			(a, b) =>
-				Number(a.cep_fim) -
-				Number(a.cep_inicio) -
-				(Number(b.cep_fim) - Number(b.cep_inicio)),
-		)[0];
+		.toSorted((a, b) => faixa(a) - faixa(b))[0];
 	if (!zona || zona.preco_centavos === null)
 		return { tipo: "a_combinar", zona: zona?.nome ?? null };
 	return { tipo: "entrega", zona: zona.nome, preco: zona.preco_centavos };

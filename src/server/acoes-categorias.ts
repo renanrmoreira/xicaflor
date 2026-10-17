@@ -3,11 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { log } from "@/lib/log";
+import type { Resultado } from "@/lib/resultado";
 import { slug } from "@/lib/slug";
 import { exigirAdmin } from "./auth";
 import { supabaseServidor } from "./supabase";
-
-export type Resultado = { erro?: string; ok?: boolean } | undefined;
 
 const nomeValido = z
 	.string()

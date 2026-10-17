@@ -36,12 +36,14 @@ export function Entrega({ frete, aoMudar, calcular }: Props) {
 		evento.preventDefault();
 		setErro("");
 		iniciar(async () => {
-			const resultado = await calcular(cep);
-			if (!resultado) return setErro("Digite um CEP com 8 números.");
 			try {
+				const resultado = await calcular(cep);
+				if (!resultado) return setErro("Digite um CEP com 8 números.");
 				localStorage.setItem(CHAVE_CEP, cep);
-			} catch {}
-			aoMudar(resultado);
+				aoMudar(resultado);
+			} catch {
+				setErro("Não foi possível calcular agora. Tente de novo.");
+			}
 		});
 	};
 
@@ -71,7 +73,10 @@ export function Entrega({ frete, aoMudar, calcular }: Props) {
 					<Campo
 						rotulo="CEP"
 						value={cep}
-						onChange={(e) => setCep(e.target.value)}
+						onChange={(e) => {
+							setCep(e.target.value);
+							if (frete) aoMudar(null);
+						}}
 						inputMode="numeric"
 						autoComplete="postal-code"
 						placeholder="66000-000"
