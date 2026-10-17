@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { BotaoSacola } from "@/components/loja/sacola";
 import { Wordmark } from "@/components/ui/marca";
-import { linkWhatsapp, type RaizLoja } from "@/lib/loja";
+import type { RaizLoja } from "@/lib/loja";
 
 export function Cabecalho({ raizes }: { raizes: RaizLoja[] }) {
 	const moda = raizes.find((r) => !r.vitrine);
@@ -55,14 +56,7 @@ export function Cabecalho({ raizes }: { raizes: RaizLoja[] }) {
 							/>
 						</svg>
 					</Link>
-					<a
-						href={linkWhatsapp("Olá! Vim pelo site da Xica Flor.")}
-						target="_blank"
-						rel="noopener"
-						className="botao min-h-11 px-3 text-small underline-offset-4 hover:underline"
-					>
-						Fale conosco
-					</a>
+					<BotaoSacola />
 				</div>
 			</div>
 			{moda && moda.filhas.length > 0 && (

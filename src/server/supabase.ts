@@ -34,3 +34,7 @@ export function supabasePublico() {
 		},
 	);
 }
+
+export function urlDaFoto(path: string) {
+	return `${process.env.SUPABASE_URL}/storage/v1/object/public/produtos/${path}`;
+}
