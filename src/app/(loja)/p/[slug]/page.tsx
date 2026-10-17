@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Compra } from "@/components/loja/compra";
 import { Galeria } from "@/components/loja/galeria";
+import { classeBotao } from "@/components/ui/botao";
 import { linkWhatsapp } from "@/lib/loja";
 import { produtoPorSlug } from "@/server/loja";
 
@@ -66,7 +67,7 @@ export default async function Page({ params }: PageProps<"/p/[slug]">) {
 								href={produto.linkVitrine}
 								target="_blank"
 								rel="sponsored noopener"
-								className="botao bg-vermelho text-papel hover:bg-bordo"
+								className={classeBotao()}
 							>
 								Comprar na loja
 							</a>
@@ -75,7 +76,7 @@ export default async function Page({ params }: PageProps<"/p/[slug]">) {
 								href={linkWhatsapp(`Olá! Tenho interesse em ${produto.nome}.`)}
 								target="_blank"
 								rel="noopener"
-								className="botao bg-vermelho text-papel hover:bg-bordo"
+								className={classeBotao()}
 							>
 								Pedir pelo WhatsApp
 							</a>

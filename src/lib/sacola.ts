@@ -1,3 +1,5 @@
+import { formatarReais } from "./dinheiro";
+
 export type ItemSacola = { varianteId: string; quantidade: number };
 
 export type VarianteConferida = {
@@ -84,4 +86,28 @@ export function lerSacola(texto: string | null): ItemSacola[] {
 	} catch {
 		return [];
 	}
+}
+
+export function detalheVariante(
+	v: { cor: string | null; tamanho: string | null },
+	separador = ", ",
+) {
+	return [v.cor, v.tamanho].filter(Boolean).join(separador);
+}
+
+type LinhaPedido = VarianteConferida & { quantidade: number };
+
+export function mensagemPedido(
+	linhas: LinhaPedido[],
+	total: number,
+	site: string,
+) {
+	return [
+		"Olá! Quero fazer este pedido:",
+		...linhas.map((l) => {
+			const detalhe = detalheVariante(l);
+			return `• ${l.quantidade}x ${l.nome}${detalhe ? ` (${detalhe})` : ""}: ${formatarReais(l.preco * l.quantidade)}\n  ${site}/p/${l.slug}`;
+		}),
+		`Total: ${formatarReais(total)}`,
+	].join("\n");
 }
