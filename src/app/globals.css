@@ -39,8 +39,13 @@
 	}
 }
 
+html {
+	scroll-padding-top: 8rem;
+}
+
 body {
 	background: var(--color-papel);
+	touch-action: manipulation;
 	color: var(--color-tinta);
 	font-family: var(--font-sans);
 	font-size: var(--text-body);
@@ -88,8 +93,8 @@ body {
 
 	.letra {
 		display: inline-block;
-		animation: surgir 900ms var(--ease-saida) both;
-		animation-delay: calc(120ms + var(--i) * 55ms);
+		animation: surgir 600ms var(--ease-saida) both;
+		animation-delay: calc(60ms + var(--i) * 35ms);
 	}
 
 	.esqueleto {
@@ -255,8 +260,10 @@ body {
 	*::after,
 	*::backdrop {
 		animation-duration: 1ms;
+		animation-delay: 0s !important;
 		animation-iteration-count: 1;
 		transition-duration: 1ms;
+		transition-delay: 0s !important;
 	}
 	.entra,
 	.aviso {

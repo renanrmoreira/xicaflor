@@ -186,7 +186,7 @@ export function FotosProduto({
 				].map(({ rotulo, camera }) => (
 					<label
 						key={rotulo}
-						className="botao cursor-pointer border-2 border-tinta hover:bg-tinta hover:text-papel"
+						className="botao cursor-pointer border-2 border-tinta hover:bg-tinta hover:text-papel has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-vermelho"
 					>
 						{rotulo}
 						<input

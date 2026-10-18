@@ -29,7 +29,7 @@ export function CampoBusca({ inicial }: { inicial: string }) {
 			<label htmlFor="busca" className="text-small font-semibold">
 				Buscar peças
 			</label>
-			<div className="flex items-center border-b-2 border-tinta">
+			<div className="flex items-center border-b-2 border-tinta transition-colors focus-within:border-vermelho">
 				<input
 					id="busca"
 					name="q"

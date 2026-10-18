@@ -30,7 +30,14 @@ export function Gaveta({ aberta, aoFechar, titulo, children }: Props) {
 		>
 			<div className="flex h-full flex-col">
 				<header className="flex items-center justify-between border-b border-linha px-(--margem) py-4">
-					<h2 className="display text-[2rem]">{titulo}</h2>
+					<h2
+						// biome-ignore lint/a11y/noAutofocus: o foco inicial do modal vai para o título, não para o botão de fechar
+						autoFocus
+						tabIndex={-1}
+						className="display text-[2rem] outline-none"
+					>
+						{titulo}
+					</h2>
 					<button
 						type="button"
 						onClick={aoFechar}
@@ -46,7 +53,7 @@ export function Gaveta({ aberta, aoFechar, titulo, children }: Props) {
 						</svg>
 					</button>
 				</header>
-				<div className="flex-1 overflow-y-auto px-(--margem) py-6">
+				<div className="flex-1 overflow-y-auto overscroll-contain px-(--margem) py-6">
 					{children}
 				</div>
 			</div>
