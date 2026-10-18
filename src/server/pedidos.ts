@@ -34,7 +34,7 @@ export type ResumoVendas = {
 	dia_pedidos: number;
 	mes_centavos: number;
 	mes_pedidos: number;
-	pendentes: Record<string, number>;
+	por_status: Record<string, number>;
 };
 
 export async function resumoVendas() {

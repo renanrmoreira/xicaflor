@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { formatarReais } from "@/lib/dinheiro";
-import { rotuloStatus } from "@/lib/pedido";
+import { EM_ANDAMENTO, rotuloStatus } from "@/lib/pedido";
 import { pedidosDoAdmin } from "@/server/pedidos";
 
 export const metadata: Metadata = { title: "Pedidos — Admin Xica Flor" };
@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Pedidos — Admin Xica Flor" };
 const FILTROS = {
 	abertos: {
 		rotulo: "Para preparar",
-		status: ["pago", "separando", "saiu_para_entrega", "pronto_para_retirada"],
+		status: EM_ANDAMENTO.filter((s) => s !== "aguardando_pagamento"),
 	},
 	aguardando: {
 		rotulo: "Aguardando pagamento",

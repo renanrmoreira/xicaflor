@@ -59,3 +59,11 @@ export const cancelavel = (status: string) =>
 		"separando",
 		"pronto_para_retirada",
 	].includes(status);
+
+export const EM_ANDAMENTO: Status[] = [
+	"pago",
+	"separando",
+	"saiu_para_entrega",
+	"pronto_para_retirada",
+	"aguardando_pagamento",
+];
