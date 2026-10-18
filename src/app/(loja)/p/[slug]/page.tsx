@@ -5,6 +5,7 @@ import { Compra } from "@/components/loja/compra";
 import { Galeria } from "@/components/loja/galeria";
 import { classeBotao } from "@/components/ui/botao";
 import { linkWhatsapp } from "@/lib/loja";
+import { jsonLdProduto, OG_BASE, scriptJsonLd } from "@/lib/seo";
 import { produtoPorSlug } from "@/server/loja";
 
 export const revalidate = 3600;
@@ -27,12 +28,12 @@ export async function generateMetadata({
 		description: descricao,
 		alternates: { canonical: `/p/${produto.slug}` },
 		openGraph: {
+			...OG_BASE,
 			title: titulo,
 			description: descricao,
-			type: "website",
 			images: produto.fotos[0]
 				? [{ url: produto.fotos[0].grande, width: 1280, height: 1600 }]
-				: undefined,
+				: OG_BASE.images,
 		},
 	};
 }
@@ -43,6 +44,15 @@ export default async function Page({ params }: PageProps<"/p/[slug]">) {
 
 	return (
 		<article className="grid gap-8 md:grid-cols-[3fr_2fr] md:gap-12 md:px-(--margem) md:pt-8">
+			{!produto.vitrine && (
+				<script
+					type="application/ld+json"
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD com < escapado em scriptJsonLd
+					dangerouslySetInnerHTML={{
+						__html: scriptJsonLd(jsonLdProduto(produto)),
+					}}
+				/>
+			)}
 			<Galeria fotos={produto.fotos} nome={produto.nome} />
 			<div className="flex flex-col gap-6 px-(--margem) md:sticky md:top-24 md:self-start md:px-0">
 				<div className="flex flex-col gap-2">

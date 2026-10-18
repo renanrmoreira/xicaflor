@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { GradeProdutos } from "@/components/loja/cartao-produto";
+import { OG_BASE } from "@/lib/seo";
 import { categoriaPorSlug, produtosDaLoja } from "@/server/loja";
 
 export const revalidate = 3600;
@@ -18,7 +19,7 @@ export async function generateMetadata({
 	const titulo = `${categoria.atual.nome} — Xica Flor`;
 	return {
 		title: titulo,
-		openGraph: { title: titulo },
+		openGraph: { ...OG_BASE, title: titulo },
 		alternates: { canonical: `/c/${categoria.atual.slug}` },
 	};
 }

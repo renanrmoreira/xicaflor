@@ -124,7 +124,10 @@ test("checkout cria pedido, reserva a peça e envia a preferência ao Mercado Pa
 			.locator("[aria-current=step]"),
 	).toHaveText("Pago");
 
-	const numero = await page.getByText(/^Pedido nº \d+$/).textContent();
+	const numero = await page
+		.getByRole("main")
+		.getByText(/^Pedido nº \d+$/)
+		.textContent();
 	await page.goto("/conta");
 	await page
 		.getByRole("link", { name: new RegExp(`${numero} .*Pago`) })

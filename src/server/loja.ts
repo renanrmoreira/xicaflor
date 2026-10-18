@@ -154,3 +154,12 @@ export const produtoPorSlug = cache(
 		};
 	},
 );
+
+export async function slugsDaLoja() {
+	if (!process.env.SUPABASE_URL) return [];
+	const { data, error } = await supabasePublico()
+		.from("produtos")
+		.select("slug");
+	if (error) throw error;
+	return data;
+}
