@@ -56,26 +56,40 @@ describe("assinaturaValida", () => {
 	const segredo = "segredo";
 	const assinar = (manifesto: string) =>
 		createHmac("sha256", segredo).update(manifesto).digest("hex");
-	const v1 = assinar("id:abc123;request-id:req-1;ts:1700;");
+	const ts = Date.now();
+	const v1 = assinar(`id:abc123;request-id:req-1;ts:${ts};`);
 
 	it("aceita a assinatura do manifesto do Mercado Pago", async () => {
 		expect(
-			await assinaturaValida(`ts=1700,v1=${v1}`, "req-1", "ABC123", segredo),
+			await assinaturaValida(`ts=${ts},v1=${v1}`, "req-1", "ABC123", segredo),
 		).toBe(true);
 	});
 
 	it("recusa assinatura de outro pagamento, ausente ou malformada", async () => {
 		expect(
-			await assinaturaValida(`ts=1700,v1=${v1}`, "req-1", "999", segredo),
+			await assinaturaValida(`ts=${ts},v1=${v1}`, "req-1", "999", segredo),
 		).toBe(false);
 		expect(await assinaturaValida(null, "req-1", "abc123", segredo)).toBe(
 			false,
 		);
 		expect(
-			await assinaturaValida("ts=1700,v1=zz", "req-1", "abc123", segredo),
+			await assinaturaValida(`ts=${ts},v1=zz`, "req-1", "abc123", segredo),
 		).toBe(false);
 		expect(
-			await assinaturaValida(`ts=1700,v1=${v1}`, null, "abc123", segredo),
+			await assinaturaValida(`ts=${ts},v1=${v1}`, null, "abc123", segredo),
+		).toBe(false);
+	});
+
+	it("recusa notificação antiga", async () => {
+		const velho = Date.now() - 60 * 60_000;
+		const assinada = assinar(`id:abc123;request-id:req-1;ts:${velho};`);
+		expect(
+			await assinaturaValida(
+				`ts=${velho},v1=${assinada}`,
+				"req-1",
+				"abc123",
+				segredo,
+			),
 		).toBe(false);
 	});
 });

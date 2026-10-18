@@ -14,11 +14,11 @@ begin
 	if p.mp_payment_id = pagamento then
 		return 'repetido';
 	end if;
-	if p.total_centavos <> valor_centavos then
-		return 'valor_divergente';
-	end if;
 	if p.status <> 'aguardando_pagamento' then
 		return 'fora_do_prazo';
+	end if;
+	if p.total_centavos <> valor_centavos then
+		return 'valor_divergente';
 	end if;
 	update public.pedidos
 	set status = 'pago', mp_payment_id = pagamento, pago_em = now(), atualizado_em = now()

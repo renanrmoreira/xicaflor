@@ -46,8 +46,11 @@ export async function processarPagamento(id: string) {
 			`Mercado Pago respondeu ${resposta.status} ao consultar pagamento`,
 		);
 	const pagamento = Pagamento.safeParse(await resposta.json());
-	if (!pagamento.success || pagamento.data.status !== "approved")
+	if (!pagamento.success) {
+		Sentry.captureException(pagamento.error);
 		return "ignorado";
+	}
+	if (pagamento.data.status !== "approved") return "ignorado";
 	const { data, error } = await supabaseServico().rpc("confirmar_pagamento", {
 		pedido: pagamento.data.external_reference,
 		pagamento: id,

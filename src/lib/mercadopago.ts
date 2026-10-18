@@ -62,11 +62,15 @@ export async function assinaturaValida(
 	dataId: string,
 	segredo: string,
 ) {
-	const partes = Object.fromEntries(
+	if (!requestId) return false;
+	const partes: Record<string, string> = Object.fromEntries(
 		(assinatura ?? "").split(",").map((p) => p.trim().split("=", 2)),
 	);
-	if (!partes.ts || !/^[0-9a-f]{64}$/i.test(partes.v1 ?? "") || !requestId)
-		return false;
+	const ts = Number(partes.ts);
+	// O MP documenta ts ora em segundos, ora em milissegundos.
+	const emMs = ts < 1e12 ? ts * 1000 : ts;
+	if (Math.abs(Date.now() - emMs) > 10 * 60_000) return false;
+	if (!/^[0-9a-f]{64}$/i.test(partes.v1 ?? "")) return false;
 	const texto = new TextEncoder();
 	const chave = await crypto.subtle.importKey(
 		"raw",
@@ -78,7 +82,7 @@ export async function assinaturaValida(
 	return crypto.subtle.verify(
 		"HMAC",
 		chave,
-		Uint8Array.from(partes.v1.match(/../g), (h: string) => parseInt(h, 16)),
+		Uint8Array.from(partes.v1.match(/../g) ?? [], (h) => parseInt(h, 16)),
 		texto.encode(
 			`id:${dataId.toLowerCase()};request-id:${requestId};ts:${partes.ts};`,
 		),
