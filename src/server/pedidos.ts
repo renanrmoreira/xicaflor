@@ -29,7 +29,7 @@ export async function pedidoDoAdmin(id: string) {
 	return data;
 }
 
-export type ResumoVendas = {
+type ResumoVendas = {
 	dia_centavos: number;
 	dia_pedidos: number;
 	mes_centavos: number;
