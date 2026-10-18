@@ -6,8 +6,7 @@ import { formatarReais } from "@/lib/dinheiro";
 import { rotuloStatus } from "@/lib/pedido";
 import { sair } from "@/server/acoes-auth";
 import { salvarPerfil } from "@/server/acoes-conta";
-import { exigirCliente } from "@/server/cliente";
-import { supabaseServidor } from "@/server/supabase";
+import { exigirCliente, listarPedidos } from "@/server/cliente";
 
 export const metadata: Metadata = {
 	title: "Minha conta — Xica Flor",
@@ -15,12 +14,8 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-	const { email, perfil } = await exigirCliente();
-	const { data: pedidos, error } = await (await supabaseServidor())
-		.from("pedidos")
-		.select("id, numero, status, total_centavos, criado_em")
-		.order("criado_em", { ascending: false })
-		.limit(50);
+	const { id, email, perfil } = await exigirCliente();
+	const { data: pedidos, error } = await listarPedidos(id);
 	return (
 		<section className="flex flex-col gap-8 px-(--margem) pt-10">
 			<div className="flex flex-wrap items-end justify-between gap-4">

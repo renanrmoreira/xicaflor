@@ -18,3 +18,12 @@ export async function exigirCliente(volta?: "/checkout") {
 	if (error) throw error;
 	return { id: user.id, email: user.email ?? "", perfil };
 }
+
+export async function listarPedidos(clienteId: string) {
+	return (await supabaseServidor())
+		.from("pedidos")
+		.select("id, numero, status, total_centavos, criado_em")
+		.eq("cliente_id", clienteId)
+		.order("criado_em", { ascending: false })
+		.limit(50);
+}

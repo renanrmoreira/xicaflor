@@ -73,7 +73,7 @@ export default async function Page({
 						<li
 							key={e.status}
 							aria-current={e.status === pedido.status ? "step" : undefined}
-							className={`flex items-center gap-3 ${e.feito ? "" : "text-suave"}`}
+							className={`flex items-center gap-3 ${e.feito ? "" : "text-suave"} ${e.status === pedido.status ? "font-semibold" : ""}`}
 						>
 							<span
 								aria-hidden
