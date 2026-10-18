@@ -1,6 +1,7 @@
 const WHATSAPP = "5591988008817";
 export const INSTAGRAM = "xicaflor_";
 export const SITE = "https://xicaflor.renanrodrigues2292.workers.dev";
+export const AMARELO = "#F8E154";
 export const SLOGAN = "Seja você o seu próprio padrão de beleza!";
 
 export const whatsappDoCliente = (telefone: string | null) =>
