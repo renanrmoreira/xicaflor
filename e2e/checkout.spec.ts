@@ -118,6 +118,18 @@ test("checkout cria pedido, reserva a peça e envia a preferência ao Mercado Pa
 	await expect(
 		page.getByRole("link", { name: "Pagar com Mercado Pago" }),
 	).toHaveCount(0);
+	await expect(
+		page
+			.getByRole("list", { name: "Andamento do pedido" })
+			.locator("[aria-current=step]"),
+	).toHaveText("Pago");
+
+	const numero = await page.getByText(/^Pedido nº \d+$/).textContent();
+	await page.goto("/conta");
+	await page
+		.getByRole("link", { name: new RegExp(`${numero} .*Pago`) })
+		.click();
+	await expect(page).toHaveURL(new RegExp(`/pedido/${pedidoId}$`));
 });
 
 test("se o Mercado Pago falhar, o pedido fica criado e segue pelo WhatsApp", async ({
