@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useId, useRef } from "react";
 
 type Props = {
 	aberta: boolean;
@@ -11,11 +11,16 @@ type Props = {
 
 export function Gaveta({ aberta, aoFechar, titulo, children }: Props) {
 	const ref = useRef<HTMLDialogElement>(null);
+	const cabecalho = useRef<HTMLHeadingElement>(null);
+	const idTitulo = useId();
 
 	useEffect(() => {
 		const dialogo = ref.current;
 		if (!dialogo) return;
-		if (aberta && !dialogo.open) dialogo.showModal();
+		if (aberta && !dialogo.open) {
+			dialogo.showModal();
+			cabecalho.current?.focus();
+		}
 		if (!aberta && dialogo.open) dialogo.close();
 	}, [aberta]);
 
@@ -24,15 +29,15 @@ export function Gaveta({ aberta, aoFechar, titulo, children }: Props) {
 		<dialog
 			ref={ref}
 			className="gaveta"
-			aria-label={titulo}
+			aria-labelledby={idTitulo}
 			onClose={aoFechar}
 			onClick={(e) => e.target === e.currentTarget && aoFechar()}
 		>
 			<div className="flex h-full flex-col">
 				<header className="flex items-center justify-between border-b border-linha px-(--margem) py-4">
 					<h2
-						// biome-ignore lint/a11y/noAutofocus: o foco inicial do modal vai para o título, não para o botão de fechar
-						autoFocus
+						ref={cabecalho}
+						id={idTitulo}
 						tabIndex={-1}
 						className="display text-[2rem] outline-none"
 					>
