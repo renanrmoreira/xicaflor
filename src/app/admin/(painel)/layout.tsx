@@ -31,10 +31,11 @@ export default async function Layout({ children }: LayoutProps<"/admin">) {
 			</header>
 			<nav
 				aria-label="Admin"
-				className="flex gap-6 border-b border-linha px-(--margem) text-small font-semibold"
+				className="flex gap-6 overflow-x-auto border-b border-linha px-(--margem) text-small font-semibold whitespace-nowrap"
 			>
 				{[
 					["/admin", "Painel"],
+					["/admin/pedidos", "Pedidos"],
 					["/admin/produtos", "Produtos"],
 					["/admin/categorias", "Categorias"],
 					["/admin/frete", "Frete"],

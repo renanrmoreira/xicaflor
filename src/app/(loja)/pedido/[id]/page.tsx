@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ResumoPedido } from "@/components/pedido/resumo-pedido";
 import { classeBotao } from "@/components/ui/botao";
-import { formatarReais } from "@/lib/dinheiro";
 import { linkWhatsapp } from "@/lib/loja";
 import { linhaDoTempo, rotuloStatus } from "@/lib/pedido";
-import { detalheVariante } from "@/lib/sacola";
 import { exigirCliente } from "@/server/cliente";
 import { linkDePagamento, mercadoPagoAtivo } from "@/server/mercadopago";
 import { supabaseServidor } from "@/server/supabase";
@@ -110,39 +109,7 @@ export default async function Page({
 				</div>
 			)}
 
-			<ul className="flex flex-col divide-y divide-linha border-y border-linha">
-				{pedido.itens.map((i) => (
-					<li key={i.id} className="flex justify-between gap-4 py-3">
-						<span>
-							{i.quantidade}× {i.nome_produto}
-							<span className="block text-small text-suave">
-								{detalheVariante(i, " · ")}
-							</span>
-						</span>
-						<span className="shrink-0">
-							{formatarReais(i.preco_unitario_centavos * i.quantidade)}
-						</span>
-					</li>
-				))}
-			</ul>
-			<dl className="grid grid-cols-[1fr_auto] gap-y-2 [&_dd]:text-right">
-				<dt>Produtos</dt>
-				<dd>{formatarReais(pedido.subtotal_centavos)}</dd>
-				<dt>
-					{pedido.modalidade === "retirada" ? "Retirada na loja" : "Entrega"}
-				</dt>
-				<dd>
-					{pedido.frete_a_combinar
-						? "a combinar"
-						: pedido.frete_centavos
-							? formatarReais(pedido.frete_centavos)
-							: "grátis"}
-				</dd>
-				<dt className="border-t border-linha pt-2 font-semibold">Total</dt>
-				<dd className="border-t border-linha pt-2 font-semibold">
-					{formatarReais(pedido.total_centavos ?? 0)}
-				</dd>
-			</dl>
+			<ResumoPedido pedido={pedido} />
 			<Link href="/conta" className="text-small underline underline-offset-4">
 				Voltar para minha conta
 			</Link>

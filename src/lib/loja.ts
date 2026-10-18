@@ -3,8 +3,11 @@ export const INSTAGRAM = "xicaflor_";
 export const SITE = "https://xicaflor.renanrodrigues2292.workers.dev";
 export const SLOGAN = "Seja você o seu próprio padrão de beleza!";
 
-export function linkWhatsapp(mensagem: string) {
-	return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensagem)}`;
+export const whatsappDoCliente = (telefone: string | null) =>
+	telefone && telefone.length <= 11 ? `55${telefone}` : telefone;
+
+export function linkWhatsapp(mensagem: string, numero = WHATSAPP) {
+	return `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
 }
 
 export type Foto = { grande: string; miniatura: string; alt: string };

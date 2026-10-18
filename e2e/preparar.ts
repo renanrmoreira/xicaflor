@@ -14,7 +14,7 @@ export default async function preparar() {
 		});
 		if (error && error.code !== "email_exists") throw error;
 	}
-	const { data } = await supabase.auth.admin.listUsers();
+	const { data } = await supabase.auth.admin.listUsers({ perPage: 1000 });
 	const admin = data.users.find((u) => u.email === ADMIN.email);
 	const { error } = await supabase
 		.from("perfis")
@@ -26,6 +26,7 @@ export default async function preparar() {
 		.from("perfis")
 		.update({
 			nome: "Cliente E2E",
+			telefone: "91988887777",
 			cep: "66060000",
 			logradouro: "Avenida Visconde de Souza Franco",
 			numero: "100",
