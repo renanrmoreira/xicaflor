@@ -21,6 +21,7 @@ export const metadata: Metadata = {
 	title: "Xica Flor — Moda Feminina",
 	description:
 		"Seja você o seu próprio padrão de beleza! Moda feminina e beleza em Belém/PA.",
+	appleWebApp: { title: "Xica Flor", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = { themeColor: "#f8e154" };
