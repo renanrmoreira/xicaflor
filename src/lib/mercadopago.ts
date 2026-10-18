@@ -55,3 +55,36 @@ export function montarPreferencia(pedido: PedidoParaPagar, site: string) {
 		metadata: { numero: pedido.numero },
 	};
 }
+
+export async function assinaturaValida(
+	assinatura: string | null,
+	requestId: string | null,
+	dataId: string,
+	segredo: string,
+) {
+	if (!requestId) return false;
+	const partes: Record<string, string> = Object.fromEntries(
+		(assinatura ?? "").split(",").map((p) => p.trim().split("=", 2)),
+	);
+	const ts = Number(partes.ts);
+	// O MP documenta ts ora em segundos, ora em milissegundos.
+	const emMs = ts < 1e12 ? ts * 1000 : ts;
+	if (Math.abs(Date.now() - emMs) > 10 * 60_000) return false;
+	if (!/^[0-9a-f]{64}$/i.test(partes.v1 ?? "")) return false;
+	const texto = new TextEncoder();
+	const chave = await crypto.subtle.importKey(
+		"raw",
+		texto.encode(segredo),
+		{ name: "HMAC", hash: "SHA-256" },
+		false,
+		["verify"],
+	);
+	return crypto.subtle.verify(
+		"HMAC",
+		chave,
+		Uint8Array.from(partes.v1.match(/../g) ?? [], (h) => parseInt(h, 16)),
+		texto.encode(
+			`id:${dataId.toLowerCase()};request-id:${requestId};ts:${partes.ts};`,
+		),
+	);
+}
