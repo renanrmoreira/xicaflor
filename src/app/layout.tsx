@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Big_Shoulders, Public_Sans } from "next/font/google";
 import { Avisos } from "@/components/ui/avisos";
 import { ProgressoNavegacao } from "@/components/ui/progresso-navegacao";
-import { SITE } from "@/lib/loja";
+import { AMARELO, SITE } from "@/lib/loja";
 import "./globals.css";
 
 const display = Big_Shoulders({
@@ -21,9 +21,10 @@ export const metadata: Metadata = {
 	title: "Xica Flor — Moda Feminina",
 	description:
 		"Seja você o seu próprio padrão de beleza! Moda feminina e beleza em Belém/PA.",
+	appleWebApp: { title: "Xica Flor", statusBarStyle: "default" },
 };
 
-export const viewport: Viewport = { themeColor: "#f8e154" };
+export const viewport: Viewport = { themeColor: AMARELO };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
 	return (
