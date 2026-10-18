@@ -13,6 +13,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const ativas = new Set(categorias.map((c) => c.id));
 	return [
 		{ url: SITE, changeFrequency: "daily", priority: 1 },
+		...["sobre", "contato", "trocas", "privacidade"].map((p) => ({
+			url: `${SITE}/${p}`,
+		})),
 		...categorias.map((c) => ({
 			url: `${SITE}/c/${c.slug}`,
 			changeFrequency: "daily" as const,
