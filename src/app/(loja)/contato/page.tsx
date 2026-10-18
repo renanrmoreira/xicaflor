@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { APreencher, PaginaTexto } from "@/components/loja/pagina-texto";
 import { classeBotao } from "@/components/ui/botao";
-import { INSTAGRAM, linkWhatsapp } from "@/lib/loja";
+import { INSTAGRAM, LINK_INSTAGRAM, linkWhatsapp, TELEFONE } from "@/lib/loja";
 
 export const metadata: Metadata = {
 	title: "Contato — Xica Flor",
@@ -19,10 +19,10 @@ export default function Page() {
 					rel="noopener"
 					className={classeBotao()}
 				>
-					WhatsApp (91) 98800-8817
+					WhatsApp {TELEFONE}
 				</a>
 				<a
-					href={`https://instagram.com/${INSTAGRAM}`}
+					href={LINK_INSTAGRAM}
 					target="_blank"
 					rel="noopener"
 					className={classeBotao("secundario")}

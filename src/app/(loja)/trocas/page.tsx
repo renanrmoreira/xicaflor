@@ -15,10 +15,12 @@ export default function Page() {
 				Comprou pelo site e mudou de ideia? Você tem até 7 dias corridos depois
 				de receber o pedido para desistir da compra, sem precisar explicar o
 				motivo (Código de Defesa do Consumidor, art. 49). Devolvemos o valor
-				pago, inclusive o frete.
+				pago, inclusive o frete, e o custo de envio da devolução fica por conta
+				da loja.
 			</p>
 			<h2>Troca de tamanho ou modelo</h2>
 			<p>
+				A peça deve voltar sem sinais de uso e com etiqueta.{" "}
 				<APreencher>Prazo e condições de troca definidos pela loja.</APreencher>
 			</p>
 			<h2>Peça com defeito</h2>
@@ -34,14 +36,13 @@ export default function Page() {
 						href={linkWhatsapp(
 							"Olá! Quero trocar ou devolver uma peça do meu pedido.",
 						)}
+						target="_blank"
+						rel="noopener"
 						className="underline underline-offset-4"
 					>
 						WhatsApp
 					</a>{" "}
 					informando o número do pedido.
-				</li>
-				<li>
-					A peça deve voltar sem uso, com etiqueta e na embalagem original.
 				</li>
 				<li>
 					Retirada ou entrega da devolução:{" "}
