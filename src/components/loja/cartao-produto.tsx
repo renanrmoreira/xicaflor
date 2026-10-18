@@ -44,7 +44,7 @@ function CartaoProduto({
 				{produto.marca && (
 					<span className="text-small text-suave">{produto.marca}</span>
 				)}
-				<span className="leading-snug underline-offset-4 group-hover:underline">
+				<span className="leading-snug break-words underline-offset-4 group-hover:underline">
 					{produto.nome}
 				</span>
 				{produto.vitrine ? (
