@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { classeBotao } from "@/components/ui/botao";
 import { formatarReais } from "@/lib/dinheiro";
 import { linkWhatsapp } from "@/lib/loja";
-import { rotuloStatus } from "@/lib/pedido";
+import { linhaDoTempo, rotuloStatus } from "@/lib/pedido";
 import { detalheVariante } from "@/lib/sacola";
 import { exigirCliente } from "@/server/cliente";
 import { linkDePagamento, mercadoPagoAtivo } from "@/server/mercadopago";
@@ -40,6 +40,7 @@ export default async function Page({
 	if (!pedido) notFound();
 
 	const aguardando = pedido.status === "aguardando_pagamento";
+	const etapas = linhaDoTempo(pedido.status, pedido.modalidade);
 	const retorno =
 		typeof pagamento === "string" ? RETORNO[pagamento] : undefined;
 	const combinar = linkWhatsapp(
@@ -65,6 +66,24 @@ export default async function Page({
 					</p>
 				)}
 			</div>
+
+			{etapas.length > 0 && (
+				<ol aria-label="Andamento do pedido" className="flex flex-col gap-3">
+					{etapas.map((e) => (
+						<li
+							key={e.status}
+							aria-current={e.status === pedido.status ? "step" : undefined}
+							className={`flex items-center gap-3 ${e.feito ? "" : "text-suave"} ${e.status === pedido.status ? "font-semibold" : ""}`}
+						>
+							<span
+								aria-hidden
+								className={`size-3 shrink-0 rounded-full border-2 border-vermelho ${e.feito ? "bg-vermelho" : ""}`}
+							/>
+							{e.rotulo}
+						</li>
+					))}
+				</ol>
+			)}
 
 			{aguardando && (
 				<div className="flex flex-col gap-3">
@@ -106,7 +125,7 @@ export default async function Page({
 					</li>
 				))}
 			</ul>
-			<dl className="grid grid-cols-[1fr_auto] gap-y-2">
+			<dl className="grid grid-cols-[1fr_auto] gap-y-2 [&_dd]:text-right">
 				<dt>Produtos</dt>
 				<dd>{formatarReais(pedido.subtotal_centavos)}</dd>
 				<dt>
