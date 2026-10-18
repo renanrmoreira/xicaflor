@@ -159,7 +159,7 @@ export async function slugsDaLoja() {
 	if (!process.env.SUPABASE_URL) return [];
 	const { data, error } = await supabasePublico()
 		.from("produtos")
-		.select("slug");
+		.select("slug, categoria_id");
 	if (error) throw error;
 	return data;
 }

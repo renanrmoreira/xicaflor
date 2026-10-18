@@ -44,7 +44,7 @@ export default async function Page({ params }: PageProps<"/p/[slug]">) {
 
 	return (
 		<article className="grid gap-8 md:grid-cols-[3fr_2fr] md:gap-12 md:px-(--margem) md:pt-8">
-			{!produto.vitrine && (
+			{!produto.vitrine && produto.variantes.length > 0 && (
 				<script
 					type="application/ld+json"
 					// biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD com < escapado em scriptJsonLd
