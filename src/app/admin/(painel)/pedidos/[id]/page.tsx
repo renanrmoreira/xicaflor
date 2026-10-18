@@ -29,6 +29,8 @@ export default async function Page({
 	const endereco = pedido.endereco as Endereco | null;
 	const nome = pedido.cliente?.nome ?? "";
 	const whatsapp = whatsappDoCliente(pedido.cliente?.telefone ?? null);
+	const saudacao = nome ? `, ${nome.split(" ")[0]}` : "";
+	const mensagem = `Olá${saudacao}! Aqui é da Xica Flor, sobre o seu pedido nº ${pedido.numero}.`;
 
 	return (
 		<section className="flex max-w-2xl flex-col gap-8">
@@ -64,12 +66,9 @@ export default async function Page({
 				)}
 				{whatsapp ? (
 					<a
-						href={linkWhatsapp(
-							`Olá${nome ? `, ${nome.split(" ")[0]}` : ""}! Aqui é da Xica Flor, sobre o seu pedido nº ${pedido.numero}.`,
-							whatsapp,
-						)}
+						href={linkWhatsapp(mensagem, whatsapp)}
 						target="_blank"
-						rel="noopener"
+						rel="noopener noreferrer"
 						className={`${classeBotao("secundario")} self-start`}
 					>
 						Chamar no WhatsApp

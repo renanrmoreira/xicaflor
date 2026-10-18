@@ -24,10 +24,10 @@ type Filtro = keyof typeof FILTROS;
 export default async function Page({
 	searchParams,
 }: PageProps<"/admin/pedidos">) {
-	const { filtro: pedido } = await searchParams;
+	const { filtro: bruto } = await searchParams;
 	const filtro: Filtro =
-		typeof pedido === "string" && pedido in FILTROS
-			? (pedido as Filtro)
+		typeof bruto === "string" && bruto in FILTROS
+			? (bruto as Filtro)
 			: "abertos";
 	const pedidos = await pedidosDoAdmin(FILTROS[filtro].status);
 	return (

@@ -6,7 +6,7 @@ import { z } from "zod";
 import { log } from "@/lib/log";
 import { SITE } from "@/lib/loja";
 import { montarPreferencia } from "@/lib/mercadopago";
-import type { ResultadoCompra } from "@/lib/resultado";
+import type { Resultado, ResultadoCompra } from "@/lib/resultado";
 import { exigirAdmin } from "./auth";
 import { exigirCliente } from "./cliente";
 import { criarPreferencia, mercadoPagoAtivo } from "./mercadopago";
@@ -85,16 +85,37 @@ export async function finalizarCompra(
 	}
 }
 
-export async function mudarStatus(id: string, novo: string) {
+const novoStatus = z.enum([
+	"separando",
+	"saiu_para_entrega",
+	"entregue",
+	"pronto_para_retirada",
+	"retirado",
+	"cancelado",
+]);
+
+export async function mudarStatus(
+	id: string,
+	_: Resultado,
+	dados: FormData,
+): Promise<Resultado> {
 	await exigirAdmin();
+	const novo = novoStatus.safeParse(dados.get("status"));
+	if (!novo.success) return { erro: "Status inválido." };
 	const { error } = await (await supabaseServidor()).rpc(
 		"mudar_status_pedido",
-		{ pedido: z.uuid().parse(id), novo_status: z.string().max(30).parse(novo) },
+		{ pedido: z.uuid().parse(id), novo_status: novo.data },
 	);
 	if (error) {
 		log("error", "mudar status do pedido", { erro: error.message });
-		throw new Error("Não foi possível mudar o status. Recarregue a página.");
+		return {
+			erro:
+				error.code === "22023"
+					? "O pedido mudou enquanto você olhava. Recarregue a página."
+					: "Não foi possível mudar o status. Tente de novo.",
+		};
 	}
 	revalidatePath("/admin/pedidos", "layout");
 	revalidatePath(`/pedido/${id}`);
+	return { ok: true };
 }
