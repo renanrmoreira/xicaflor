@@ -25,6 +25,7 @@ async function pedidoPago() {
 			modalidade: "retirada",
 			subtotal_centavos: 9990,
 			status: "pago",
+			pago_em: new Date().toISOString(),
 		})
 		.select("id, numero")
 		.single();
@@ -77,4 +78,10 @@ test("admin acompanha o pedido pago até a retirada e chama a cliente no WhatsAp
 	await expect(
 		page.getByRole("link", { name: new RegExp(`Pedido nº ${pedido.numero} `) }),
 	).toBeVisible();
+
+	await page.goto("/admin");
+	await expect(
+		page.getByRole("heading", { name: "Pedidos em andamento" }),
+	).toBeVisible();
+	await expect(page.getByText(/^\d+ pedidos? pagos?$/).first()).toBeVisible();
 });

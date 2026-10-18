@@ -435,6 +435,7 @@ export type Database = {
 				Args: { pedido: string; preferencia: string };
 				Returns: undefined;
 			};
+			resumo_vendas: { Args: { referencia?: string }; Returns: Json };
 			salvar_produto: { Args: { dados: Json }; Returns: string };
 		};
 		Enums: {
