@@ -4,7 +4,7 @@ import { INSTAGRAM, linkWhatsapp, type RaizLoja, SLOGAN } from "@/lib/loja";
 export function Rodape({ raizes }: { raizes: RaizLoja[] }) {
 	return (
 		<footer className="mt-24 flex min-h-[70svh] flex-col justify-between gap-16 bg-bordo px-(--margem) pt-12 text-papel">
-			<div className="grid grid-cols-2 gap-x-6 gap-y-8 text-small md:grid-cols-4">
+			<div className="grid grid-cols-2 gap-x-6 gap-y-8 text-small md:grid-cols-5">
 				<div className="flex flex-col gap-1">
 					<p className="font-semibold">Loja</p>
 					{raizes.map((r) => (
@@ -40,6 +40,23 @@ export function Rodape({ raizes }: { raizes: RaizLoja[] }) {
 					<p className="font-semibold">Entrega</p>
 					<p className="text-papel/75">Grátis em Belém</p>
 					<p className="text-papel/75">Demais regiões: frete a combinar</p>
+				</div>
+				<div className="flex flex-col gap-1">
+					<p className="font-semibold">Ajuda</p>
+					{[
+						["/trocas", "Trocas e devoluções"],
+						["/privacidade", "Privacidade"],
+						["/sobre", "Sobre"],
+						["/contato", "Contato"],
+					].map(([href, rotulo]) => (
+						<Link
+							key={href}
+							href={href}
+							className="text-papel/75 hover:text-papel"
+						>
+							{rotulo}
+						</Link>
+					))}
 				</div>
 				<div className="flex flex-col gap-1">
 					<p className="font-semibold">Belém, Pará</p>
