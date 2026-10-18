@@ -28,3 +28,18 @@ export async function pedidoDoAdmin(id: string) {
 	if (error) throw error;
 	return data;
 }
+
+export type ResumoVendas = {
+	dia_centavos: number;
+	dia_pedidos: number;
+	mes_centavos: number;
+	mes_pedidos: number;
+	pendentes: Record<string, number>;
+};
+
+export async function resumoVendas() {
+	await exigirAdmin();
+	const { data, error } = await (await supabaseServidor()).rpc("resumo_vendas");
+	if (error) throw error;
+	return data as ResumoVendas;
+}
