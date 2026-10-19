@@ -20,11 +20,15 @@ export default function Page() {
 			</p>
 			<h2>Troca por defeito</h2>
 			<p>
-				Trocamos somente peças com defeito, por outra do mesmo modelo. Avise em
-				até 90 dias do recebimento: resolvemos em até 30 dias. Se não houver
-				outra peça do mesmo modelo, devolvemos o valor pago.
+				Peça com defeito: avise em até 90 dias do recebimento e trocamos por
+				outra do mesmo modelo em até 30 dias. Se não resolvermos nesse prazo,
+				você escolhe: outra peça igual, o dinheiro de volta ou um desconto
+				proporcional (Código de Defesa do Consumidor, art. 18).
 			</p>
-			<p>Não fazemos troca por tamanho, cor ou gosto.</p>
+			<p>
+				Fora do prazo de arrependimento, não fazemos troca por tamanho, cor ou
+				gosto.
+			</p>
 			<h2>Como pedir</h2>
 			<ul>
 				<li>
@@ -42,7 +46,8 @@ export default function Page() {
 					informando o número do pedido.
 				</li>
 				<li>
-					A peça pode ser entregue na loja, {ENDERECO}, {HORARIO}.
+					Você pode entregar a peça na loja, {ENDERECO}, {HORARIO}, ou
+					combinamos o envio por nossa conta.
 				</li>
 			</ul>
 		</PaginaTexto>

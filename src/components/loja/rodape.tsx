@@ -48,7 +48,9 @@ export function Rodape({ raizes }: { raizes: RaizLoja[] }) {
 				<div className="flex flex-col">
 					<p className="mb-1 font-semibold">Entrega</p>
 					<p className="text-papel/75">Grátis em Belém</p>
-					<p className="text-papel/75">Demais regiões: valor do Moto Uber</p>
+					<p className="text-papel/75">
+						Região metropolitana: valor do Moto Uber
+					</p>
 				</div>
 				<div className="flex flex-col">
 					<p className="mb-1 font-semibold">Ajuda</p>
