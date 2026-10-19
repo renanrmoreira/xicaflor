@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { APreencher, PaginaTexto } from "@/components/loja/pagina-texto";
-import { INSTAGRAM, linkWhatsapp } from "@/lib/loja";
+import { PaginaTexto } from "@/components/loja/pagina-texto";
+import { CNPJ, ENDERECO, INSTAGRAM, linkWhatsapp } from "@/lib/loja";
 
 export const metadata: Metadata = {
 	title: "Política de privacidade — Xica Flor",
@@ -17,7 +17,7 @@ export default function Page() {
 			</p>
 			<h2>Quem cuida dos seus dados</h2>
 			<p>
-				<APreencher>Razão social, CNPJ e endereço da loja.</APreencher>
+				Xica Flor, CNPJ {CNPJ}, {ENDERECO}.
 			</p>
 			<h2>Quais dados coletamos</h2>
 			<ul>

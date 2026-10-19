@@ -50,6 +50,7 @@ export function montarPreferencia(pedido: PedidoParaPagar, site: string) {
 			failure: volta("recusado"),
 		},
 		auto_return: "approved",
+		payment_methods: { installments: 4 },
 		expires: true,
 		date_of_expiration: pedido.reserva_expira_em,
 		metadata: { numero: pedido.numero },

@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
-import { APreencher, PaginaTexto } from "@/components/loja/pagina-texto";
+import { PaginaTexto } from "@/components/loja/pagina-texto";
 import { classeBotao } from "@/components/ui/botao";
-import { INSTAGRAM, LINK_INSTAGRAM, linkWhatsapp, TELEFONE } from "@/lib/loja";
+import {
+	ENDERECO,
+	HORARIO,
+	INSTAGRAM,
+	LINK_INSTAGRAM,
+	linkWhatsapp,
+	TELEFONE,
+} from "@/lib/loja";
 
 export const metadata: Metadata = {
 	title: "Contato — Xica Flor",
@@ -32,7 +39,7 @@ export default function Page() {
 			</div>
 			<h2>Retirada na loja</h2>
 			<p>
-				<APreencher>Endereço e horário de funcionamento.</APreencher>
+				{ENDERECO}, {HORARIO}.
 			</p>
 		</PaginaTexto>
 	);

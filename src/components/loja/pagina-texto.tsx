@@ -14,7 +14,3 @@ export function PaginaTexto({
 		</article>
 	);
 }
-
-export function APreencher({ children }: { children: ReactNode }) {
-	return <mark className="bg-amarelo px-1 text-bordo">{children}</mark>;
-}
