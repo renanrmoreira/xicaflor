@@ -1,6 +1,9 @@
 const WHATSAPP = "5591988008817";
 export const INSTAGRAM = "xicaflor_";
 export const TELEFONE = "(91) 98800-8817";
+export const CNPJ = "48.021.886/0001-86";
+export const ENDERECO = "Rua dos Caripunas, 2742 – Belém/PA";
+export const HORARIO = "das 8h às 12h e das 14h às 18h";
 export const LINK_INSTAGRAM = `https://instagram.com/${INSTAGRAM}`;
 export const SITE = "https://xicaflor.renanrodrigues2292.workers.dev";
 export const AMARELO = "#F8E154";

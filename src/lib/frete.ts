@@ -35,7 +35,9 @@ export function calcularFrete(cep: string, zonas: Zona[]): Frete {
 export function descreverFrete(frete: Frete): string {
 	if (frete.tipo === "retirada") return "Retirada na loja: grátis";
 	if (frete.tipo === "a_combinar")
-		return `Frete a combinar pelo WhatsApp${frete.zona ? ` (${frete.zona})` : ""}`;
+		return frete.zona
+			? `Frete pelo valor do Moto Uber, combinado no WhatsApp (${frete.zona})`
+			: "Frete a combinar pelo WhatsApp";
 	return frete.preco === 0
 		? `Entrega grátis (${frete.zona})`
 		: `Entrega (${frete.zona}): ${formatarReais(frete.preco)}`;

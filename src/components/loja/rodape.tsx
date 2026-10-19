@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { APreencher } from "@/components/loja/pagina-texto";
 import {
+	CNPJ,
+	ENDERECO,
 	INSTAGRAM,
 	LINK_INSTAGRAM,
 	linkWhatsapp,
@@ -47,7 +48,9 @@ export function Rodape({ raizes }: { raizes: RaizLoja[] }) {
 				<div className="flex flex-col">
 					<p className="mb-1 font-semibold">Entrega</p>
 					<p className="text-papel/75">Grátis em Belém</p>
-					<p className="text-papel/75">Demais regiões: frete a combinar</p>
+					<p className="text-papel/75">
+						Região metropolitana: valor do Moto Uber
+					</p>
 				</div>
 				<div className="flex flex-col">
 					<p className="mb-1 font-semibold">Ajuda</p>
@@ -69,7 +72,9 @@ export function Rodape({ raizes }: { raizes: RaizLoja[] }) {
 				<div className="flex flex-col">
 					<p className="mb-1 font-semibold">Belém, Pará</p>
 					<p className="text-papel/75">
-						<APreencher>Razão social e CNPJ</APreencher>
+						{ENDERECO}
+						<br />
+						CNPJ {CNPJ}
 					</p>
 					<p className="text-papel/75">{SLOGAN}</p>
 				</div>

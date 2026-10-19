@@ -23,6 +23,7 @@ it("monta a preferência com referência, expiração, frete e retornos", () => 
 	const p = montarPreferencia(pedido, "https://loja.test");
 	expect(p.external_reference).toBe("ped-1");
 	expect(p.date_of_expiration).toBe("2026-10-17T15:30:00.000Z");
+	expect(p.payment_methods).toEqual({ installments: 4 });
 	expect(p.expires).toBe(true);
 	expect(p.items).toEqual([
 		{

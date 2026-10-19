@@ -26,12 +26,16 @@ test("frete na sacola: Belém grátis, Mosqueiro e fora a combinar, CEP inválid
 	await expect(sacola.getByText("Entrega grátis (Belém)")).toHaveCount(0);
 	await calcular(page, "66910010");
 	await expect(
-		sacola.getByText("Frete a combinar pelo WhatsApp (Mosqueiro)"),
+		sacola.getByText(
+			"Frete pelo valor do Moto Uber, combinado no WhatsApp (Mosqueiro)",
+		),
 	).toBeVisible();
 
 	await calcular(page, "01310-100");
 	await expect(
-		sacola.getByText("Frete a combinar pelo WhatsApp", { exact: true }),
+		sacola.getByText("Frete a combinar pelo WhatsApp", {
+			exact: true,
+		}),
 	).toBeVisible();
 
 	await calcular(page, "123");

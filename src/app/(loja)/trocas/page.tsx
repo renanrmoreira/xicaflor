@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { APreencher, PaginaTexto } from "@/components/loja/pagina-texto";
-import { linkWhatsapp } from "@/lib/loja";
+import { PaginaTexto } from "@/components/loja/pagina-texto";
+import { ENDERECO, HORARIO, linkWhatsapp } from "@/lib/loja";
 
 export const metadata: Metadata = {
 	title: "Trocas e devoluções — Xica Flor",
@@ -18,15 +18,16 @@ export default function Page() {
 				pago, inclusive o frete, e o custo de envio da devolução fica por conta
 				da loja.
 			</p>
-			<h2>Troca de tamanho ou modelo</h2>
+			<h2>Troca por defeito</h2>
 			<p>
-				A peça deve voltar sem sinais de uso e com etiqueta.{" "}
-				<APreencher>Prazo e condições de troca definidos pela loja.</APreencher>
+				Peça com defeito: avise em até 90 dias do recebimento e trocamos por
+				outra do mesmo modelo em até 30 dias. Se não resolvermos nesse prazo,
+				você escolhe: outra peça igual, o dinheiro de volta ou um desconto
+				proporcional (Código de Defesa do Consumidor, art. 18).
 			</p>
-			<h2>Peça com defeito</h2>
 			<p>
-				Se a peça chegar com defeito, avise em até 90 dias do recebimento.
-				Trocamos a peça ou devolvemos o valor.
+				Fora do prazo de arrependimento, não fazemos troca por tamanho, cor ou
+				gosto.
 			</p>
 			<h2>Como pedir</h2>
 			<ul>
@@ -45,8 +46,8 @@ export default function Page() {
 					informando o número do pedido.
 				</li>
 				<li>
-					Retirada ou entrega da devolução:{" "}
-					<APreencher>endereço e horário da loja.</APreencher>
+					Você pode entregar a peça na loja, {ENDERECO}, {HORARIO}, ou
+					combinamos o envio por nossa conta.
 				</li>
 			</ul>
 		</PaginaTexto>
