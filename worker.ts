@@ -20,7 +20,7 @@ export default {
 		const url = new URL((request as Request).url);
 		if (url.hostname === "www.xicaflor.com.br") {
 			url.hostname = "xicaflor.com.br";
-			return Response.redirect(url, 301);
+			return Response.redirect(url, 308);
 		}
 		return app.fetch?.(request, env, ctx);
 	},
