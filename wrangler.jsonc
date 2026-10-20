@@ -7,6 +7,10 @@
 	"assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
 	"services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "xicaflor" }],
 	"observability": { "enabled": true },
+	"routes": [
+		{ "pattern": "xicaflor.com.br", "custom_domain": true },
+		{ "pattern": "www.xicaflor.com.br", "custom_domain": true }
+	],
 	"kv_namespaces": [
 		{
 			"binding": "NEXT_INC_CACHE_KV",
