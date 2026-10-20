@@ -2,6 +2,7 @@ import "server-only";
 import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
 import type { montarPreferencia } from "@/lib/mercadopago";
+import { avisarPedidoPago } from "@/server/emails";
 import { supabaseServico } from "@/server/supabase";
 
 const API = process.env.MP_API_URL ?? "https://api.mercadopago.com";
@@ -57,6 +58,8 @@ export async function processarPagamento(id: string) {
 		valor_centavos: Math.round(pagamento.data.transaction_amount * 100),
 	});
 	if (error) throw error;
+	if (data === "pago" || data === "repetido")
+		await avisarPedidoPago(pagamento.data.external_reference);
 	if (data !== "pago" && data !== "repetido")
 		Sentry.captureMessage(
 			`Pagamento ${id} aprovado com resultado "${data}": conferir e estornar manualmente`,

@@ -113,6 +113,14 @@ test("checkout cria pedido, reserva a peça e envia a preferência ao Mercado Pa
 	expect(await (await notificar(request, pagamentoId)).json()).toEqual({
 		resultado: "repetido",
 	});
+	const emails = (
+		await (await request.get(`${MP_E2E.api}/__emails`)).json()
+	).filter((e: { chave: string }) => e.chave.includes(String(pedidoId)));
+	expect(emails.map((e: { to: string[] }) => e.to[0]).sort()).toEqual([
+		CLIENTE.email,
+		"loja@e2e.local",
+	]);
+	expect(emails[0].html).toContain("Blusa Checkout E2E");
 	await page.reload();
 	await expect(page.getByRole("heading", { name: "Pago" })).toBeVisible();
 	await expect(
