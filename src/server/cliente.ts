@@ -1,4 +1,5 @@
 import "server-only";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { supabaseServidor } from "./supabase";
 
@@ -26,4 +27,12 @@ export async function listarPedidos(clienteId: string) {
 		.eq("cliente_id", clienteId)
 		.order("criado_em", { ascending: false })
 		.limit(50);
+}
+
+export const RECUPERACAO = "recuperacao_senha";
+
+export async function exigirRecuperacao() {
+	const cliente = await exigirCliente();
+	if (!(await cookies()).has(RECUPERACAO)) redirect("/conta");
+	return cliente;
 }

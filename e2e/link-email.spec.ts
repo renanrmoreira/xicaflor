@@ -1,5 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
+import { entrarCliente } from "./entrar";
 
 const servico = createClient(
 	process.env.SUPABASE_URL ?? "",
@@ -17,8 +18,10 @@ async function linkDoEmail(email: string) {
 		const id = busca.messages?.[0]?.ID;
 		if (id) {
 			const mensagem = await (await fetch(`${MAILPIT}/message/${id}`)).json();
-			const link = String(mensagem.Text).match(/https?:\/\/\S+verify\S+/)?.[0];
-			if (link) return link.replace(/&amp;/g, "&");
+			const link = String(mensagem.HTML).match(
+				/href="([^"]+auth\/callback[^"]+)"/,
+			)?.[1];
+			if (link) return link.replaceAll("&amp;", "&");
 		}
 		await new Promise((ok) => setTimeout(ok, 500));
 	}
@@ -38,15 +41,19 @@ async function novaCliente(page: Page, projeto: string) {
 	return { email, semSenha };
 }
 
-test("entra pelo link enviado ao e-mail", async ({ page }, info) => {
+test("entra pelo link aberto em outro navegador", async ({
+	page,
+	browser,
+}, info) => {
 	const { email, semSenha } = await novaCliente(page, info.project.name);
 	await semSenha
 		.getByRole("button", { name: "Receber link para entrar" })
 		.click();
 	await expect(semSenha.getByRole("status")).toContainText("enviamos o link");
-	await page.goto(await linkDoEmail(email));
-	await expect(page).toHaveURL(/\/conta$/);
-	await expect(page.getByRole("main").getByText(email).first()).toBeVisible();
+	const outro = await (await browser.newContext()).newPage();
+	await outro.goto(await linkDoEmail(email));
+	await expect(outro).toHaveURL(/\/conta$/);
+	await expect(outro.getByRole("main").getByText(email).first()).toBeVisible();
 });
 
 test("recupera a senha pelo e-mail e entra com a nova", async ({
@@ -76,4 +83,13 @@ test("link inválido volta para o login com aviso", async ({ page }) => {
 	await expect(page.getByRole("main").getByRole("alert")).toContainText(
 		"expirou",
 	);
+});
+
+test("nova senha exige sessão vinda do link de recuperação", async ({
+	page,
+}, info) => {
+	const { email } = await novaCliente(page, info.project.name);
+	await entrarCliente(page, { email, senha: "senha-antiga-123" });
+	await page.goto("/conta/nova-senha");
+	await expect(page).toHaveURL(/\/conta$/);
 });

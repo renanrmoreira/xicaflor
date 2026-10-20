@@ -1,10 +1,11 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { siteAtual } from "@/lib/loja";
 import type { EstadoConta } from "@/lib/resultado";
 import { nome, telefone, valoresDoForm } from "@/lib/validacao";
+import { exigirRecuperacao, RECUPERACAO } from "./cliente";
 import { supabaseServidor } from "./supabase";
 
 const credenciais = z.object({ email: z.email(), senha: z.string().min(1) });
@@ -53,7 +54,6 @@ export async function criarConta(
 		password: entrada.data.senha,
 		options: {
 			data: { nome: entrada.data.nome, telefone: entrada.data.telefone },
-			emailRedirectTo: `${siteAtual()}/auth/callback?volta=/conta`,
 		},
 	});
 	if (error)
@@ -79,20 +79,15 @@ export async function pedirLink(
 	const entrada = z.email().safeParse(email);
 	if (!entrada.success) return { erro: "E-mail inválido.", valores: { email } };
 	const supabase = await supabaseServidor();
-	const volta = `${siteAtual()}/auth/callback?volta=`;
 	const { error } =
 		dados.get("acao") === "senha"
-			? await supabase.auth.resetPasswordForEmail(entrada.data, {
-					redirectTo: `${volta}/conta/nova-senha`,
-				})
+			? await supabase.auth.resetPasswordForEmail(entrada.data)
 			: await supabase.auth.signInWithOtp({
 					email: entrada.data,
-					options: {
-						shouldCreateUser: false,
-						emailRedirectTo: `${volta}/conta`,
-					},
+					options: { shouldCreateUser: false },
 				});
-	if (error && error.status !== 422 && error.code !== "otp_disabled")
+	// Erros 4xx (conta inexistente, limite de envio) respondem igual ao sucesso para não revelar quem tem conta.
+	if (error && (error.status ?? 500) >= 500)
 		return {
 			erro: "Não foi possível enviar agora. Tente de novo em instantes.",
 			valores: { email },
@@ -106,6 +101,7 @@ export async function trocarSenha(
 	_: EstadoConta,
 	dados: FormData,
 ): Promise<EstadoConta> {
+	await exigirRecuperacao();
 	const senha = novaSenha.safeParse(dados.get("senha"));
 	if (!senha.success) return { erro: senha.error.issues[0].message };
 	const supabase = await supabaseServidor();
@@ -115,7 +111,11 @@ export async function trocarSenha(
 			erro:
 				error.code === "same_password"
 					? "Escolha uma senha diferente da atual."
-					: "Não foi possível trocar a senha. Peça um novo link.",
+					: error.code === "weak_password"
+						? "Senha fraca. Use uma senha mais longa."
+						: "Não foi possível trocar a senha. Peça um novo link.",
 		};
+	(await cookies()).delete(RECUPERACAO);
+	await supabase.auth.signOut({ scope: "others" });
 	redirect("/conta");
 }
