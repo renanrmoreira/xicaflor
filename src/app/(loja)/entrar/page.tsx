@@ -40,7 +40,7 @@ export default async function Page({ searchParams }: PageProps<"/entrar">) {
 						Sem senha?
 					</h2>
 					<p className="text-suave">Receba um link no e-mail.</p>
-					<FormLink acao={pedirLink} />
+					<FormLink acao={pedirLink} captcha={process.env.TURNSTILE_SITE_KEY} />
 				</section>
 			</div>
 			<section className="flex flex-col gap-6 border-t border-linha pt-10 md:border-t-0 md:border-l md:pt-0 md:pl-16">
@@ -48,7 +48,10 @@ export default async function Page({ searchParams }: PageProps<"/entrar">) {
 				<p className="text-suave">
 					Só nome, e-mail e senha. O endereço você completa depois.
 				</p>
-				<FormCadastro acao={criarConta} />
+				<FormCadastro
+					acao={criarConta}
+					captcha={process.env.TURNSTILE_SITE_KEY}
+				/>
 			</section>
 		</div>
 	);

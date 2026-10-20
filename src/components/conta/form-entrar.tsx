@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { Botao } from "@/components/ui/botao";
 import { Campo } from "@/components/ui/campo";
 import type { AcaoConta } from "@/lib/resultado";
+import { Captcha } from "./captcha";
 
 export function FormEntrar({ acao }: { acao: AcaoConta }) {
 	const [estado, enviar, pendente] = useActionState(acao, undefined);
@@ -36,7 +37,13 @@ export function FormEntrar({ acao }: { acao: AcaoConta }) {
 	);
 }
 
-export function FormCadastro({ acao }: { acao: AcaoConta }) {
+export function FormCadastro({
+	acao,
+	captcha,
+}: {
+	acao: AcaoConta;
+	captcha?: string;
+}) {
 	const [estado, enviar, pendente] = useActionState(acao, undefined);
 	const v = estado?.valores;
 	if (estado?.ok)
@@ -80,6 +87,7 @@ export function FormCadastro({ acao }: { acao: AcaoConta }) {
 				required
 				minLength={8}
 			/>
+			<Captcha chave={captcha} renovar={estado} />
 			{estado?.erro && (
 				<p role="alert" className="entra text-small text-vermelho">
 					{estado.erro}
@@ -92,7 +100,13 @@ export function FormCadastro({ acao }: { acao: AcaoConta }) {
 	);
 }
 
-export function FormLink({ acao }: { acao: AcaoConta }) {
+export function FormLink({
+	acao,
+	captcha,
+}: {
+	acao: AcaoConta;
+	captcha?: string;
+}) {
 	const [estado, enviar, pendente] = useActionState(acao, undefined);
 	if (estado?.ok)
 		return (
@@ -111,6 +125,7 @@ export function FormLink({ acao }: { acao: AcaoConta }) {
 				defaultValue={estado?.valores?.email}
 				required
 			/>
+			<Captcha chave={captcha} renovar={estado} />
 			{estado?.erro && (
 				<p role="alert" className="entra text-small text-vermelho">
 					{estado.erro}
