@@ -19,6 +19,7 @@ async function enviar(
 			"content-type": "application/json",
 			"idempotency-key": chave,
 		},
+		signal: AbortSignal.timeout(5000),
 		body: JSON.stringify({
 			from: "Xica Flor <contato@xicaflor.com.br>",
 			to: [para],
@@ -42,9 +43,9 @@ export async function avisarPedidoPago(pedidoId: string) {
 			.eq("id", pedidoId)
 			.single();
 		if (error) throw error;
-		const { data: usuario } = await supabase.auth.admin.getUserById(
-			pedido.cliente_id,
-		);
+		const { data: usuario, error: erroUsuario } =
+			await supabase.auth.admin.getUserById(pedido.cliente_id);
+		if (erroUsuario) Sentry.captureException(erroUsuario);
 		const { cliente, loja } = emailsDoPedido(
 			{
 				...pedido,

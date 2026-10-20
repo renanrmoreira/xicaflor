@@ -1,4 +1,5 @@
 import { formatarReais } from "./dinheiro";
+import { linkWhatsapp, SLOGAN, whatsappDoCliente } from "./loja";
 import { detalheVariante } from "./sacola";
 
 export type PedidoEmail = {
@@ -54,7 +55,7 @@ ${paragrafos.map((p) => `<p style="font-size:16px;line-height:1.5">${p}</p>`).jo
 <table style="width:100%;border-collapse:collapse;border-top:1px solid #eadfe1;border-bottom:1px solid #eadfe1;margin:20px 0">${itens}</table>
 <p style="font-size:15px">${linhaFrete(pedido)}<br><strong>Total: ${formatarReais(pedido.total_centavos)}</strong></p>
 <p style="margin:28px 0"><a href="${link}" style="background:#D81B36;color:#fff;padding:14px 24px;text-decoration:none;font-weight:bold;display:inline-block">Ver pedido</a></p>
-<p style="font-size:13px;color:#6b4a50">Xica Flor · Seja você o seu próprio padrão de beleza!</p>
+<p style="font-size:13px;color:#6b4a50">Xica Flor · ${SLOGAN}</p>
 </div>`;
 }
 
@@ -65,8 +66,19 @@ export function emailsDoPedido(pedido: PedidoEmail, site: string) {
 			: "Já estamos separando suas peças e avisamos quando saírem para entrega.";
 	const e = pedido.endereco;
 	const endereco = e
-		? `${escapar(`${e.logradouro ?? ""}, ${e.numero ?? ""}${e.complemento ? ` · ${e.complemento}` : ""} · ${e.bairro ?? ""} · ${e.cidade ?? ""} · CEP ${e.cep ?? ""}`)}`
+		? escapar(
+				[
+					`${e.logradouro ?? ""}, ${e.numero ?? ""}`,
+					e.complemento,
+					e.bairro,
+					e.cidade,
+					e.cep && `CEP ${e.cep}`,
+				]
+					.filter(Boolean)
+					.join(" · "),
+			)
 		: "Retirada na loja";
+	const whatsapp = whatsappDoCliente(pedido.telefone_cliente);
 	return {
 		cliente: {
 			assunto: `Pedido nº ${pedido.numero} confirmado — Xica Flor`,
@@ -82,7 +94,7 @@ export function emailsDoPedido(pedido: PedidoEmail, site: string) {
 			html: corpo(
 				`Novo pedido pago: nº ${pedido.numero}`,
 				[
-					`Cliente: ${escapar(pedido.nome_cliente || "sem nome")}${pedido.telefone_cliente ? ` · WhatsApp ${escapar(pedido.telefone_cliente)}` : ""}`,
+					`Cliente: ${escapar(pedido.nome_cliente || "sem nome")}${whatsapp ? ` · <a href="${linkWhatsapp(`Olá! Aqui é da Xica Flor, sobre o seu pedido nº ${pedido.numero}.`, encodeURIComponent(whatsapp))}">WhatsApp ${escapar(pedido.telefone_cliente ?? "")}</a>` : ""}`,
 					`Entrega: ${endereco}`,
 				],
 				pedido,

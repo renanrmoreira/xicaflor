@@ -58,7 +58,7 @@ export async function processarPagamento(id: string) {
 		valor_centavos: Math.round(pagamento.data.transaction_amount * 100),
 	});
 	if (error) throw error;
-	if (data === "pago")
+	if (data === "pago" || data === "repetido")
 		await avisarPedidoPago(pagamento.data.external_reference);
 	if (data !== "pago" && data !== "repetido")
 		Sentry.captureMessage(
