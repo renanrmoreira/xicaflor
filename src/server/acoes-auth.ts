@@ -1,9 +1,11 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import type { EstadoConta } from "@/lib/resultado";
 import { nome, telefone, valoresDoForm } from "@/lib/validacao";
+import { exigirRecuperacao, RECUPERACAO } from "./cliente";
 import { supabaseServidor } from "./supabase";
 
 const credenciais = z.object({ email: z.email(), senha: z.string().min(1) });
@@ -67,4 +69,53 @@ export async function sair(destino: "/admin/entrar" | "/entrar") {
 	const supabase = await supabaseServidor();
 	await supabase.auth.signOut();
 	redirect(destino === "/admin/entrar" ? destino : "/entrar");
+}
+
+export async function pedirLink(
+	_: EstadoConta,
+	dados: FormData,
+): Promise<EstadoConta> {
+	const email = String(dados.get("email") ?? "");
+	const entrada = z.email().safeParse(email);
+	if (!entrada.success) return { erro: "E-mail inválido.", valores: { email } };
+	const supabase = await supabaseServidor();
+	const { error } =
+		dados.get("acao") === "senha"
+			? await supabase.auth.resetPasswordForEmail(entrada.data)
+			: await supabase.auth.signInWithOtp({
+					email: entrada.data,
+					options: { shouldCreateUser: false },
+				});
+	// Erros 4xx (conta inexistente, limite de envio) respondem igual ao sucesso para não revelar quem tem conta.
+	if (error && (error.status ?? 500) >= 500)
+		return {
+			erro: "Não foi possível enviar agora. Tente de novo em instantes.",
+			valores: { email },
+		};
+	return { ok: true };
+}
+
+const novaSenha = cadastro.shape.senha;
+
+export async function trocarSenha(
+	_: EstadoConta,
+	dados: FormData,
+): Promise<EstadoConta> {
+	await exigirRecuperacao();
+	const senha = novaSenha.safeParse(dados.get("senha"));
+	if (!senha.success) return { erro: senha.error.issues[0].message };
+	const supabase = await supabaseServidor();
+	const { error } = await supabase.auth.updateUser({ password: senha.data });
+	if (error)
+		return {
+			erro:
+				error.code === "same_password"
+					? "Escolha uma senha diferente da atual."
+					: error.code === "weak_password"
+						? "Senha fraca. Use uma senha mais longa."
+						: "Não foi possível trocar a senha. Peça um novo link.",
+		};
+	(await cookies()).delete(RECUPERACAO);
+	await supabase.auth.signOut({ scope: "others" });
+	redirect("/conta");
 }

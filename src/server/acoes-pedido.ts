@@ -4,7 +4,7 @@ import * as Sentry from "@sentry/nextjs";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { log } from "@/lib/log";
-import { SITE } from "@/lib/loja";
+import { siteAtual } from "@/lib/loja";
 import { montarPreferencia } from "@/lib/mercadopago";
 import type { Resultado, ResultadoCompra } from "@/lib/resultado";
 import { exigirAdmin } from "./auth";
@@ -67,7 +67,7 @@ export async function finalizarCompra(
 			.single();
 		if (erroLeitura) throw erroLeitura;
 		const preferencia = await criarPreferencia(
-			montarPreferencia(completo, process.env.SITE_URL ?? SITE),
+			montarPreferencia(completo, siteAtual()),
 		);
 		const { error } = await supabase.rpc("registrar_preferencia", {
 			pedido: criado.id,

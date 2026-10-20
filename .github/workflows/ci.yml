@@ -70,7 +70,7 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec supabase start -x studio,imgproxy,edge-runtime,logflare,vector,realtime,postgres-meta,supavisor,mailpit
+      - run: pnpm exec supabase start -x studio,imgproxy,edge-runtime,logflare,vector,realtime,postgres-meta,supavisor
       - name: Variáveis do Supabase local
         run: |
           pnpm exec supabase status -o env | sed -n \

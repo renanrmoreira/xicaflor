@@ -6,6 +6,7 @@ export const ENDERECO = "Rua dos Caripunas, 2742 – Belém/PA";
 export const HORARIO = "das 8h às 12h e das 14h às 18h";
 export const LINK_INSTAGRAM = `https://instagram.com/${INSTAGRAM}`;
 export const SITE = "https://xicaflor.com.br";
+export const siteAtual = () => process.env.SITE_URL ?? SITE;
 export const AMARELO = "#F8E154";
 export const SLOGAN = "Seja você o seu próprio padrão de beleza!";
 
