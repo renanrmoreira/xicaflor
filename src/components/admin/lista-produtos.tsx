@@ -45,10 +45,13 @@ export function ListaProdutos({ produtos, ajustar, alternar }: Props) {
 									width={48}
 									height={60}
 									loading="lazy"
-									className="aspect-4/5 w-12 object-cover"
+									className="aspect-4/5 w-12 shrink-0 object-cover"
 								/>
 							) : (
-								<span aria-hidden className="aspect-4/5 w-12 bg-linha" />
+								<span
+									aria-hidden
+									className="aspect-4/5 w-12 shrink-0 bg-linha"
+								/>
 							)}
 							<div className="min-w-0">
 								<p

@@ -74,3 +74,15 @@ test("produto de Beleza é vitrine, sem variantes", async ({ page }, info) => {
 	await expect(page).toHaveURL(/\/admin\/produtos\/[0-9a-f-]{36}#fotos$/);
 	await expect(page.getByLabel("Nome")).toHaveValue(nome);
 });
+
+test("admin busca produto pelo nome", async ({ page }) => {
+	await entrar(page, ADMIN);
+	await page.waitForURL(/\/admin$/);
+	await page.goto("/admin/produtos");
+	await page.getByLabel("Buscar produto pelo nome").fill("vestido loja");
+	await page.getByRole("button", { name: "Buscar" }).click();
+	await expect(page).toHaveURL(/q=vestido\+loja/);
+	await expect(page.getByText(/1 resultado para “vestido loja”/)).toBeVisible();
+	await expect(page.getByText("Vestido Loja E2E")).toBeVisible();
+	await expect(page.getByText("Blusa Checkout E2E")).toHaveCount(0);
+});
