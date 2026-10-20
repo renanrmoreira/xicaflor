@@ -1,4 +1,5 @@
 import "server-only";
+import { padraoIlike } from "@/lib/loja";
 import { ordenarVariantes } from "@/lib/tamanhos";
 import { supabaseServidor, urlDaFoto } from "./supabase";
 
@@ -29,16 +30,23 @@ export async function arvoreDeCategorias(): Promise<Categoria[]> {
 	return raizes;
 }
 
-export async function produtosDoAdmin() {
+export const POR_PAGINA = 30;
+
+export async function produtosDoAdmin(termo: string | null, pagina: number) {
 	const supabase = await supabaseServidor();
-	const { data, error } = await supabase
+	let consulta = supabase
 		.from("produtos")
 		.select(
 			"id, nome, ativo, categorias(nome), variantes(id, cor, tamanho, estoque, preco_centavos, ativo), produto_fotos(path_miniatura, ordem)",
+			{ count: "exact" },
 		)
-		.order("criado_em", { ascending: false });
+		.order("criado_em", { ascending: false })
+		.range((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA - 1);
+	if (termo) consulta = consulta.ilike("nome", padraoIlike(termo));
+	const { data, error, count } = await consulta;
+	if (error?.code === "PGRST103") return { produtos: [], total: 0 };
 	if (error) throw error;
-	return data.map(({ produto_fotos, ...p }) => {
+	const produtos = data.map(({ produto_fotos, ...p }) => {
 		const capa = produto_fotos.toSorted((a, b) => a.ordem - b.ordem)[0];
 		return {
 			...p,
@@ -46,6 +54,7 @@ export async function produtosDoAdmin() {
 			variantes: ordenarVariantes(p.variantes.filter((v) => v.ativo)),
 		};
 	});
+	return { produtos, total: count ?? 0 };
 }
 
 export async function produtoParaEdicao(id: string) {
