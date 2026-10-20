@@ -69,9 +69,11 @@ function CartaoProduto({
 export function GradeProdutos({
 	produtos,
 	vazio,
+	animar = true,
 }: {
 	produtos: Cartao[];
 	vazio: string;
+	animar?: boolean;
 }) {
 	if (!produtos.length) return <p className="py-10 text-suave">{vazio}</p>;
 	return (
@@ -79,8 +81,10 @@ export function GradeProdutos({
 			{produtos.map((p, i) => (
 				<li
 					key={p.id}
-					className="entra"
-					style={{ transitionDelay: `${Math.min(i, 8) * 50}ms` }}
+					className={animar ? "entra" : undefined}
+					style={
+						animar ? { transitionDelay: `${Math.min(i, 8) * 50}ms` } : undefined
+					}
 				>
 					<CartaoProduto produto={p} prioridade={i < 2} />
 				</li>

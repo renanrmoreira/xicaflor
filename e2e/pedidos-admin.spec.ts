@@ -15,7 +15,8 @@ async function pedidoPago() {
 	const cliente = usuarios.users.find((u) => u.email === CLIENTE.email);
 	const { data: variante } = await servico
 		.from("variantes")
-		.select("id")
+		.select("id, produtos!inner(slug)")
+		.eq("produtos.slug", "blusa-checkout-e2e")
 		.limit(1)
 		.single();
 	const { data: pedido, error } = await servico
@@ -84,4 +85,38 @@ test("admin acompanha o pedido pago até a retirada e chama a cliente no WhatsAp
 		page.getByRole("heading", { name: "Pedidos em andamento" }),
 	).toBeVisible();
 	await expect(page.getByText(/^\d+ pedidos? pagos?$/).first()).toBeVisible();
+});
+
+test("admin cancela pedido pago com confirmação", async ({ page }) => {
+	const pedido = await pedidoPago();
+	await entrar(page, ADMIN);
+	await page.waitForURL(/\/admin$/);
+	await page.goto("/admin/pedidos");
+	await page
+		.getByRole("link", { name: new RegExp(`Pedido nº ${pedido.numero} `) })
+		.click();
+	await page.getByRole("button", { name: "Cancelar pedido" }).click();
+	await page.getByRole("button", { name: "Voltar" }).click();
+	await expect(page.getByRole("heading", { name: "Pago" })).toBeVisible();
+	await page.getByRole("button", { name: "Cancelar pedido" }).click();
+	await page.getByRole("button", { name: "Sim, cancelar pedido" }).click();
+	await expect(page.getByRole("heading", { name: "Cancelado" })).toBeVisible();
+	await expect(
+		page.getByRole("button", { name: "Sim, cancelar pedido" }),
+	).toHaveCount(0);
+});
+
+test("pular para o conteúdo e menu marca a página atual", async ({ page }) => {
+	await entrar(page, ADMIN);
+	await page.waitForURL(/\/admin$/);
+	await page.goto("/admin/pedidos");
+	await expect(
+		page
+			.getByRole("navigation", { name: "Admin" })
+			.getByRole("link", { name: "Pedidos" }),
+	).toHaveAttribute("aria-current", "page");
+	await page.keyboard.press("Tab");
+	await expect(
+		page.getByRole("link", { name: "Pular para o conteúdo" }),
+	).toBeFocused();
 });

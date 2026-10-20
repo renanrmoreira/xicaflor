@@ -62,10 +62,7 @@ export function Galeria({ fotos, nome }: { fotos: Foto[]; nome: string }) {
 				))}
 			</ul>
 			{fotos.length > 1 && (
-				<p
-					aria-live="polite"
-					className="absolute right-3 bottom-3 bg-papel/90 px-2 py-1 text-small tabular-nums md:hidden"
-				>
+				<p className="absolute right-3 bottom-3 bg-papel/90 px-2 py-1 text-small tabular-nums md:hidden">
 					{atual + 1}/{fotos.length}
 				</p>
 			)}

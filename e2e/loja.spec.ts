@@ -109,7 +109,7 @@ test("mudança de estoque no admin aparece na loja na hora", async ({
 
 	await entrar(page, ADMIN);
 	await expect(page.getByRole("heading", { name: "Painel" })).toBeVisible();
-	await page.goto("/admin/produtos");
+	await page.goto("/admin/produtos?q=Vestido+Loja+E2E");
 	const item = page
 		.getByRole("listitem")
 		.filter({ hasText: "Vestido Loja E2E" })
@@ -124,7 +124,7 @@ test("mudança de estoque no admin aparece na loja na hora", async ({
 	await page.goto("/p/vestido-loja-e2e");
 	await expect(page.getByRole("radio", { name: "P" })).toBeEnabled();
 
-	await page.goto("/admin/produtos");
+	await page.goto("/admin/produtos?q=Vestido+Loja+E2E");
 	await item
 		.getByRole("button", { name: "Diminuir estoque de Azul · P" })
 		.click();

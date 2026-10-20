@@ -16,7 +16,7 @@ export function Campo({ rotulo, erro, className = "", ...props }: Props) {
 				id={id}
 				aria-invalid={erro ? true : undefined}
 				aria-describedby={erro ? `${id}-erro` : undefined}
-				className="min-h-12 w-full min-w-0 border border-linha bg-papel px-3.5 transition-colors duration-150 hover:border-suave focus:border-tinta focus:outline-none aria-invalid:border-vermelho"
+				className="min-h-12 w-full min-w-0 border border-linha bg-papel px-3.5 transition-colors duration-150 hover:border-suave focus:border-tinta aria-invalid:border-vermelho"
 				{...props}
 			/>
 			{erro && (

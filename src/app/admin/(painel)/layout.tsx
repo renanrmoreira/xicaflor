@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { LinkNav } from "@/components/ui/link-nav";
 import { Wordmark } from "@/components/ui/marca";
 import { sair } from "@/server/acoes-auth";
 import { exigirAdmin } from "@/server/auth";
@@ -13,6 +14,12 @@ export default async function Layout({ children }: LayoutProps<"/admin">) {
 	const admin = await exigirAdmin();
 	return (
 		<div className="flex flex-1 flex-col">
+			<a
+				href="#conteudo"
+				className="sr-only z-50 bg-amarelo px-4 py-3 font-semibold text-bordo focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+			>
+				Pular para o conteúdo
+			</a>
 			<header className="sticky top-0 z-40 flex items-center justify-between bg-amarelo px-(--margem) py-3 text-vermelho">
 				<Link href="/admin" aria-label="Início do admin">
 					<Wordmark className="w-24" />
@@ -40,16 +47,22 @@ export default async function Layout({ children }: LayoutProps<"/admin">) {
 					["/admin/categorias", "Categorias"],
 					["/admin/frete", "Frete"],
 				].map(([href, rotulo]) => (
-					<Link
+					<LinkNav
 						key={href}
 						href={href}
-						className="py-3 underline-offset-8 hover:underline"
+						className="py-3 underline-offset-8 hover:underline aria-[current=page]:underline"
 					>
 						{rotulo}
-					</Link>
+					</LinkNav>
 				))}
 			</nav>
-			<main className="flex-1 px-(--margem) py-8">{children}</main>
+			<main
+				id="conteudo"
+				tabIndex={-1}
+				className="flex-1 px-(--margem) py-8 outline-none"
+			>
+				{children}
+			</main>
 		</div>
 	);
 }
