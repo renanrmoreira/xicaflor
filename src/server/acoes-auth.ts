@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { siteAtual } from "@/lib/loja";
 import type { EstadoConta } from "@/lib/resultado";
 import { nome, telefone, valoresDoForm } from "@/lib/validacao";
 import { supabaseServidor } from "./supabase";
@@ -52,6 +53,7 @@ export async function criarConta(
 		password: entrada.data.senha,
 		options: {
 			data: { nome: entrada.data.nome, telefone: entrada.data.telefone },
+			emailRedirectTo: `${siteAtual()}/auth/callback?volta=/conta`,
 		},
 	});
 	if (error)
@@ -67,4 +69,53 @@ export async function sair(destino: "/admin/entrar" | "/entrar") {
 	const supabase = await supabaseServidor();
 	await supabase.auth.signOut();
 	redirect(destino === "/admin/entrar" ? destino : "/entrar");
+}
+
+export async function pedirLink(
+	_: EstadoConta,
+	dados: FormData,
+): Promise<EstadoConta> {
+	const email = String(dados.get("email") ?? "");
+	const entrada = z.email().safeParse(email);
+	if (!entrada.success) return { erro: "E-mail inválido.", valores: { email } };
+	const supabase = await supabaseServidor();
+	const volta = `${siteAtual()}/auth/callback?volta=`;
+	const { error } =
+		dados.get("acao") === "senha"
+			? await supabase.auth.resetPasswordForEmail(entrada.data, {
+					redirectTo: `${volta}/conta/nova-senha`,
+				})
+			: await supabase.auth.signInWithOtp({
+					email: entrada.data,
+					options: {
+						shouldCreateUser: false,
+						emailRedirectTo: `${volta}/conta`,
+					},
+				});
+	if (error && error.status !== 422 && error.code !== "otp_disabled")
+		return {
+			erro: "Não foi possível enviar agora. Tente de novo em instantes.",
+			valores: { email },
+		};
+	return { ok: true };
+}
+
+const novaSenha = cadastro.shape.senha;
+
+export async function trocarSenha(
+	_: EstadoConta,
+	dados: FormData,
+): Promise<EstadoConta> {
+	const senha = novaSenha.safeParse(dados.get("senha"));
+	if (!senha.success) return { erro: senha.error.issues[0].message };
+	const supabase = await supabaseServidor();
+	const { error } = await supabase.auth.updateUser({ password: senha.data });
+	if (error)
+		return {
+			erro:
+				error.code === "same_password"
+					? "Escolha uma senha diferente da atual."
+					: "Não foi possível trocar a senha. Peça um novo link.",
+		};
+	redirect("/conta");
 }
