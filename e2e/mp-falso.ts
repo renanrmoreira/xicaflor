@@ -4,6 +4,7 @@ export const PORTA_MP = 3999;
 
 const preferencias = new Map<string, Record<string, unknown>>();
 const pagamentos = new Map<string, Record<string, unknown>>();
+const emails = new Map<string, Record<string, unknown>>();
 let falhasPendentes = 0;
 
 function corpo(
@@ -46,6 +47,14 @@ createServer(async (req, res) => {
 		return pagamento
 			? responder(200, pagamento)
 			: responder(404, { message: "not found" });
+	}
+	if (req.method === "POST" && url.pathname === "/emails") {
+		const chave = String(req.headers["idempotency-key"]);
+		emails.set(chave, { ...(await corpo(req)), chave });
+		return responder(200, { id: chave });
+	}
+	if (req.method === "GET" && url.pathname === "/__emails") {
+		return responder(200, [...emails.values()]);
 	}
 	if (req.method === "GET" && url.pathname === "/__preferencia") {
 		return responder(
