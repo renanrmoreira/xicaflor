@@ -44,6 +44,7 @@ export async function produtosDoAdmin(termo: string | null, pagina: number) {
 		.range((pagina - 1) * POR_PAGINA, pagina * POR_PAGINA - 1);
 	if (termo) consulta = consulta.ilike("nome", padraoIlike(termo));
 	const { data, error, count } = await consulta;
+	if (error?.code === "PGRST103") return { produtos: [], total: 0 };
 	if (error) throw error;
 	const produtos = data.map(({ produto_fotos, ...p }) => {
 		const capa = produto_fotos.toSorted((a, b) => a.ordem - b.ordem)[0];

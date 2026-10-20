@@ -85,4 +85,9 @@ test("admin busca produto pelo nome", async ({ page }) => {
 	await expect(page.getByText(/1 resultado para “vestido loja”/)).toBeVisible();
 	await expect(page.getByText("Vestido Loja E2E")).toBeVisible();
 	await expect(page.getByText("Blusa Checkout E2E")).toHaveCount(0);
+
+	await page.goto("/admin/produtos?q=vestido+loja&p=999");
+	await expect(page).toHaveURL(/p=1$/);
+	await page.goto("/admin/produtos?q=nada-com-esse-nome");
+	await expect(page.getByText("Nenhum produto encontrado.")).toBeVisible();
 });

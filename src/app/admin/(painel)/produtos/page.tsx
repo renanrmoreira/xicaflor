@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ListaProdutos } from "@/components/admin/lista-produtos";
 import { classeBotao } from "@/components/ui/botao";
 import { termoDeBusca } from "@/lib/loja";
@@ -13,11 +14,15 @@ export default async function Page({
 }: PageProps<"/admin/produtos">) {
 	const { q, p } = await searchParams;
 	const termo = termoDeBusca(q);
-	const pagina = Math.max(1, Number.parseInt(String(p ?? "1"), 10) || 1);
+	const pagina = Math.max(
+		1,
+		Number.parseInt(String(Array.isArray(p) ? p[0] : (p ?? "1")), 10) || 1,
+	);
 	const { produtos, total } = await produtosDoAdmin(termo, pagina);
 	const paginas = Math.max(1, Math.ceil(total / POR_PAGINA));
 	const link = (n: number) =>
 		`/admin/produtos?${new URLSearchParams({ ...(termo && { q: termo }), p: String(n) })}`;
+	if (pagina > paginas) redirect(link(1));
 	return (
 		<>
 			<div className="mb-6 flex flex-wrap items-end justify-between gap-4">
@@ -50,11 +55,17 @@ export default async function Page({
 					</Link>
 				</p>
 			)}
-			<ListaProdutos
-				produtos={produtos}
-				ajustar={ajustarEstoque}
-				alternar={alternarProduto}
-			/>
+			{termo && total === 0 ? (
+				<p className="border-y border-linha py-6 text-suave">
+					Nenhum produto encontrado.
+				</p>
+			) : (
+				<ListaProdutos
+					produtos={produtos}
+					ajustar={ajustarEstoque}
+					alternar={alternarProduto}
+				/>
+			)}
 			{paginas > 1 && (
 				<nav
 					aria-label="Páginas"
