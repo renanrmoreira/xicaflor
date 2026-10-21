@@ -39,7 +39,7 @@ export default async function Home() {
 
 	return (
 		<>
-			<section className="flex min-h-[78svh] flex-col justify-between overflow-hidden bg-amarelo px-(--margem) pt-8">
+			<section className="flex min-h-[46svh] flex-col md:min-h-[78svh] justify-between overflow-hidden bg-amarelo px-(--margem) pt-8">
 				<div className="flex items-start justify-between gap-6">
 					<p className="max-w-[22ch] text-lead leading-tight text-bordo">
 						{SLOGAN}

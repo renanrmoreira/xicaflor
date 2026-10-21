@@ -132,9 +132,7 @@ export function Compra({ variantes }: Props) {
 					</p>
 				)}
 			{falta || !disponivel ? (
-				<button type="button" disabled className="botao bg-vermelho text-papel">
-					{falta ?? "Esgotado"}
-				</button>
+				<Botao disabled>{falta ?? "Esgotado"}</Botao>
 			) : (
 				<Botao
 					onClick={() => {

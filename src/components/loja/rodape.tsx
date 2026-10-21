@@ -10,6 +10,10 @@ import {
 	TELEFONE,
 } from "@/lib/loja";
 
+const LINK =
+	"flex min-h-11 items-center text-papel/75 hover:text-papel md:min-h-8";
+const TEXTO = "py-1 leading-snug text-papel/75";
+
 export function Rodape({ raizes }: { raizes: RaizLoja[] }) {
 	return (
 		<footer className="mt-24 flex md:min-h-[70svh] flex-col justify-between gap-16 bg-bordo px-(--margem) pt-12 text-papel">
@@ -17,11 +21,7 @@ export function Rodape({ raizes }: { raizes: RaizLoja[] }) {
 				<div className="flex flex-col">
 					<p className="mb-1 font-semibold">Loja</p>
 					{raizes.map((r) => (
-						<Link
-							key={r.id}
-							href={`/c/${r.slug}`}
-							className="inline-flex min-h-11 items-center text-papel/75 hover:text-papel"
-						>
+						<Link key={r.id} href={`/c/${r.slug}`} className={LINK}>
 							{r.nome}
 						</Link>
 					))}
@@ -32,7 +32,7 @@ export function Rodape({ raizes }: { raizes: RaizLoja[] }) {
 						href={linkWhatsapp("Olá! Vim pelo site da Xica Flor.")}
 						target="_blank"
 						rel="noopener"
-						className="inline-flex min-h-11 items-center text-papel/75 hover:text-papel"
+						className={LINK}
 					>
 						WhatsApp {TELEFONE}
 					</a>
@@ -40,17 +40,15 @@ export function Rodape({ raizes }: { raizes: RaizLoja[] }) {
 						href={LINK_INSTAGRAM}
 						target="_blank"
 						rel="noopener"
-						className="inline-flex min-h-11 items-center text-papel/75 hover:text-papel"
+						className={LINK}
 					>
 						Instagram @{INSTAGRAM}
 					</a>
 				</div>
 				<div className="flex flex-col">
 					<p className="mb-1 font-semibold">Entrega</p>
-					<p className="text-papel/75">Grátis em Belém</p>
-					<p className="text-papel/75">
-						Região metropolitana: valor do Moto Uber
-					</p>
+					<p className={TEXTO}>Grátis em Belém</p>
+					<p className={TEXTO}>Região metropolitana: valor do Moto Uber</p>
 				</div>
 				<div className="flex flex-col">
 					<p className="mb-1 font-semibold">Ajuda</p>
@@ -60,23 +58,19 @@ export function Rodape({ raizes }: { raizes: RaizLoja[] }) {
 						["/sobre", "Sobre"],
 						["/contato", "Contato"],
 					].map(([href, rotulo]) => (
-						<Link
-							key={href}
-							href={href}
-							className="inline-flex min-h-11 items-center text-papel/75 hover:text-papel"
-						>
+						<Link key={href} href={href} className={LINK}>
 							{rotulo}
 						</Link>
 					))}
 				</div>
 				<div className="flex flex-col">
 					<p className="mb-1 font-semibold">Belém, Pará</p>
-					<p className="text-papel/75">
+					<p className={TEXTO}>
 						{ENDERECO}
 						<br />
 						CNPJ {CNPJ}
 					</p>
-					<p className="text-papel/75">{SLOGAN}</p>
+					<p className={`${TEXTO} mt-2 italic`}>{SLOGAN}</p>
 				</div>
 			</div>
 			<div>
