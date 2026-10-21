@@ -6,7 +6,13 @@ import { Campo } from "@/components/ui/campo";
 import type { AcaoConta } from "@/lib/resultado";
 import { Captcha } from "./captcha";
 
-export function FormEntrar({ acao }: { acao: AcaoConta }) {
+export function FormEntrar({
+	acao,
+	captcha,
+}: {
+	acao: AcaoConta;
+	captcha?: string;
+}) {
 	const [estado, enviar, pendente] = useActionState(acao, undefined);
 	return (
 		<form action={enviar} className="flex flex-col gap-4">
@@ -25,6 +31,7 @@ export function FormEntrar({ acao }: { acao: AcaoConta }) {
 				autoComplete="current-password"
 				required
 			/>
+			<Captcha chave={captcha} renovar={estado} />
 			{estado?.erro && (
 				<p role="alert" className="entra text-small text-vermelho">
 					{estado.erro}

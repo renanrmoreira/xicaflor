@@ -16,7 +16,10 @@ export default function Page() {
 				<h1 className="display mt-10 text-head text-bordo">Admin</h1>
 			</header>
 			<section className="entra mx-auto w-full max-w-sm px-(--margem) py-10">
-				<FormEntrar acao={entrar.bind(null, "/admin")} />
+				<FormEntrar
+					acao={entrar.bind(null, "/admin")}
+					captcha={process.env.TURNSTILE_SITE_KEY}
+				/>
 			</section>
 		</main>
 	);

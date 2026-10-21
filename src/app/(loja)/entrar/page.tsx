@@ -30,7 +30,10 @@ export default async function Page({ searchParams }: PageProps<"/entrar">) {
 							O link expirou ou já foi usado. Peça um novo abaixo.
 						</p>
 					)}
-					<FormEntrar acao={entrar.bind(null, destino)} />
+					<FormEntrar
+						acao={entrar.bind(null, destino)}
+						captcha={process.env.TURNSTILE_SITE_KEY}
+					/>
 				</section>
 				<section
 					aria-labelledby="sem-senha"
