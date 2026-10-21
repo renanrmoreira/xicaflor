@@ -16,7 +16,7 @@ const TEXTO = "py-1 leading-snug text-papel/75";
 
 export function Rodape({ raizes }: { raizes: RaizLoja[] }) {
 	return (
-		<footer className="mt-24 flex md:min-h-[70svh] flex-col justify-between gap-16 bg-bordo px-(--margem) pt-12 text-papel">
+		<footer className="mt-24 flex flex-col gap-16 bg-bordo px-(--margem) pt-12 text-papel">
 			<div className="grid grid-cols-2 gap-x-6 gap-y-8 text-small md:grid-cols-5">
 				<div className="flex flex-col">
 					<p className="mb-1 font-semibold">Loja</p>
@@ -76,7 +76,7 @@ export function Rodape({ raizes }: { raizes: RaizLoja[] }) {
 			<div>
 				<p
 					aria-hidden
-					className="display -mb-[0.1em] text-[clamp(4.5rem,23vw,22rem)] whitespace-nowrap text-amarelo"
+					className="display pb-2 text-[clamp(3.5rem,18vw,16rem)] leading-[0.85] whitespace-nowrap text-amarelo"
 				>
 					Xica Flor
 				</p>
