@@ -69,7 +69,10 @@ export function Sacola({
 	const [montada, setMontada] = useState(false);
 
 	useEffect(() => {
-		if (aberta) return setMontada(true);
+		if (aberta) {
+			setMontada(true);
+			return;
+		}
 		const fim = setTimeout(() => setMontada(false), 300);
 		return () => clearTimeout(fim);
 	}, [aberta]);
@@ -141,6 +144,11 @@ function ConteudoSacola({
 		nome: string;
 		quantidade: number;
 	} | null>(null);
+
+	useEffect(() => {
+		if (removido && itens.some((i) => i.varianteId === removido.id))
+			setRemovido(null);
+	}, [itens, removido]);
 	const [conferidas, setConferidas] = useState<VarianteConferida[] | null>(
 		null,
 	);

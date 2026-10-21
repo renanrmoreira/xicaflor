@@ -24,6 +24,7 @@ export function Cabecalho({ raizes }: { raizes: RaizLoja[] }) {
 						<LinkNav
 							key={r.id}
 							href={`/c/${r.slug}`}
+							tambem={r.filhas.map((f) => `/c/${f.slug}`)}
 							className="underline-offset-8 hover:underline aria-[current=page]:underline"
 						>
 							{r.nome}

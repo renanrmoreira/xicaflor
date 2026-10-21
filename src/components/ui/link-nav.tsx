@@ -6,11 +6,14 @@ import type { ComponentProps } from "react";
 
 export function LinkNav({
 	href,
+	tambem = [],
 	...props
-}: ComponentProps<typeof Link> & { href: string }) {
+}: ComponentProps<typeof Link> & { href: string; tambem?: string[] }) {
 	const caminho = usePathname();
 	const atual =
-		caminho === href || (href !== "/admin" && caminho.startsWith(`${href}/`));
+		caminho === href ||
+		tambem.includes(caminho) ||
+		(href !== "/admin" && caminho.startsWith(`${href}/`));
 	return (
 		<Link href={href} aria-current={atual ? "page" : undefined} {...props} />
 	);
