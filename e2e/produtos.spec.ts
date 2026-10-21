@@ -69,7 +69,7 @@ test("produto de Beleza é vitrine, sem variantes", async ({ page }, info) => {
 	await page.getByLabel("Categoria").selectOption({ label: "Maquiagem" });
 	await expect(page.getByText("Produto de vitrine")).toBeVisible();
 	await expect(page.getByLabel("Preço (R$)")).toHaveCount(0);
-	await page.getByLabel("Marca (opcional)").fill("O.Lab");
+	await page.getByLabel("Marca (opcional)").fill("OLAB");
 	await page.getByRole("button", { name: "Salvar produto" }).click();
 	await expect(page).toHaveURL(/\/admin\/produtos\/[0-9a-f-]{36}#fotos$/);
 	await expect(page.getByLabel("Nome")).toHaveValue(nome);

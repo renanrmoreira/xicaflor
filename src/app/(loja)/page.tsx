@@ -91,7 +91,7 @@ export default async function Home() {
 				<section className="mx-(--margem) mt-20 flex flex-col gap-4 bg-vermelho p-6 text-papel md:p-10">
 					<h2 className="display text-head">{beleza.nome}</h2>
 					<p className="max-w-[48ch]">
-						Maquiagem, skincare e perfumaria O.Lab e Rinode, com a curadoria da
+						Maquiagem, skincare e perfumaria OLAB e Hinode, com a curadoria da
 						Xica Flor.
 					</p>
 					<Link

@@ -21,7 +21,7 @@ select is((select count(*)::int from public.variantes where produto_id = '000000
 select is((select preco_centavos from public.variantes where produto_id = '00000000-0000-0000-0000-0000000000b1' and tamanho = 'M'), 17990, 'variante existente é atualizada pelo par cor/tamanho');
 
 select throws_ok($$ select public.salvar_produto(jsonb_build_object('nome', 'Batom', 'slug', 'batom', 'categoria_id', (select id from public.categorias where slug = 'maquiagem'), 'variantes', jsonb_build_array(jsonb_build_object('preco_centavos', 100, 'estoque', 1)))) $$, '23514', null, 'vitrine não aceita variantes');
-select lives_ok($$ select public.salvar_produto(jsonb_build_object('nome', 'Batom', 'slug', 'batom', 'marca', 'O.Lab', 'categoria_id', (select id from public.categorias where slug = 'maquiagem'))) $$, 'vitrine salva só nome, descrição e marca');
+select lives_ok($$ select public.salvar_produto(jsonb_build_object('nome', 'Batom', 'slug', 'batom', 'marca', 'OLAB', 'categoria_id', (select id from public.categorias where slug = 'maquiagem'))) $$, 'vitrine salva só nome, descrição e marca');
 
 select is(public.ajustar_estoque((select id from public.variantes where produto_id = '00000000-0000-0000-0000-0000000000b1' and tamanho = 'M'), -2), 3, 'ajuste de estoque soma o delta');
 select throws_ok($$ select public.ajustar_estoque((select id from public.variantes where produto_id = '00000000-0000-0000-0000-0000000000b1' and tamanho = 'M'), -10) $$, '23514', null, 'ajuste não deixa estoque negativo');
