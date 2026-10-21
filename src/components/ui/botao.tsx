@@ -1,7 +1,8 @@
 import type { ComponentProps } from "react";
 
 const variantes = {
-	primario: "bg-vermelho text-papel hover:bg-bordo",
+	primario:
+		"bg-vermelho text-papel hover:bg-bordo [&:disabled:not([aria-busy])]:bg-linha [&:disabled:not([aria-busy])]:text-suave [&:disabled:not([aria-busy])]:opacity-100",
 	secundario:
 		"border-2 border-tinta text-tinta hover:bg-tinta hover:text-papel",
 	fantasma: "text-tinta underline-offset-4 hover:underline",

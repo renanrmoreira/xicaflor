@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSacola } from "@/components/loja/sacola";
-import { Botao } from "@/components/ui/botao";
+import { Botao, classeBotao } from "@/components/ui/botao";
 import { formatarReais } from "@/lib/dinheiro";
 import type { VarianteLoja } from "@/lib/loja";
 
@@ -132,7 +132,7 @@ export function Compra({ variantes }: Props) {
 					</p>
 				)}
 			{falta || !disponivel ? (
-				<button type="button" disabled className="botao bg-vermelho text-papel">
+				<button type="button" disabled className={classeBotao()}>
 					{falta ?? "Esgotado"}
 				</button>
 			) : (
