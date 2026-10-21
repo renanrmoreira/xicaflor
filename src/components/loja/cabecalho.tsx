@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BotaoSacola } from "@/components/loja/sacola";
+import { LinkNav } from "@/components/ui/link-nav";
 import { Wordmark } from "@/components/ui/marca";
 import type { RaizLoja } from "@/lib/loja";
 
@@ -20,13 +21,14 @@ export function Cabecalho({ raizes }: { raizes: RaizLoja[] }) {
 					className="hidden gap-6 font-semibold md:flex"
 				>
 					{raizes.map((r) => (
-						<Link
+						<LinkNav
 							key={r.id}
 							href={`/c/${r.slug}`}
-							className="underline-offset-8 hover:underline"
+							tambem={r.filhas.map((f) => `/c/${f.slug}`)}
+							className="underline-offset-8 hover:underline aria-[current=page]:underline"
 						>
 							{r.nome}
-						</Link>
+						</LinkNav>
 					))}
 				</nav>
 				<div className="-mr-2 flex items-center">

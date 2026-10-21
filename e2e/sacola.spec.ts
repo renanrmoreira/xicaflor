@@ -23,6 +23,11 @@ test("sacola altera quantidade, remove e persiste ao recarregar", async ({
 	await page.reload();
 	await page.getByRole("button", { name: "Sacola, 1 peça" }).click();
 	await sacola.getByRole("button", { name: "Remover" }).click();
+	await page.getByRole("button", { name: "Desfazer" }).click();
+	await expect(
+		sacola.getByLabel("Quantidade de Vestido Loja E2E", { exact: true }),
+	).toHaveText("1");
+	await sacola.getByRole("button", { name: "Remover" }).click();
 	await expect(
 		sacola.getByText("Sua sacola está vazia por enquanto."),
 	).toBeVisible();

@@ -120,7 +120,7 @@ export function FotosProduto({
 			)}
 			<ul className="grid grid-cols-3 gap-(--vao) sm:grid-cols-4">
 				{fotos.map((f, i) => (
-					<li key={f.id} className="entra flex flex-col">
+					<li key={f.id} className="flex flex-col">
 						{/* biome-ignore lint/performance/noImgElement: miniatura já comprimida no envio, sem otimizador */}
 						<img
 							src={f.url}

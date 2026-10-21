@@ -97,7 +97,7 @@ function Linha({
 	const [editando, setEditando] = useState(false);
 	if (editando)
 		return (
-			<li className="entra py-3">
+			<li className="py-3">
 				<FormSimples
 					acao={acoes.renomear.bind(null, categoria.id)}
 					rotulo={`Novo nome de ${categoria.nome}`}
@@ -167,7 +167,7 @@ export function ArvoreCategorias({
 	return (
 		<div className="flex flex-col gap-12">
 			{raizes.map((raiz) => (
-				<section key={raiz.id} className="entra flex flex-col gap-4">
+				<section key={raiz.id} className="flex flex-col gap-4">
 					<h2 className="display text-[2.5rem]">{raiz.nome}</h2>
 					{raiz.slug === "beleza" && (
 						<FormSimples

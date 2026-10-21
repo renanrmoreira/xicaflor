@@ -34,7 +34,7 @@ export function ListaProdutos({ produtos, ajustar, alternar }: Props) {
 	return (
 		<ul className="divide-y divide-linha border-y border-linha">
 			{produtos.map((p) => (
-				<li key={p.id} className="entra flex flex-col gap-3 py-4">
+				<li key={p.id} className="flex flex-col gap-3 py-4">
 					<div className="flex flex-wrap items-baseline justify-between gap-x-3">
 						<div className="flex min-w-0 items-center gap-3">
 							{p.capa ? (

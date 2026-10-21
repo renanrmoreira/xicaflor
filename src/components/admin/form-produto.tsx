@@ -140,7 +140,7 @@ export function FormProduto({ categorias, inicial, acao }: Props) {
 					name="descricao"
 					rows={4}
 					defaultValue={inicial?.descricao}
-					className="border border-linha p-3.5 focus:border-tinta focus:outline-none"
+					className="border border-linha p-3.5 focus:border-tinta"
 				/>
 			</div>
 			<Campo

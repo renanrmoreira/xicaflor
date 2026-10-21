@@ -66,6 +66,16 @@ export function Sacola({
 }) {
 	const [itens, setItens] = useState<ItemSacola[]>([]);
 	const [aberta, setAberta] = useState(false);
+	const [montada, setMontada] = useState(false);
+
+	useEffect(() => {
+		if (aberta) {
+			setMontada(true);
+			return;
+		}
+		const fim = setTimeout(() => setMontada(false), 300);
+		return () => clearTimeout(fim);
+	}, [aberta]);
 	const carregada = useRef(false);
 
 	useEffect(() => {
@@ -102,7 +112,7 @@ export function Sacola({
 				aoFechar={() => setAberta(false)}
 				titulo="Sua sacola"
 			>
-				{aberta && (
+				{montada && (
 					<ConteudoSacola
 						itens={itens}
 						conferir={conferir}
@@ -129,6 +139,16 @@ function ConteudoSacola({
 	atualizar: (mudar: Mudanca) => void;
 	aoFinalizar: () => void;
 }) {
+	const [removido, setRemovido] = useState<{
+		id: string;
+		nome: string;
+		quantidade: number;
+	} | null>(null);
+
+	useEffect(() => {
+		if (removido && itens.some((i) => i.varianteId === removido.id))
+			setRemovido(null);
+	}, [itens, removido]);
 	const [conferidas, setConferidas] = useState<VarianteConferida[] | null>(
 		null,
 	);
@@ -207,6 +227,24 @@ function ConteudoSacola({
 					))}
 				</div>
 			)}
+			{removido && (
+				<p
+					role="status"
+					className="entra mb-4 flex items-center justify-between gap-3 bg-amarelo/50 px-4 py-2 text-small"
+				>
+					{removido.nome} saiu da sacola.
+					<button
+						type="button"
+						className="min-h-11 font-semibold underline underline-offset-4"
+						onClick={() => {
+							atualizar((a) => adicionar(a, removido.id, removido.quantidade));
+							setRemovido(null);
+						}}
+					>
+						Desfazer
+					</button>
+				</p>
+			)}
 			{linhas.length === 0 ? (
 				<p className="text-suave">Sua sacola está vazia por enquanto.</p>
 			) : (
@@ -274,7 +312,14 @@ function ConteudoSacola({
 											<Botao
 												variante="fantasma"
 												className="ml-auto px-3 text-small font-normal text-suave"
-												onClick={() => atualizar((a) => alterar(a, l.id, 0))}
+												onClick={() => {
+													atualizar((a) => alterar(a, l.id, 0));
+													setRemovido({
+														id: l.id,
+														nome: l.nome,
+														quantidade: l.quantidade,
+													});
+												}}
 											>
 												Remover
 											</Botao>

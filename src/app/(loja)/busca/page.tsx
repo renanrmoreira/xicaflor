@@ -27,7 +27,7 @@ export default async function Page({ searchParams }: PageProps<"/busca">) {
 						{produtos.length === 1 ? "1 peça" : `${produtos.length} peças`} para
 						“{termo}”
 					</p>
-					<GradeProdutos produtos={produtos} vazio="" />
+					<GradeProdutos produtos={produtos} vazio="" animar={false} />
 				</>
 			)}
 			{(!termo || produtos.length === 0) && (

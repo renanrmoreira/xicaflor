@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { ComponentProps } from "react";
 
 const variantes = {
 	primario: "bg-vermelho text-papel hover:bg-bordo",
@@ -12,7 +12,7 @@ export type Variante = keyof typeof variantes;
 export const classeBotao = (variante: Variante = "primario") =>
 	`botao ${variantes[variante]}`;
 
-type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
+type Props = ComponentProps<"button"> & {
 	variante?: Variante;
 	pendente?: boolean;
 	rotuloPendente?: string;
