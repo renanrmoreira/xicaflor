@@ -55,6 +55,10 @@ jobs:
           pnpm exec opennextjs-cloudflare upload -- --preview-alias pr-${{ github.event.pull_request.number }} --var SUPABASE_URL:https://crkeniidfajkqlnpacep.supabase.co --var SUPABASE_PUBLISHABLE_KEY:sb_publishable_s2VFJbusmfVQvcHJy5L7Kw_ZRpLHPxv --var SENTRY_ENVIRONMENT:preview --var SENTRY_RELEASE:${{ github.event.pull_request.head.sha }} --outdir dist 2>&1 | tee upload.log
           echo "url=$(grep -oE 'https://pr-[^ ]+workers\.dev' upload.log | head -1)" >> "$GITHUB_OUTPUT"
           echo "size=$(grep -oE 'Total Upload: .*' upload.log | head -1)" >> "$GITHUB_OUTPUT"
+      - run: |
+          ls -la dist
+          node -e "const m=require('./dist/worker.js.map');const c={};for(const s of m.sources){const k=s.split('/').slice(0,4).join('/');c[k]=(c[k]||0)+1}console.log(m.sources.length,'fontes');console.log(Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,25))"
+          find .open-next -name '*.map' | head -20
       - run: pnpm exec sentry-cli sourcemaps upload --org renan-m-software-house --project xicaflor --release ${{ github.event.pull_request.head.sha }} dist
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
