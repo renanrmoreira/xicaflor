@@ -41,9 +41,16 @@ export default function Page() {
 			<h2>Com quem compartilhamos</h2>
 			<p>
 				Só com os serviços necessários para a loja funcionar: Mercado Pago
-				(pagamentos), Supabase (banco de dados e login), Cloudflare (hospedagem
-				e estatísticas de visita sem cookies) e Sentry (monitoramento de erros).
+				(pagamentos), Supabase (banco de dados e login), Resend (envio dos
+				e-mails da loja), Cloudflare (hospedagem, verificação contra robôs e
+				estatísticas de visita sem cookies) e Sentry (monitoramento de erros).
 				Não vendemos seus dados.
+			</p>
+			<h2>Por quanto tempo guardamos</h2>
+			<p>
+				Os dados do cadastro ficam guardados enquanto sua conta existir. Os
+				dados dos pedidos são mantidos pelo prazo exigido pela legislação fiscal
+				(5 anos) e depois apagados.
 			</p>
 			<h2>Cookies</h2>
 			<p>
