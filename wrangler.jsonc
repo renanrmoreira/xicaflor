@@ -20,6 +20,7 @@
 	],
 	"vars": {
 		"SUPABASE_URL": "https://ughhiqxuzhesmahhqyld.supabase.co",
-		"SUPABASE_PUBLISHABLE_KEY": "sb_publishable_khyE8vI8XYDEdT0fMuVGCg_rdIGtm83"
+		"SUPABASE_PUBLISHABLE_KEY": "sb_publishable_khyE8vI8XYDEdT0fMuVGCg_rdIGtm83",
+		"TURNSTILE_SITE_KEY": "0x4AAAAAAFicjfWOHim3yu8A"
 	}
 }
