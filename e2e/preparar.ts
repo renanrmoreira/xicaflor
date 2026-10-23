@@ -110,7 +110,7 @@ export default async function preparar() {
 		{
 			nome: "Batom Loja E2E",
 			slug: "batom-loja-e2e",
-			marca: "OLAB",
+			marca: "OULAB",
 			categoria_id: await categoria("maquiagem"),
 		},
 		{ onConflict: "slug" },
