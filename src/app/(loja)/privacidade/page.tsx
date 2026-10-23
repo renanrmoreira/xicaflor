@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import { PaginaTexto } from "@/components/loja/pagina-texto";
-import { CNPJ, ENDERECO, INSTAGRAM, linkWhatsapp } from "@/lib/loja";
+import {
+	CNPJ,
+	ENDERECO,
+	INSTAGRAM,
+	linkWhatsapp,
+	RAZAO_SOCIAL,
+} from "@/lib/loja";
 
 export const metadata: Metadata = {
 	title: "Política de privacidade — Xica Flor",
@@ -17,7 +23,7 @@ export default function Page() {
 			</p>
 			<h2>Quem cuida dos seus dados</h2>
 			<p>
-				Xica Flor, CNPJ {CNPJ}, {ENDERECO}.
+				Xica Flor ({RAZAO_SOCIAL}), CNPJ {CNPJ}, {ENDERECO}.
 			</p>
 			<h2>Quais dados coletamos</h2>
 			<ul>
