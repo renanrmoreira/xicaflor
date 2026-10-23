@@ -5,6 +5,7 @@ import {
 	INSTAGRAM,
 	LINK_INSTAGRAM,
 	linkWhatsapp,
+	RAZAO_SOCIAL,
 	type RaizLoja,
 	SLOGAN,
 	TELEFONE,
@@ -67,6 +68,8 @@ export function Rodape({ raizes }: { raizes: RaizLoja[] }) {
 					<p className="mb-1 font-semibold">Belém, Pará</p>
 					<p className={TEXTO}>
 						{ENDERECO}
+						<br />
+						{RAZAO_SOCIAL}
 						<br />
 						CNPJ {CNPJ}
 					</p>
