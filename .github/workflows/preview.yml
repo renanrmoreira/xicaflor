@@ -57,8 +57,8 @@ jobs:
           echo "size=$(grep -oE 'Total Upload: .*' upload.log | head -1)" >> "$GITHUB_OUTPUT"
       - run: |
           ls -la dist
-          node -e "const m=require('./dist/worker.js.map');const c={};for(const s of m.sources){const k=s.split('/').slice(0,4).join('/');c[k]=(c[k]||0)+1}console.log(m.sources.length,'fontes');console.log(Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,25))"
-          find .open-next -name '*.map' | head -20
+          node -e "const m=JSON.parse(require('fs').readFileSync('dist/worker.js.map','utf8'));const c={};for(const s of m.sources){const k=s.split('/').slice(0,4).join('/');c[k]=(c[k]||0)+1}console.log(m.sources.length,'fontes');console.log(m.sources.filter(s=>/src\//.test(s)).slice(0,10));console.log(Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,25))"
+          find .open-next -name '*.map' | head -20 || true
       - run: pnpm exec sentry-cli sourcemaps upload --org renan-m-software-house --project xicaflor --release ${{ github.event.pull_request.head.sha }} dist
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
