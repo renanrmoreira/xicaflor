@@ -50,6 +50,7 @@ test("cliente cria conta, completa endereço pelo CEP, sai e entra de novo", asy
 	await page.getByRole("button", { name: "Salvar dados" }).click();
 	await expect(page.getByText("Dados salvos")).toBeVisible();
 	await page.reload();
+	await expect(page.getByLabel("Bairro")).toHaveCount(1);
 	await expect(page.getByLabel("Bairro")).toHaveValue("Umarizal");
 	await expect(page.getByLabel("Número")).toHaveValue("123");
 

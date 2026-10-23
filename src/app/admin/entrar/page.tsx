@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { connection } from "next/server";
 import { FormEntrar } from "@/components/conta/form-entrar";
 import { Wordmark } from "@/components/ui/marca";
 import { entrar } from "@/server/acoes-auth";
@@ -8,7 +9,8 @@ export const metadata: Metadata = {
 	robots: { index: false },
 };
 
-export default function Page() {
+export default async function Page() {
+	await connection();
 	return (
 		<main className="flex flex-1 flex-col">
 			<header className="bg-amarelo px-(--margem) pt-8 pb-6 text-vermelho">
