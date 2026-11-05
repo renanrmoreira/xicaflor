@@ -37,7 +37,7 @@ export function Galeria({ fotos, nome }: { fotos: Foto[]; nome: string }) {
 			<ul
 				ref={trilho}
 				aria-label={`Fotos de ${nome}`}
-				className="flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] md:grid md:grid-cols-2 md:gap-(--vao) md:overflow-visible"
+				className={`flex snap-x snap-mandatory overflow-x-auto [scrollbar-width:none] md:grid md:gap-(--vao) md:overflow-visible ${fotos.length > 1 ? "md:grid-cols-2" : ""}`}
 			>
 				{fotos.map((f, i) => (
 					<li
@@ -49,7 +49,7 @@ export function Galeria({ fotos, nome }: { fotos: Foto[]; nome: string }) {
 						<img
 							src={f.grande}
 							srcSet={`${f.miniatura} 600w, ${f.grande} 1600w`}
-							sizes="(min-width: 768px) 30vw, 100vw"
+							sizes={`(min-width: 768px) ${fotos.length > 1 ? 30 : 60}vw, 100vw`}
 							alt={f.alt || `${nome}, foto ${i + 1}`}
 							width={1280}
 							height={1600}
