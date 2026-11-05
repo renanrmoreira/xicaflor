@@ -10,6 +10,8 @@ const app = withSentry(
 		...sentryOptions,
 		environment: env.SENTRY_ENVIRONMENT ?? "production",
 		release: env.SENTRY_RELEASE,
+		// Rastreamento de desempenho estoura o limite de CPU do plano gratuito; erros seguem capturados.
+		tracesSampleRate: 0,
 	}),
 	handler,
 );
