@@ -3,9 +3,9 @@ import { redirect } from "next/navigation";
 import {
 	FormCadastro,
 	FormEntrar,
-	FormLink,
+	FormRecuperarSenha,
 } from "@/components/conta/form-entrar";
-import { criarConta, entrar, pedirLink } from "@/server/acoes-auth";
+import { criarConta, entrar, recuperarSenha } from "@/server/acoes-auth";
 import { supabaseServidor } from "@/server/supabase";
 
 export const metadata: Metadata = {
@@ -34,16 +34,21 @@ export default async function Page({ searchParams }: PageProps<"/entrar">) {
 						acao={entrar.bind(null, destino)}
 						captcha={process.env.TURNSTILE_SITE_KEY}
 					/>
-				</section>
-				<section
-					aria-labelledby="sem-senha"
-					className="flex flex-col gap-4 border-t border-linha pt-6"
-				>
-					<h2 id="sem-senha" className="font-semibold">
-						Sem senha?
-					</h2>
-					<p className="text-suave">Receba um link no e-mail.</p>
-					<FormLink acao={pedirLink} captcha={process.env.TURNSTILE_SITE_KEY} />
+					<details className="flex flex-col gap-4">
+						<summary className="flex min-h-11 cursor-pointer items-center self-start text-small underline underline-offset-4 marker:content-none">
+							Esqueci minha senha
+						</summary>
+						<div className="flex flex-col gap-4 pt-2">
+							<p className="text-small text-suave">
+								Informe o e-mail da sua conta para receber um link e criar uma
+								nova senha.
+							</p>
+							<FormRecuperarSenha
+								acao={recuperarSenha}
+								captcha={process.env.TURNSTILE_SITE_KEY}
+							/>
+						</div>
+					</details>
 				</section>
 			</div>
 			<section className="flex flex-col gap-6 border-t border-linha pt-10 md:border-t-0 md:border-l md:pt-0 md:pl-16">

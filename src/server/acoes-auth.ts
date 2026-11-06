@@ -86,26 +86,20 @@ export async function sair(destino: "/admin/entrar" | "/entrar") {
 	redirect(destino === "/admin/entrar" ? destino : "/entrar");
 }
 
-export async function pedirLink(
+export async function recuperarSenha(
 	_: EstadoConta,
 	dados: FormData,
 ): Promise<EstadoConta> {
 	const email = String(dados.get("email") ?? "");
 	const entrada = z.email().safeParse(email);
 	if (!entrada.success) return { erro: "E-mail inválido.", valores: { email } };
-	const supabase = await supabaseServidor();
-	const { error } =
-		dados.get("acao") === "senha"
-			? await supabase.auth.resetPasswordForEmail(entrada.data, {
-					captchaToken: captcha(dados),
-				})
-			: await supabase.auth.signInWithOtp({
-					email: entrada.data,
-					options: { shouldCreateUser: false, captchaToken: captcha(dados) },
-				});
-	// Erros 4xx (conta inexistente, limite de envio) respondem igual ao sucesso para não revelar quem tem conta.
+	const { error } = await (await supabaseServidor()).auth.resetPasswordForEmail(
+		entrada.data,
+		{ captchaToken: captcha(dados) },
+	);
 	if (error?.code === "captcha_failed")
 		return { erro: ERRO_CAPTCHA, valores: { email } };
+	// Erros 4xx (conta inexistente, limite de envio) respondem igual ao sucesso para não revelar quem tem conta.
 	if (error && (error.status ?? 500) >= 500)
 		return {
 			erro: "Não foi possível enviar agora. Tente de novo em instantes.",

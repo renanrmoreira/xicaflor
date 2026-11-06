@@ -43,7 +43,7 @@ test("visitante vai do checkout para o login e volta ao checkout", async ({
 	const login = page.locator("section", {
 		has: page.getByRole("heading", { name: "Entrar" }),
 	});
-	await login.getByLabel("E-mail").fill(CLIENTE.email);
+	await login.getByLabel("E-mail", { exact: true }).fill(CLIENTE.email);
 	await login.getByLabel("Senha").fill(CLIENTE.senha);
 	await login.getByRole("button", { name: "Entrar" }).click();
 	await expect(page).toHaveURL(/\/checkout$/);

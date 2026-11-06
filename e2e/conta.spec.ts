@@ -28,7 +28,7 @@ test("cliente cria conta, completa endereço pelo CEP, sai e entra de novo", asy
 		has: page.getByRole("heading", { name: "Criar conta" }),
 	});
 	await cadastro.getByLabel("Nome").fill("Maria Teste");
-	await cadastro.getByLabel("E-mail").fill(email);
+	await cadastro.getByLabel("E-mail", { exact: true }).fill(email);
 	await cadastro.getByLabel("Senha (mínimo 8 caracteres)").fill("curta");
 	await cadastro.getByRole("button", { name: "Criar conta" }).click();
 	await expect(cadastro.getByLabel("Nome")).toHaveValue("Maria Teste");
@@ -62,11 +62,11 @@ test("cliente cria conta, completa endereço pelo CEP, sai e entra de novo", asy
 	const login = page.locator("section", {
 		has: page.getByRole("heading", { name: "Entrar" }),
 	});
-	await login.getByLabel("E-mail").fill(email);
+	await login.getByLabel("E-mail", { exact: true }).fill(email);
 	await login.getByLabel("Senha").fill("errada-123");
 	await login.getByRole("button", { name: "Entrar" }).click();
 	await expect(login.getByText("E-mail ou senha incorretos.")).toBeVisible();
-	await expect(login.getByLabel("E-mail")).toHaveValue(email);
+	await expect(login.getByLabel("E-mail", { exact: true })).toHaveValue(email);
 	await login.getByLabel("Senha").fill("senha-segura-1");
 	await login.getByRole("button", { name: "Entrar" }).click();
 	await expect(page).toHaveURL(/\/conta$/);
