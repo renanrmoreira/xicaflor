@@ -34,7 +34,7 @@ export default async function Page({ searchParams }: PageProps<"/entrar">) {
 						acao={entrar.bind(null, destino)}
 						captcha={process.env.TURNSTILE_SITE_KEY}
 					/>
-					<details className="group flex flex-col gap-4">
+					<details className="flex flex-col gap-4">
 						<summary className="flex min-h-11 cursor-pointer items-center self-start text-small underline underline-offset-4 marker:content-none">
 							Esqueci minha senha
 						</summary>
