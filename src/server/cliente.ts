@@ -17,7 +17,11 @@ export async function exigirCliente(volta?: "/checkout") {
 		.eq("id", user.id)
 		.single();
 	if (error) throw error;
-	return { id: user.id, email: user.email ?? "", perfil };
+	return {
+		id: user.id,
+		email: user.email ?? "",
+		perfil,
+	};
 }
 
 export async function listarPedidos(clienteId: string) {

@@ -32,8 +32,16 @@ export default async function Page({
 	const saudacao = nome ? `, ${nome.split(" ")[0]}` : "";
 	const mensagem = `Olá${saudacao}! Aqui é da Xica Flor, sobre o seu pedido nº ${pedido.numero}.`;
 
+	const quando = (data: string | null) =>
+		data &&
+		new Date(data).toLocaleString("pt-BR", {
+			timeZone: "America/Belem",
+			dateStyle: "short",
+			timeStyle: "short",
+		});
+
 	return (
-		<section className="flex max-w-2xl flex-col gap-8">
+		<section className="flex flex-col gap-8">
 			<div className="flex flex-col gap-2">
 				<Link
 					href="/admin/pedidos"
@@ -41,46 +49,64 @@ export default async function Page({
 				>
 					Todos os pedidos
 				</Link>
-				<p className="text-small text-suave">Pedido nº {pedido.numero}</p>
+				<p className="text-small text-suave">
+					Pedido nº {pedido.numero} · feito em {quando(pedido.criado_em)}
+					{pedido.pago_em && ` · pago em ${quando(pedido.pago_em)}`}
+				</p>
 				<h1 className="display text-head">{rotuloStatus(pedido.status)}</h1>
 			</div>
 
-			<AcoesPedido
-				proximo={proximoStatus(pedido.status, pedido.modalidade)}
-				cancelavel={cancelavel(pedido.status)}
-				mudar={mudarStatus.bind(null, pedido.id)}
-			/>
+			<div className="grid gap-8 lg:grid-cols-[3fr_2fr] lg:items-start">
+				<div className="flex flex-col gap-4">
+					<h2 className="font-semibold">Peças do pedido</h2>
+					<ResumoPedido pedido={pedido} />
+				</div>
 
-			<div className="flex flex-col gap-2">
-				<h2 className="font-semibold">{nome || "Cliente"}</h2>
-				{endereco ? (
-					<p className="text-suave">
-						{endereco.logradouro}, {endereco.numero}
-						{endereco.complemento && ` · ${endereco.complemento}`}
-						<br />
-						{endereco.bairro && `${endereco.bairro} · `}
-						{endereco.cidade} · CEP {endereco.cep}
-					</p>
-				) : (
-					<p className="text-suave">Retirada na loja</p>
-				)}
-				{whatsapp ? (
-					<a
-						href={linkWhatsapp(mensagem, whatsapp)}
-						target="_blank"
-						rel="noopener noreferrer"
-						className={`${classeBotao("secundario")} self-start`}
-					>
-						Chamar no WhatsApp
-					</a>
-				) : (
-					<p className="text-small text-suave">
-						Cliente sem WhatsApp no cadastro.
-					</p>
-				)}
+				<aside className="flex flex-col gap-6 border border-linha p-5">
+					<AcoesPedido
+						proximo={proximoStatus(pedido.status, pedido.modalidade)}
+						cancelavel={cancelavel(pedido.status)}
+						mudar={mudarStatus.bind(null, pedido.id)}
+					/>
+					<div className="flex flex-col gap-2">
+						<h2 className="text-small font-semibold text-suave">Cliente</h2>
+						<p className="text-lead">{nome || "Cliente"}</p>
+						{pedido.cliente?.telefone && (
+							<p className="text-suave">WhatsApp {pedido.cliente.telefone}</p>
+						)}
+					</div>
+					<div className="flex flex-col gap-2">
+						<h2 className="text-small font-semibold text-suave">
+							{endereco ? "Entrega" : "Retirada"}
+						</h2>
+						{endereco ? (
+							<p>
+								{endereco.logradouro}, {endereco.numero}
+								{endereco.complemento && ` · ${endereco.complemento}`}
+								<br />
+								{endereco.bairro && `${endereco.bairro} · `}
+								{endereco.cidade} · CEP {endereco.cep}
+							</p>
+						) : (
+							<p>Retirada na loja</p>
+						)}
+					</div>
+					{whatsapp ? (
+						<a
+							href={linkWhatsapp(mensagem, whatsapp)}
+							target="_blank"
+							rel="noopener noreferrer"
+							className={classeBotao("secundario")}
+						>
+							Chamar no WhatsApp
+						</a>
+					) : (
+						<p className="text-small text-suave">
+							Cliente sem WhatsApp no cadastro.
+						</p>
+					)}
+				</aside>
 			</div>
-
-			<ResumoPedido pedido={pedido} />
 		</section>
 	);
 }

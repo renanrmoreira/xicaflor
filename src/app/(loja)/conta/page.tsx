@@ -7,6 +7,7 @@ import { rotuloStatus } from "@/lib/pedido";
 import { sair } from "@/server/acoes-auth";
 import { salvarPerfil } from "@/server/acoes-conta";
 import { exigirCliente, listarPedidos } from "@/server/cliente";
+import { supabaseServidor } from "@/server/supabase";
 
 export const metadata: Metadata = {
 	title: "Minha conta — Xica Flor",
@@ -15,13 +16,22 @@ export const metadata: Metadata = {
 
 export default async function Page() {
 	const { id, email, perfil } = await exigirCliente();
-	const { data: pedidos, error } = await listarPedidos(id);
+	const supabase = await supabaseServidor();
+	const [{ data: pedidos, error }, { data: admin }] = await Promise.all([
+		listarPedidos(id),
+		supabase.rpc("is_admin"),
+	]);
 	return (
 		<section className="flex flex-col gap-8 px-(--margem) pt-10">
 			<div className="flex flex-wrap items-end justify-between gap-4">
 				<div className="flex flex-col gap-2">
 					<h1 className="display text-head">Minha conta</h1>
 					<p className="text-suave">{email}</p>
+					{admin && (
+						<Link href="/admin" className={`${classeBotao()} mt-2 self-start`}>
+							Painel da loja
+						</Link>
+					)}
 				</div>
 				<form action={sair.bind(null, "/entrar")}>
 					<Botao type="submit" variante="fantasma" className="-mr-6">

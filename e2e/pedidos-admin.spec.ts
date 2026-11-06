@@ -51,7 +51,9 @@ test("admin acompanha o pedido pago até a retirada e chama a cliente no WhatsAp
 		.getByRole("link", { name: "Pedidos" })
 		.click();
 	await page
-		.getByRole("link", { name: new RegExp(`Pedido nº ${pedido.numero} `) })
+		.getByRole("link", {
+			name: new RegExp(`Pedido nº ${pedido.numero}(?!\\d)`),
+		})
 		.click();
 
 	await expect(page.getByRole("heading", { name: "Pago" })).toBeVisible();
@@ -77,12 +79,14 @@ test("admin acompanha o pedido pago até a retirada e chama a cliente no WhatsAp
 
 	await page.goto("/admin/pedidos?filtro=concluidos");
 	await expect(
-		page.getByRole("link", { name: new RegExp(`Pedido nº ${pedido.numero} `) }),
+		page.getByRole("link", {
+			name: new RegExp(`Pedido nº ${pedido.numero}(?!\\d)`),
+		}),
 	).toBeVisible();
 
 	await page.goto("/admin");
 	await expect(
-		page.getByRole("heading", { name: "Pedidos em andamento" }),
+		page.getByRole("heading", { name: "Últimos pedidos" }),
 	).toBeVisible();
 	await expect(page.getByText(/^\d+ pedidos? pagos?$/).first()).toBeVisible();
 });
@@ -93,7 +97,9 @@ test("admin cancela pedido pago com confirmação", async ({ page }) => {
 	await page.waitForURL(/\/admin$/);
 	await page.goto("/admin/pedidos");
 	await page
-		.getByRole("link", { name: new RegExp(`Pedido nº ${pedido.numero} `) })
+		.getByRole("link", {
+			name: new RegExp(`Pedido nº ${pedido.numero}(?!\\d)`),
+		})
 		.click();
 	await page.getByRole("button", { name: "Cancelar pedido" }).click();
 	await page.getByRole("button", { name: "Voltar" }).click();
@@ -119,4 +125,15 @@ test("pular para o conteúdo e menu marca a página atual", async ({ page }) => 
 	await expect(
 		page.getByRole("link", { name: "Pular para o conteúdo" }),
 	).toBeFocused();
+});
+
+test("admin chega ao painel pela Minha conta", async ({ page }) => {
+	await entrar(page, ADMIN);
+	await page.waitForURL(/\/admin$/);
+	await page.goto("/conta");
+	await page.getByRole("link", { name: "Painel da loja" }).click();
+	await expect(page).toHaveURL(/\/admin$/);
+	await expect(
+		page.getByRole("heading", { name: "Vendas dos últimos 7 dias" }),
+	).toBeVisible();
 });
