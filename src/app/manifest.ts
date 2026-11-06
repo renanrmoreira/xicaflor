@@ -11,6 +11,10 @@ export default function manifest(): MetadataRoute.Manifest {
 		background_color: AMARELO,
 		theme_color: AMARELO,
 		lang: "pt-BR",
+		shortcuts: [
+			{ name: "Painel da loja", short_name: "Admin", url: "/admin" },
+			{ name: "Minha conta", url: "/conta" },
+		],
 		icons: [
 			{ src: "/icone-192.png", sizes: "192x192", type: "image/png" },
 			{ src: "/icone-512.png", sizes: "512x512", type: "image/png" },

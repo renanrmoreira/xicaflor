@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-	const { id, email, perfil } = await exigirCliente();
+	const { id, email, perfil, admin } = await exigirCliente();
 	const { data: pedidos, error } = await listarPedidos(id);
 	return (
 		<section className="flex flex-col gap-8 px-(--margem) pt-10">
@@ -22,6 +22,11 @@ export default async function Page() {
 				<div className="flex flex-col gap-2">
 					<h1 className="display text-head">Minha conta</h1>
 					<p className="text-suave">{email}</p>
+					{admin && (
+						<Link href="/admin" className={`${classeBotao()} mt-2 self-start`}>
+							Painel da loja
+						</Link>
+					)}
 				</div>
 				<form action={sair.bind(null, "/entrar")}>
 					<Botao type="submit" variante="fantasma" className="-mr-6">

@@ -40,6 +40,9 @@ test("cliente cria conta, completa endereço pelo CEP, sai e entra de novo", asy
 	await expect(page).toHaveURL(/\/conta$/);
 	await expect(page.getByText(email)).toBeVisible();
 	await expect(page.getByLabel("Nome")).toHaveValue("Maria Teste");
+	await expect(page.getByRole("link", { name: "Painel da loja" })).toHaveCount(
+		0,
+	);
 	await page.getByLabel("CEP").fill("66060000");
 	await page.getByLabel("CEP").blur();
 	await expect(page.getByLabel("Rua")).toHaveValue(
