@@ -107,7 +107,7 @@ export function FormCadastro({
 	);
 }
 
-export function FormLink({
+export function FormRecuperarSenha({
 	acao,
 	captcha,
 }: {
@@ -118,14 +118,14 @@ export function FormLink({
 	if (estado?.ok)
 		return (
 			<p role="status" className="entra bg-amarelo p-4 text-bordo">
-				Se houver uma conta com esse e-mail, enviamos o link. Confira também a
-				caixa de spam.
+				Se houver uma conta com esse e-mail, enviamos um link para criar uma
+				nova senha. Confira também o lixo eletrônico.
 			</p>
 		);
 	return (
 		<form action={enviar} className="flex flex-col gap-4">
 			<Campo
-				rotulo="E-mail"
+				rotulo="E-mail da conta"
 				name="email"
 				type="email"
 				autoComplete="email"
@@ -138,27 +138,15 @@ export function FormLink({
 					{estado.erro}
 				</p>
 			)}
-			<div className="flex flex-wrap gap-3">
-				<Botao
-					type="submit"
-					name="acao"
-					value="entrar"
-					variante="secundario"
-					pendente={pendente}
-					rotuloPendente="Enviando"
-				>
-					Receber link para entrar
-				</Botao>
-				<Botao
-					type="submit"
-					name="acao"
-					value="senha"
-					variante="fantasma"
-					disabled={pendente}
-				>
-					Esqueci minha senha
-				</Botao>
-			</div>
+			<Botao
+				type="submit"
+				variante="secundario"
+				pendente={pendente}
+				rotuloPendente="Enviando"
+				className="self-start"
+			>
+				Enviar link para criar nova senha
+			</Botao>
 		</form>
 	);
 }

@@ -5,7 +5,7 @@ import { RECUPERACAO } from "@/server/cliente";
 import { supabaseServidor } from "@/server/supabase";
 
 const DESTINOS = ["/conta", "/checkout", "/conta/nova-senha"];
-const TIPOS: EmailOtpType[] = ["email", "magiclink", "recovery"];
+const TIPOS: EmailOtpType[] = ["email", "recovery"];
 
 export async function GET(request: Request) {
 	const parametros = new URL(request.url).searchParams;

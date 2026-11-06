@@ -36,39 +36,30 @@ async function novaCliente(page: Page, projeto: string) {
 		email_confirm: true,
 	});
 	await page.goto("/entrar");
-	const semSenha = page.getByRole("region", { name: "Sem senha?" });
-	await semSenha.getByLabel("E-mail").fill(email);
-	return { email, semSenha };
+	await page.getByText("Esqueci minha senha").click();
+	await page.getByLabel("E-mail da conta").fill(email);
+	await page
+		.getByRole("button", { name: "Enviar link para criar nova senha" })
+		.click();
+	await expect(
+		page.getByRole("status").filter({ hasText: "nova senha" }),
+	).toBeVisible();
+	return email;
 }
 
-test("entra pelo link aberto em outro navegador", async ({
+test("recupera a senha pelo link aberto em outro navegador", async ({
 	page,
 	browser,
 }, info) => {
-	const { email, semSenha } = await novaCliente(page, info.project.name);
-	await semSenha
-		.getByRole("button", { name: "Receber link para entrar" })
-		.click();
-	await expect(semSenha.getByRole("status")).toContainText("enviamos o link");
+	const email = await novaCliente(page, info.project.name);
 	const outro = await (await browser.newContext()).newPage();
 	await outro.goto(await linkDoEmail(email));
-	await expect(outro).toHaveURL(/\/conta$/);
-	await expect(outro.getByRole("main").getByText(email).first()).toBeVisible();
-});
-
-test("recupera a senha pelo e-mail e entra com a nova", async ({
-	page,
-}, info) => {
-	const { email, semSenha } = await novaCliente(page, info.project.name);
-	await semSenha.getByRole("button", { name: "Esqueci minha senha" }).click();
-	await expect(semSenha.getByRole("status")).toBeVisible();
-	await page.goto(await linkDoEmail(email));
-	await expect(page).toHaveURL(/\/conta\/nova-senha$/);
-	const campo = page.getByLabel(/Nova senha/);
+	await expect(outro).toHaveURL(/\/conta\/nova-senha$/);
+	const campo = outro.getByLabel(/Nova senha/);
 	await expect(campo).toHaveCount(1);
 	await campo.fill("senha-nova-456");
-	await page.getByRole("button", { name: "Salvar nova senha" }).click();
-	await expect(page).toHaveURL(/\/conta$/);
+	await outro.getByRole("button", { name: "Salvar nova senha" }).click();
+	await expect(outro).toHaveURL(/\/conta$/);
 
 	const { error } = await createClient(
 		process.env.SUPABASE_URL ?? "",
@@ -88,7 +79,7 @@ test("link inválido volta para o login com aviso", async ({ page }) => {
 test("nova senha exige sessão vinda do link de recuperação", async ({
 	page,
 }, info) => {
-	const { email } = await novaCliente(page, info.project.name);
+	const email = await novaCliente(page, info.project.name);
 	await entrarCliente(page, { email, senha: "senha-antiga-123" });
 	await page.goto("/conta/nova-senha");
 	await expect(page).toHaveURL(/\/conta$/);
