@@ -7,6 +7,7 @@ import { rotuloStatus } from "@/lib/pedido";
 import { sair } from "@/server/acoes-auth";
 import { salvarPerfil } from "@/server/acoes-conta";
 import { exigirCliente, listarPedidos } from "@/server/cliente";
+import { supabaseServidor } from "@/server/supabase";
 
 export const metadata: Metadata = {
 	title: "Minha conta — Xica Flor",
@@ -14,8 +15,12 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-	const { id, email, perfil, admin } = await exigirCliente();
-	const { data: pedidos, error } = await listarPedidos(id);
+	const { id, email, perfil } = await exigirCliente();
+	const supabase = await supabaseServidor();
+	const [{ data: pedidos, error }, { data: admin }] = await Promise.all([
+		listarPedidos(id),
+		supabase.rpc("is_admin"),
+	]);
 	return (
 		<section className="flex flex-col gap-8 px-(--margem) pt-10">
 			<div className="flex flex-wrap items-end justify-between gap-4">

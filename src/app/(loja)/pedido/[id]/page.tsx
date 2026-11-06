@@ -7,7 +7,7 @@ import { linkWhatsapp } from "@/lib/loja";
 import { linhaDoTempo, rotuloStatus } from "@/lib/pedido";
 import { exigirCliente } from "@/server/cliente";
 import { linkDePagamento, mercadoPagoAtivo } from "@/server/mercadopago";
-import { comFotos, ITENS } from "@/server/pedidos";
+import { fotosDosItens, ITENS_CLIENTE } from "@/server/pedidos";
 import { supabaseServidor } from "@/server/supabase";
 
 export const metadata: Metadata = {
@@ -33,7 +33,7 @@ export default async function Page({
 	const { data: pedido } = await (await supabaseServidor())
 		.from("pedidos")
 		.select(
-			`numero, status, modalidade, frete_a_combinar, subtotal_centavos, frete_centavos, total_centavos, mp_preference_id, reserva_expira_em, ${ITENS}`,
+			`numero, status, modalidade, frete_a_combinar, subtotal_centavos, frete_centavos, total_centavos, mp_preference_id, reserva_expira_em, ${ITENS_CLIENTE}`,
 		)
 		.eq("id", id)
 		.maybeSingle();
@@ -113,7 +113,7 @@ export default async function Page({
 			<ResumoPedido
 				pedido={{
 					...pedido,
-					itens: comFotos(pedido.itens).map(({ estoque, ...i }) => i),
+					itens: fotosDosItens(pedido.itens),
 				}}
 			/>
 			<Link href="/conta" className="text-small underline underline-offset-4">

@@ -17,12 +17,10 @@ export async function exigirCliente(volta?: "/checkout") {
 		.eq("id", user.id)
 		.single();
 	if (error) throw error;
-	const { data: admin } = await supabase.rpc("is_admin");
 	return {
 		id: user.id,
 		email: user.email ?? "",
 		perfil,
-		admin: admin === true,
 	};
 }
 

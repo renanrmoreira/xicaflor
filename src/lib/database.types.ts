@@ -431,6 +431,7 @@ export type Database = {
 				Args: { novo_status: string; pedido: string };
 				Returns: undefined;
 			};
+			painel_vendas: { Args: { referencia?: string }; Returns: Json };
 			registrar_preferencia: {
 				Args: { pedido: string; preferencia: string };
 				Returns: undefined;

@@ -24,10 +24,7 @@ export default async function Page() {
 	const [resumo, painel, ultimos] = await Promise.all([
 		resumoVendas(),
 		painelDoAdmin(),
-		pedidosDoAdmin(
-			[...EM_ANDAMENTO, "entregue", "retirado", "cancelado", "expirado"],
-			5,
-		),
+		pedidosDoAdmin(undefined, 5),
 	]);
 	const paraPreparar = EM_ANDAMENTO.filter(
 		(s) => s !== "aguardando_pagamento",
@@ -85,7 +82,7 @@ export default async function Page() {
 							key={d.dia}
 							className="flex h-full flex-1 flex-col items-center justify-end gap-1"
 						>
-							<span className="text-[0.7rem] text-suave tabular-nums">
+							<span className="text-small text-suave tabular-nums">
 								{d.centavos ? formatarReais(d.centavos) : ""}
 							</span>
 							<span
