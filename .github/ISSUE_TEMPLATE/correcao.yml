@@ -12,7 +12,8 @@ body:
     validations: { required: true }
   - type: textarea
     id: reproduzir
-    attributes: { label: Como reproduzir, placeholder: "1. Abrir...\n2. Clicar..." }
+    attributes:
+      { label: Como reproduzir, placeholder: "1. Abrir...\n2. Clicar..." }
     validations: { required: true }
   - type: textarea
     id: aceite

@@ -7,6 +7,7 @@ Closes #
 ## Prints (375px e desktop, se mudou UI)
 
 ## Checklist (AGENTS.md §2)
+
 - [ ] Critérios de aceite da issue cumpridos
 - [ ] Testes adicionados/atualizados
 - [ ] UI testada em 375px e desktop
