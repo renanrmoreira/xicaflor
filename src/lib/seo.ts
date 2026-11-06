@@ -33,5 +33,12 @@ export const OG_BASE = {
 	siteName: "Xica Flor",
 	locale: "pt_BR",
 	type: "website" as const,
-	images: [{ url: "/icone-512.png", width: 512, height: 512 }],
+	images: [
+		{
+			url: "/og.png",
+			width: 1200,
+			height: 630,
+			alt: "Xica Flor — Moda Feminina",
+		},
+	],
 };
